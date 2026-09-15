@@ -1,0 +1,85 @@
+{
+  "bankingUsers": [
+    {
+      "id": "USER-001",
+      "role": "valid",
+      "description": "Standard active user with valid credentials (TC_001, TC_002)",
+      "usernameEnvVar": "BANK_VALID_USER",
+      "passwordEnvVar": "BANK_VALID_PASS",
+      "accountType": "SAVINGS",
+      "expectedDashboardRoute": "/dashboard",
+      "otpEnvVar": "BANK_VALID_OTP"
+    },
+    {
+      "id": "USER-002",
+      "role": "invalid_username",
+      "description": "Non-existent username, valid password format (TC_003)",
+      "username": "nonexistent.user@bank.com",
+      "password": "ValidPass123!",
+      "expectedError": "Invalid username or password",
+      "shouldRedirect": false
+    },
+    {
+      "id": "USER-003",
+      "role": "invalid_password",
+      "description": "Valid username, wrong password (TC_004)",
+      "usernameEnvVar": "BANK_VALID_USER",
+      "password": "WrongPassword999!",
+      "expectedError": "Invalid username or password",
+      "shouldRedirect": false
+    },
+    {
+      "id": "USER-004",
+      "role": "both_invalid",
+      "description": "Both username and password are invalid (TC_005)",
+      "username": "invalid.user@bank.com",
+      "password": "BadPass000!",
+      "expectedError": "Login denied",
+      "shouldRedirect": false
+    },
+    {
+      "id": "USER-005",
+      "role": "locked",
+      "description": "Account locked after multiple failed attempts (TC from additional notes)",
+      "usernameEnvVar": "BANK_LOCKED_USER",
+      "passwordEnvVar": "BANK_LOCKED_PASS",
+      "expectedError": "Your account has been locked",
+      "shouldRedirect": false
+    },
+    {
+      "id": "USER-006",
+      "role": "disabled",
+      "description": "Account disabled by administrator (from additional notes)",
+      "usernameEnvVar": "BANK_DISABLED_USER",
+      "passwordEnvVar": "BANK_DISABLED_PASS",
+      "expectedError": "Your account has been disabled",
+      "shouldRedirect": false
+    }
+  ],
+  "emptyFieldScenarios": [
+    {
+      "id": "EMPTY-001",
+      "scenario": "TC_006 — Empty username, valid password",
+      "usernameValue": "",
+      "passwordValue": "ValidPass123!",
+      "expectedUsernameError": "Username required",
+      "expectedPasswordError": null
+    },
+    {
+      "id": "EMPTY-002",
+      "scenario": "TC_007 — Valid username, empty password",
+      "usernameValue": "john.doe@bank.com",
+      "passwordValue": "",
+      "expectedUsernameError": null,
+      "expectedPasswordError": "Password required"
+    },
+    {
+      "id": "EMPTY-003",
+      "scenario": "TC_008 — Both fields empty",
+      "usernameValue": "",
+      "passwordValue": "",
+      "expectedUsernameError": "Username required",
+      "expectedPasswordError": "Password required"
+    }
+  ]
+}
