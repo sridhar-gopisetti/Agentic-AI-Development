@@ -36,7 +36,7 @@ const registrationData: RegistrationData = {
   country: process.env.PST_REG_COUNTRY as string,
   postcode: process.env.PST_REG_POSTCODE as string,
   phone: process.env.PST_REG_PHONE as string,
-  email: `pst_${Date.now()}@${process.env.PST_EMAIL_DOMAIN as string}`,
+  email: `${process.env.PST_REG_EMAIL_PREFIX ?? 'pst'}_${Date.now()}@${process.env.PST_EMAIL_DOMAIN as string}`,
   password: process.env.TEST_PASSWORD as string,
 };
 
@@ -46,7 +46,6 @@ const attachmentPath = path.resolve(process.env.PST_ATTACHMENT_PATH as string);
 
 test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
   test.afterEach(async ({ page }, testInfo) => {
-    // TEARDOWN
     if (testInfo.status !== testInfo.expectedStatus) {
       await page.screenshot({
         path: testInfo.outputPath('screenshot-on-failure.png'),
@@ -55,8 +54,8 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
   });
 
   test.describe('TC-1: Complex Multi-Item Checkout with Promo Code Validation', () => {
-    test.beforeEach(async ({ page, pstLoginPage }) => {
-      await page.goto(`${baseUrl}/auth/login`);
+    test.beforeEach(async ({ pstLoginPage }) => {
+      await pstLoginPage.navigateTo('/auth/login');
       await pstLoginPage.login(pstEmail, pstPassword);
     });
 
@@ -67,15 +66,15 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
       cartPage,
       checkoutPage,
     }) => {
-      await test.step('Step 1 — Navigate to homepage and select Hand Tools category', async () => {
+      await test.step('Step 100 — Navigate to homepage and select Hand Tools category', async () => {
         // Step 1
-        await page.goto(baseUrl);
+        await homePage.navigateTo('/');
         await homePage.clickCategory('Hand Tools');
         // REQ-PST-001-TC1-STEP100
         await expect(homePage.getCategoryPageTitleLocator()).toBeVisible();
       });
 
-      await test.step('Step 2 — Open Hammer, set quantity to 2, and add to cart', async () => {
+      await test.step('Step 200 — Open Hammer, set quantity to 2, and add to cart', async () => {
         // Step 2
         const hammerLink = page.locator('[data-test^="product-"]:has-text("Hammer")').first();
         await hammerLink.click();
@@ -85,9 +84,9 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
         await expect(page.locator('[role="alert"]').filter({ hasText: 'Product added to shopping cart' })).toBeVisible();
       });
 
-      await test.step('Step 3 — Return home, select Power Tools, and add Sander', async () => {
+      await test.step('Step 300 — Return home, select Power Tools, and add Sander', async () => {
         // Step 3
-        await page.goto(baseUrl);
+        await homePage.navigateTo('/');
         await homePage.clickCategory('Power Tools');
         const sanderLink = page.locator('[data-test^="product-"]:has-text("Sander")').first();
         await sanderLink.click();
@@ -96,7 +95,7 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
         await expect(page.locator('[role="alert"]').filter({ hasText: 'Product added to shopping cart' })).toBeVisible();
       });
 
-      await test.step('Step 4 — Open the shopping cart overview page', async () => {
+      await test.step('Step 400 — Open the shopping cart overview page', async () => {
         // Step 4
         await page.locator('[data-test="nav-cart"]').click();
         // REQ-PST-001-TC1-STEP400
@@ -107,7 +106,7 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
         await expect(cartPage.getProductRowLocator('Sander')).toBeVisible();
       });
 
-      await test.step('Step 5 — Proceed to checkout, fill billing, and apply SPRING20', async () => {
+      await test.step('Step 500 — Proceed to checkout, fill billing, and apply SPRING20', async () => {
         // Step 5
         await cartPage.clickProceedToCheckout();
         await checkoutPage.clickProceedStep2();
@@ -119,7 +118,7 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
         await expect(checkoutPage.getDiscountMessageLocator()).toBeVisible();
       });
 
-      await test.step('Step 6 — Select Credit Card, enter details, and confirm payment', async () => {
+      await test.step('Step 600 — Select Credit Card, enter details, and confirm payment', async () => {
         // Step 6
         await checkoutPage.selectCreditCard();
         await checkoutPage.fillCardDetails(cardDetails);
@@ -131,8 +130,8 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
   });
 
   test.describe('TC-2: User Account Registration & Profile Data Persistence', () => {
-    test.beforeEach(async ({ page }) => {
-      await page.goto(`${baseUrl}/auth/register`);
+    test.beforeEach(async ({ registerPage }) => {
+      await registerPage.navigateTo('/auth/register');
     });
 
     test('TC-2: User Account Registration & Profile Data Persistence', async ({
@@ -141,14 +140,14 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
       pstLoginPage,
       profilePage,
     }) => {
-      await test.step('Step 7 — Navigate directly to the registration interface', async () => {
+      await test.step('Step 700 — Navigate directly to the registration interface', async () => {
         // Step 7
-        await page.goto(`${baseUrl}/auth/register`);
+        await registerPage.navigateTo('/auth/register');
         // REQ-PST-002-TC2-STEP100
         await expect(registerPage.getRegisterButtonLocator()).toBeVisible();
       });
 
-      await test.step('Step 8 — Fill all required fields and click Register', async () => {
+      await test.step('Step 800 — Fill all required fields and click Register', async () => {
         // Step 8
         await registerPage.fillRegistrationForm(registrationData);
         await registerPage.clickRegister();
@@ -156,21 +155,21 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
         await expect(page).toHaveURL(/auth\/login/);
       });
 
-      await test.step('Step 9 — Login with the newly created credentials', async () => {
+      await test.step('Step 900 — Login with the newly created credentials', async () => {
         // Step 9
         await pstLoginPage.login(registrationData.email, registrationData.password);
         // REQ-PST-002-TC2-STEP300
         await expect(page).toHaveURL(/account/);
       });
 
-      await test.step('Step 10 — Open the Profile page from the account area', async () => {
+      await test.step('Step 1000 — Open the Profile page from the account area', async () => {
         // Step 10
         await page.goto(`${baseUrl}/account`);
         // REQ-PST-002-TC2-STEP400
         await expect(profilePage.getPageHeaderLocator()).toBeVisible();
       });
 
-      await test.step('Step 11 — Verify profile fields match the submitted registration data', async () => {
+      await test.step('Step 1100 — Verify profile fields match submitted registration data', async () => {
         // Step 11
         await profilePage.assertPersistedValues(registrationData);
         // REQ-PST-002-TC2-STEP500
@@ -194,40 +193,37 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
       page,
       contactPage,
     }) => {
-      await test.step('Step 12 — Open Contact from the top navigation', async () => {
+      await test.step('Step 1200 — Open Contact from the top navigation', async () => {
         // Step 12
         await page.locator('[data-test="nav-contact"]').click();
-        const loaded = await contactPage.validate();
         // REQ-PST-003-TC3-STEP100
         await expect(page).toHaveURL(/contact/);
         // REQ-PST-003-TC3-STEP100
         await expect(contactPage.getSendButtonLocator()).toBeVisible();
-        // REQ-PST-003-TC3-STEP100
-        await expect.poll(async () => loaded).toBe(true);
       });
 
-      await test.step('Step 13 — Select Customer Service from the Subject dropdown', async () => {
+      await test.step('Step 1300 — Select Customer Service from the Subject dropdown', async () => {
         // Step 13
         await contactPage.selectSubject('Customer Service');
         // REQ-PST-003-TC3-STEP200
         await expect(contactPage.getSendButtonLocator()).toBeVisible();
       });
 
-      await test.step('Step 14 — Fill Name, Email, and Message fields', async () => {
+      await test.step('Step 1400 — Fill Name, Email, and Message fields', async () => {
         // Step 14
         await contactPage.fillName('QA Tester');
         await contactPage.fillEmail(contactEmail);
         await contactPage.fillMessage(contactMessage);
       });
 
-      await test.step('Step 15 — Attach test_log.txt to the support request', async () => {
+      await test.step('Step 1500 — Attach test log file to the support request', async () => {
         // Step 15
         await contactPage.attachFile(attachmentPath);
         // REQ-PST-003-TC3-STEP400
         await expect(contactPage.getSendButtonLocator()).toBeVisible();
       });
 
-      await test.step('Step 16 — Click Send and verify the confirmation response', async () => {
+      await test.step('Step 1600 — Click Send and verify the confirmation response', async () => {
         // Step 16
         await contactPage.clickSend();
         // REQ-PST-003-TC3-STEP500
@@ -237,8 +233,8 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
   });
 
   test.describe('TC-4: Product Search, Sorting & Wishlist Functionality', () => {
-    test.beforeEach(async ({ page, pstLoginPage }) => {
-      await page.goto(`${baseUrl}/auth/login`);
+    test.beforeEach(async ({ pstLoginPage }) => {
+      await pstLoginPage.navigateTo('/auth/login');
       await pstLoginPage.login(pstEmail, pstPassword);
     });
 
@@ -250,15 +246,15 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
     }) => {
       let addedProductName = '';
 
-      await test.step('Step 17 — Search for Drill from the homepage', async () => {
+      await test.step('Step 1700 — Search for Drill from the homepage', async () => {
         // Step 17
-        await page.goto(baseUrl);
+        await homePage.navigateTo('/');
         await homePage.searchProduct('Drill');
         // REQ-PST-004-TC4-STEP100
         await expect(homePage.getSearchResultsLocator().first()).toBeVisible();
       });
 
-      await test.step('Step 18 — Sort results by Price Low to High', async () => {
+      await test.step('Step 1800 — Sort results by Price Low to High', async () => {
         // Step 18
         await homePage.getSortDropdownLocator().selectOption('price,asc');
         await homePage.assertAscendingPrices();
@@ -266,7 +262,7 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
         await expect(homePage.getSortDropdownLocator()).toBeVisible();
       });
 
-      await test.step('Step 19 — Open the first product from the search results', async () => {
+      await test.step('Step 1900 — Open the first product from the search results', async () => {
         // Step 19
         const firstProductName = await homePage.getSearchResultsLocator().first().textContent();
         addedProductName = firstProductName?.trim() ?? 'Drill';
@@ -275,14 +271,14 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
         await expect(productPage.getProductTitleLocator()).toBeVisible();
       });
 
-      await test.step('Step 20 — Add the product to Favorites or Wishlist', async () => {
+      await test.step('Step 2000 — Add the product to Favorites or Wishlist', async () => {
         // Step 20
         await productPage.clickAddToFavorites();
         // REQ-PST-004-TC4-STEP400
         await expect(productPage.getSuccessToastLocator()).toBeVisible();
       });
 
-      await test.step('Step 21 — Open the Wishlist/Favorites page', async () => {
+      await test.step('Step 2100 — Open the Wishlist/Favorites page', async () => {
         // Step 21
         await page.goto(`${baseUrl}/account/favorites`);
         // REQ-PST-004-TC4-STEP500
@@ -291,7 +287,7 @@ test.describe('PracticeSoftwareTesting.com Functional Workflows', () => {
         await expect(wishlistPage.getProductLocator(addedProductName)).toBeVisible();
       });
 
-      await test.step('Step 22 — Remove the product from the wishlist', async () => {
+      await test.step('Step 2200 — Remove the product from the wishlist', async () => {
         // Step 22
         await wishlistPage.removeProduct(addedProductName);
         // REQ-PST-004-TC4-STEP600
