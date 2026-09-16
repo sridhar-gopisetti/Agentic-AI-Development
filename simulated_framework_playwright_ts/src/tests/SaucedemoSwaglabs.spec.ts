@@ -1,26 +1,40 @@
-import { test, expect } from '../../../fixtures';
+/**
+ * SauceDemo Swag Labs functional workflow
+ *
+ * Traceability:
+ *   Source document: saucedemo-SwagLabs.docx
+ *   Framework: playwright-typescript
+ *   Requirements: FR-01, FR-04, FR-05, FR-06, FR-07, FR-08, FR-10
+ *
+ * Framework rules:
+ *   PT-001 custom Playwright fixtures
+ *   PT-002 beforeEach / afterEach lifecycle
+ *   PT-003 Playwright expect assertions
+ *   PT-005 awaited asynchronous operations
+ *   PT-006 condition-based waits through Page Objects
+ *   PT-007 test.step() for every manual step
+ *   UNI-002 environment-based credentials
+ *   UNI-004 assertion traceability tags
+ */
+
+import { test, expect } from '../../fixtures';
 
 const validUsername = process.env.SD_USERNAME as string;
 const validPassword = process.env.SD_PASSWORD as string;
 
-type CheckoutData = {
-  firstName: string;
-  lastName: string;
-  postalCode: string;
-};
-
-const checkoutData: CheckoutData = {
+const checkoutData = {
   firstName: 'Test',
   lastName: 'User',
   postalCode: '500001',
 };
 
-test.describe('SauceDemo — Swag Labs Manual Workflow', () => {
+test.describe('SauceDemo — Swag Labs functional workflow', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
   test.afterEach(async ({ page }, testInfo) => {
+    // Traceability: TEARDOWN
     if (testInfo.status !== testInfo.expectedStatus) {
       await page.screenshot({
         path: testInfo.outputPath('failure.png'),
@@ -106,20 +120,32 @@ test.describe('SauceDemo — Swag Labs Manual Workflow', () => {
         // Traceability: FR-08 | Manual Step 9
         await expect(page).toHaveURL(/checkout-complete/);
         // Traceability: FR-08 | Manual Step 9
-        await expect(checkoutCompletePage.getCompleteContainerLocator()).toBeVisible();
+        await expect(
+          checkoutCompletePage.getCompleteContainerLocator(),
+        ).toBeVisible();
         // Traceability: FR-08 | Manual Step 9
-        await expect(checkoutCompletePage.getSuccessHeaderLocator()).toContainText('Thank you');
+        await expect(
+          checkoutCompletePage.getSuccessHeaderLocator(),
+        ).toContainText('Thank you');
         await checkoutCompletePage.clickBackToProducts();
       });
 
-      // Manual Step 10: Click Logout.
-      await test.step('Step 10 — Click Logout', async () => {
+      // Manual Step 10: Open menu.
+      await test.step('Step 10 — Open menu', async () => {
         await inventoryPage.openMenu();
+        // Traceability: FR-10 | Manual Step 10
+        await expect(page.locator('#logout_sidebar_link')).toBeVisible();
+      });
+
+      // Manual Step 11: Click Logout.
+      await test.step('Step 11 — Click Logout', async () => {
         await inventoryPage.clickLogout();
         // Traceability: FR-10 | Manual Step 11
         await expect(page).toHaveURL(/\/$/);
         // Traceability: FR-10 | Manual Step 11
-        await expect(sauceDemoLoginPage.getLoginButtonLocator()).toBeVisible();
+        await expect(
+          sauceDemoLoginPage.getLoginButtonLocator(),
+        ).toBeVisible();
       });
     },
   );
