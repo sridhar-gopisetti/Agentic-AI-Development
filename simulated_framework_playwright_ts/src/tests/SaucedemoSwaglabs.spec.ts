@@ -3,7 +3,13 @@ import { test, expect } from '../../../fixtures';
 const validUsername = process.env.SD_USERNAME as string;
 const validPassword = process.env.SD_PASSWORD as string;
 
-const checkoutData = {
+type CheckoutData = {
+  firstName: string;
+  lastName: string;
+  postalCode: string;
+};
+
+const checkoutData: CheckoutData = {
   firstName: 'Test',
   lastName: 'User',
   postalCode: '500001',
@@ -106,13 +112,9 @@ test.describe('SauceDemo — Swag Labs Manual Workflow', () => {
         await checkoutCompletePage.clickBackToProducts();
       });
 
-      await test.step('Step 10 — Open menu', async () => {
-        // Manual Step 10: Open menu.
+      await test.step('Step 10 — Click Logout', async () => {
+        // Manual Step 10: Click Logout.
         await inventoryPage.openMenu();
-      });
-
-      await test.step('Step 11 — Click Logout', async () => {
-        // Manual Step 11: Click Logout.
         await inventoryPage.clickLogout();
         // Traceability: FR-10 | Manual Step 11
         await expect(page).toHaveURL(/\/$/);
