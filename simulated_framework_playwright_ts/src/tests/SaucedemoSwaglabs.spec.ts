@@ -39,57 +39,57 @@ test.describe('SauceDemo — Swag Labs Manual Workflow', () => {
       checkoutOverviewPage,
       checkoutCompletePage,
     }) => {
+      // Manual Step 1: Enter username.
       await test.step('Step 1 — Enter username', async () => {
-        // Manual Step 1: Enter username.
         await sauceDemoLoginPage.enterUsername(validUsername);
         // Traceability: FR-01 | Manual Step 1
         await expect(sauceDemoLoginPage.getLoginButtonLocator()).toBeVisible();
       });
 
+      // Manual Step 2: Enter password.
       await test.step('Step 2 — Enter password', async () => {
-        // Manual Step 2: Enter password.
         await sauceDemoLoginPage.enterPassword(validPassword);
         // Traceability: FR-01 | Manual Step 2
         await expect(sauceDemoLoginPage.getLoginButtonLocator()).toBeVisible();
       });
 
+      // Manual Step 3: Click Login button.
       await test.step('Step 3 — Click Login button', async () => {
-        // Manual Step 3: Click Login button.
         await sauceDemoLoginPage.clickLoginButton();
         // Traceability: FR-01 | Manual Step 3
         await expect(page).toHaveURL(/inventory/);
       });
 
+      // Manual Step 4: Click Add to Cart for a product.
       await test.step('Step 4 — Click Add to Cart for a product', async () => {
-        // Manual Step 4: Click Add to Cart for a product.
         await inventoryPage.clickAddToCartByIndex(0);
         // Traceability: FR-04 | Manual Step 4
         await expect(inventoryPage.getCartBadgeLocator()).toHaveText('1');
       });
 
+      // Manual Step 5: Click Remove button.
       await test.step('Step 5 — Click Remove button', async () => {
-        // Manual Step 5: Click Remove button.
         await inventoryPage.clickRemoveFromCartByIndex(0);
         // Traceability: FR-05 | Manual Step 5
         await expect(inventoryPage.getCartBadgeLocator()).not.toBeVisible();
       });
 
+      // Manual Step 6: Click Cart icon.
       await test.step('Step 6 — Click Cart icon', async () => {
-        // Manual Step 6: Click Cart icon.
         await inventoryPage.clickCartIcon();
         // Traceability: FR-06 | Manual Step 6
         await expect(page).toHaveURL(/cart/);
       });
 
+      // Manual Step 7: Click Checkout.
       await test.step('Step 7 — Click Checkout', async () => {
-        // Manual Step 7: Click Checkout.
         await sauceDemoCartPage.clickCheckout();
         // Traceability: FR-07 | Manual Step 7
         await expect(page).toHaveURL(/checkout-step-one/);
       });
 
+      // Manual Step 8: Click Continue.
       await test.step('Step 8 — Click Continue', async () => {
-        // Manual Step 8: Click Continue.
         await checkoutInfoPage.fillCheckoutInfo(
           checkoutData.firstName,
           checkoutData.lastName,
@@ -100,8 +100,8 @@ test.describe('SauceDemo — Swag Labs Manual Workflow', () => {
         await expect(page).toHaveURL(/checkout-step-two/);
       });
 
+      // Manual Step 9: Click Finish.
       await test.step('Step 9 — Click Finish', async () => {
-        // Manual Step 9: Click Finish.
         await checkoutOverviewPage.clickFinish();
         // Traceability: FR-08 | Manual Step 9
         await expect(page).toHaveURL(/checkout-complete/);
@@ -112,8 +112,8 @@ test.describe('SauceDemo — Swag Labs Manual Workflow', () => {
         await checkoutCompletePage.clickBackToProducts();
       });
 
+      // Manual Step 10: Click Logout.
       await test.step('Step 10 — Click Logout', async () => {
-        // Manual Step 10: Click Logout.
         await inventoryPage.openMenu();
         await inventoryPage.clickLogout();
         // Traceability: FR-10 | Manual Step 11
