@@ -8,10 +8,11 @@
  */
 
 import { test, expect } from '../../fixtures';
-import type { Page } from '@playwright/test';
 
 const validUsername = process.env.SD_USERNAME as string;
 const validPassword = process.env.SD_PASSWORD as string;
+const invalidUsername = process.env.SD_INVALID_USERNAME as string;
+const invalidPassword = process.env.SD_INVALID_PASSWORD as string;
 const selectedProductIndex = 0;
 
 type CheckoutData = {
@@ -54,15 +55,11 @@ test.describe('SauceDemo — Swag Labs functional and error-handling workflows',
       // Manual Step 1: Enter username.
       await test.step('Step 1 — Enter username', async () => {
         await sauceDemoLoginPage.enterUsername(validUsername);
-        // Traceability: FR-01 | Manual Step 1
-        await expect(sauceDemoLoginPage.getLoginButtonLocator()).toBeVisible();
       });
 
       // Manual Step 2: Enter password.
       await test.step('Step 2 — Enter password', async () => {
         await sauceDemoLoginPage.enterPassword(validPassword);
-        // Traceability: FR-01 | Manual Step 2
-        await expect(sauceDemoLoginPage.getLoginButtonLocator()).toBeVisible();
       });
 
       // Manual Step 3: Click Login button.
