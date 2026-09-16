@@ -5,30 +5,28 @@
  *   Source document: saucedemo-SwagLabs.docx
  *   Framework: playwright-typescript
  *   Requirements: FR-01, FR-04, FR-05, FR-06, FR-07, FR-08, FR-10
- *
- * Framework rules:
- *   PT-001 custom Playwright fixtures
- *   PT-002 beforeEach / afterEach lifecycle
- *   PT-003 Playwright expect assertions
- *   PT-005 awaited asynchronous operations
- *   PT-006 condition-based waits through Page Objects
- *   PT-007 test.step() for every manual step
- *   UNI-002 environment-based credentials
- *   UNI-004 assertion traceability tags
  */
 
 import { test, expect } from '../../fixtures';
+import type { Page } from '@playwright/test';
 
 const validUsername = process.env.SD_USERNAME as string;
 const validPassword = process.env.SD_PASSWORD as string;
+const selectedProductIndex = 0;
 
-const checkoutData = {
+type CheckoutData = {
+  firstName: string;
+  lastName: string;
+  postalCode: string;
+};
+
+const checkoutData: CheckoutData = {
   firstName: 'Test',
   lastName: 'User',
   postalCode: '500001',
 };
 
-test.describe('SauceDemo — Swag Labs functional workflow', () => {
+test.describe('SauceDemo — Swag Labs functional and error-handling workflows', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
@@ -76,14 +74,14 @@ test.describe('SauceDemo — Swag Labs functional workflow', () => {
 
       // Manual Step 4: Click Add to Cart for a product.
       await test.step('Step 4 — Click Add to Cart for a product', async () => {
-        await inventoryPage.clickAddToCartByIndex(0);
+        await inventoryPage.clickAddToCartByIndex(selectedProductIndex);
         // Traceability: FR-04 | Manual Step 4
         await expect(inventoryPage.getCartBadgeLocator()).toHaveText('1');
       });
 
       // Manual Step 5: Click Remove button.
       await test.step('Step 5 — Click Remove button', async () => {
-        await inventoryPage.clickRemoveFromCartByIndex(0);
+        await inventoryPage.clickRemoveFromCartByIndex(selectedProductIndex);
         // Traceability: FR-05 | Manual Step 5
         await expect(inventoryPage.getCartBadgeLocator()).not.toBeVisible();
       });
