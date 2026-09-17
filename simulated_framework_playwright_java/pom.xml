@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.aether</groupId>
+    <artifactId>aether-playwright-java</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>AETHER Playwright Java Validation Framework</name>
+    <description>
+        AETHER-generated Playwright-Java + TestNG automation framework.
+        Source: Banking_Login_TC_1.pdf (TC_001 – TC_008)
+        Requirement: REQ-BANK-AUTH-001
+        Target AUT: http://localhost:3000 (mock_aut/server.js)
+    </description>
+
+    <!--
+        T2.3 — the compiler level was 11 and this project has **never compiled**.
+
+        `src/main/java/com/aether/framework/core/PlaywrightManager.java:42` uses a switch
+        expression, which needs `-source 14` or higher; javac refused it with "switch
+        expressions are not supported in -source 11". Nothing had noticed, because until
+        Phase 2 nothing in AETHER ever ran `mvn` against this tree: svc-tew's image carried
+        no toolchain, so TEEA returned SKIPPED without attempting a build.
+
+        Found by the first real execution — svc-runner reported COMPLETED with exit code 1
+        and no Surefire reports, which svc-tew correctly reported as NO_TESTS_DISCOVERED.
+        Correct, and a diagnosis of the wrong thing: the suite had not been *run*.
+
+        17 rather than 14, matching the JDK in svc-runner's image
+        (`maven:3.9-eclipse-temurin-17`). This project is TD14's verification target, so a
+        source level its own runner cannot compile makes T2.3's acceptance criterion
+        unreachable. Nothing else in the repository reads these values. Recorded as
+        ADR §6.29.
+    -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <playwright.version>1.44.0</playwright.version>
+        <testng.version>7.8.0</testng.version>
+        <extentreports.version>5.1.1</extentreports.version>
+        <slf4j.version>2.0.9</slf4j.version>
+        <surefire.version>3.2.2</surefire.version>
+        <jackson.version>2.16.1</jackson.version>
+    </properties>
+
+    <dependencies>
+        <!-- Microsoft Playwright for Java -->
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>${playwright.version}</version>
+        </dependency>
+
+        <!-- TestNG -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+
+        <!-- ExtentReports — rich HTML test report -->
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>${extentreports.version}</version>
+        </dependency>
+
+        <!-- SLF4J simple binding -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- Jackson — JSON fixture parsing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <!-- Explicit plugin config overrides the maven.compiler.* properties
+                         above, so both had to change. Leaving this at 11 would have kept
+                         the build failing while the properties said otherwise, which is
+                         the harder version of the same defect to find. -->
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <!-- Never fail build — capture all results -->
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <!--
+                      There was a `<systemPropertyVariables><BASE_URL>` here and it was
+                      read by nothing. ConfigReader looks up the *key* `base.url` as a
+                      system property and only then the environment variable `BASE_URL`
+                      (dots to underscores, upper-cased); a system property literally
+                      named BASE_URL matches neither step. So the value that took effect
+                      was always config.properties', and `mvn test -DBASE_URL=…` — which
+                      this project's README documented — silently did nothing.
+
+                      Removed rather than corrected to `<base.url>`, because a system
+                      property is priority 1 and would then shadow the environment
+                      variable svc-runner sets to point the suite at the compose AUT
+                      (ADR §6.27). The two working overrides, highest first:
+
+                        mvn test -Dbase.url=http://localhost:4000
+                        BASE_URL=http://mock-aut:3000 mvn test
+
+                      Nothing is declared in its place on purpose: surefire hands the
+                      forked JVM this process's environment, which is how BASE_URL
+                      arrives from the container. Pinning it here would undo that.
+
+                      ADR §6.27.
+                    -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

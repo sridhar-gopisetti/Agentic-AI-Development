@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<!--
+  AETHER Playwright-Java Test Suite
+  Source: Banking_Login_TC_1.pdf (TC_001 – TC_008)
+  Requirement: REQ-BANK-AUTH-001
+  Framework: playwright-java
+-->
+<suite name="AETHER-Playwright-Java-Suite" verbose="1" parallel="none">
+
+    <listeners>
+        <!-- TestNG listeners can be added here for custom reporting -->
+    </listeners>
+
+    <test name="Banking-Login-Tests">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <include name="regression"/>
+                <include name="banking-login"/>
+                <include name="negative"/>
+                <include name="field-validation"/>
+                <include name="mfa"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.aether.tests.functional.banking.Rev1_WA_Banking_Login"/>
+        </classes>
+    </test>
+
+</suite>
