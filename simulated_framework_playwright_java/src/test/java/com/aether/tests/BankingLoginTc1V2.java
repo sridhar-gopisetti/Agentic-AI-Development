@@ -82,16 +82,20 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 1: Open login page
+        TestReporter.step(1, "Open login page");
         page.navigate(ConfigReader.getBaseUrl());
         bankingLoginPage.validate();
 
         // Step 2: Enter valid username
+        TestReporter.step(2, "Enter valid username");
         bankingLoginPage.enterUsername(validUsername);
 
         // Step 3: Enter valid password
+        TestReporter.step(3, "Enter valid password");
         bankingLoginPage.enterPassword(validPassword);
 
         // Step 4: Click Login
+        TestReporter.step(4, "Click Login");
         bankingLoginPage.clickLoginButton();
 
         boolean dashboardDisplayed = bankingDashboardPage.validate();
@@ -143,9 +147,11 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 5: Enter valid credentials
+        TestReporter.step(5, "Enter valid credentials");
         bankingLoginPage.loginFirstFactor(mfaUsername, mfaPassword);
 
         // Step 6: Click Login
+        TestReporter.step(6, "Click Login");
         boolean otpPageDisplayed = bankingLoginPage.validateOtpPage();
         // TC_002
         Assert.assertTrue(
@@ -158,9 +164,11 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 7: Enter valid OTP
+        TestReporter.step(7, "Enter valid OTP");
         bankingLoginPage.submitOtp(validOtp);
 
         // Step 8: Submit
+        TestReporter.step(8, "Submit OTP");
         boolean dashboardDisplayed = bankingDashboardPage.validate();
         // TC_002
         Assert.assertTrue(
@@ -199,6 +207,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 9: Enter invalid username + valid password
+        TestReporter.step(9, "Enter invalid username and valid password");
         bankingLoginPage.login(invalidUsername, validPassword);
 
         boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
@@ -246,6 +255,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 10: Enter valid username + invalid password
+        TestReporter.step(10, "Enter valid username and invalid password");
         bankingLoginPage.login(invalidPasswordUser, invalidPassword);
 
         // TC_004
@@ -292,6 +302,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 11: Enter invalid credentials
+        TestReporter.step(11, "Enter invalid credentials");
         bankingLoginPage.login(bothInvalidUsername, bothInvalidPassword);
 
         // TC_005
@@ -338,6 +349,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 12: Leave username blank
+        TestReporter.step(12, "Leave username blank");
         bankingLoginPage.clearUsername();
         bankingLoginPage.enterPassword(validPassword);
         bankingLoginPage.clickLoginButton();
@@ -386,6 +398,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 13: Leave password blank
+        TestReporter.step(13, "Leave password blank");
         bankingLoginPage.enterUsername(validUsername);
         bankingLoginPage.clearPassword();
         bankingLoginPage.clickLoginButton();
@@ -434,6 +447,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 14: Click login without input
+        TestReporter.step(14, "Click login without input");
         bankingLoginPage.clearUsername();
         bankingLoginPage.clearPassword();
         bankingLoginPage.clickLoginButton();
@@ -503,6 +517,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 15: Enter credentials for an account flagged locked
+        TestReporter.step(15, "Enter credentials for an account flagged locked");
         bankingLoginPage.login(lockedUsername, lockedPassword);
 
         // TC_009
@@ -528,6 +543,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 16: Enter credentials for an account flagged disabled
+        TestReporter.step(16, "Enter credentials for an account flagged disabled");
         bankingLoginPage.login(disabledUsername, disabledPassword);
 
         // TC_010
