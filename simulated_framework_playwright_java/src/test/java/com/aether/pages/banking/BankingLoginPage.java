@@ -111,6 +111,9 @@ public class BankingLoginPage extends BasePage {
         fillField(usernameField, username);
     }
 
+    public boolean isSecureRedirect() { ... }
+
+
     public void enterPassword(String password) {
         fillField(passwordField, password);
     }
