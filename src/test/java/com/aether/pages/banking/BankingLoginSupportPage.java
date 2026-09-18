@@ -3,9 +3,12 @@ package com.aether.pages.banking;
 import com.aether.framework.core.BasePage;
 import com.microsoft.playwright.Page;
 
-import java.util.Collections;
-import java.util.Map;
-
+/**
+ * Human-approved stub Page Object.
+ *
+ * These methods are provisional and must not be treated as implemented
+ * security or validation behavior.
+ */
 public class BankingLoginSupportPage extends BasePage {
 
     public BankingLoginSupportPage(Page page) {
@@ -14,31 +17,22 @@ public class BankingLoginSupportPage extends BasePage {
 
     @Override
     public boolean validate() {
+        // TODO(stub_and_continue): implement — see requirement doc
+        return false;
+    }
+
+    public boolean secureAuthenticatedRouteAssertion() {
+        // TODO(stub_and_continue): implement — see requirement doc
         return false;
     }
 
     public boolean isSecureRedirect() {
-        // TODO(stub_and_continue): implement — define and verify the approved secure redirect criterion
+        // TODO(stub_and_continue): implement — see requirement doc
         return false;
     }
 
-    public String getValidOtp() {
-        // TODO(stub_and_continue): implement — provide OTP through an approved environment-controlled source
-        return "";
-    }
-
-    public Map<String, String> loadAccountState(String accountState) {
-        // TODO(stub_and_continue): implement — load the approved account-state fixture
-        return Collections.emptyMap();
-    }
-
-    public String getExpectedInvalidPasswordMessage() {
-        // TODO(stub_and_continue): implement — use the requirement-approved TC_004 message
-        return "";
-    }
-
     public boolean areRequiredFieldErrorsDisplayed() {
-        // TODO(stub_and_continue): implement — verify both username and password required-field messages
+        // TODO(stub_and_continue): implement — see requirement doc
         return false;
     }
 }
