@@ -5,7 +5,6 @@ import com.aether.framework.core.ConfigReader;
 import com.aether.framework.core.TestReporter;
 import com.aether.pages.banking.BankingDashboardPage;
 import com.aether.pages.banking.BankingLoginPage;
-import com.aether.pages.banking.BankingLoginSupportPage;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -152,7 +151,7 @@ public class Rev1_WA_Banking_Login extends BaseTest {
 
         // Step 6: Click Login
         {
-            // The first-factor Page Object method performs the login submission.
+            // loginFirstFactor performs the first-factor submission.
             // TC_002
             Assert.assertTrue(
                 TestReporter.assertCondition(
@@ -171,7 +170,7 @@ public class Rev1_WA_Banking_Login extends BaseTest {
 
         // Step 8: Submit
         {
-            // The OTP Page Object method performs the OTP submission.
+            // submitOtp performs the OTP submission.
             // TC_002
             Assert.assertTrue(
                 TestReporter.assertCondition(
@@ -269,7 +268,7 @@ public class Rev1_WA_Banking_Login extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 10: Enter valid password
+        // Step 10: Enter valid username
         {
             bankingLoginPage.enterUsername(invalidPasswordUser);
             bankingLoginPage.enterPassword(invalidPassword);
@@ -285,6 +284,12 @@ public class Rev1_WA_Banking_Login extends BaseTest {
                 "Error banner must be displayed [TC_004]"
             );
         }
+
+        // Step 11: Enter invalid password
+        {
+            // The invalid password was submitted with the username in Step 10.
+            TestReporter.step(11, "Enter invalid password");
+        }
     }
 
     @Test(
@@ -298,7 +303,7 @@ public class Rev1_WA_Banking_Login extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 11: Enter invalid password
+        // Step 12: Enter invalid credentials
         {
             bankingLoginPage.enterUsername(bothInvalidUsername);
             bankingLoginPage.enterPassword(bothInvalidPassword);
@@ -337,7 +342,7 @@ public class Rev1_WA_Banking_Login extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 12: Enter invalid credentials
+        // Step 13: Leave username blank
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.enterPassword(validPassword);
@@ -364,6 +369,16 @@ public class Rev1_WA_Banking_Login extends BaseTest {
                 ),
                 "Username validation text must contain username required [TC_006]"
             );
+
+            // TC_006
+            Assert.assertTrue(
+                TestReporter.assertCondition(
+                    bankingLoginPage.validate(),
+                    "SUCCESS: User remains on login page [TC_006]",
+                    "FAILURE: User left login page [TC_006]"
+                ),
+                "User must remain on login page [TC_006]"
+            );
         }
     }
 
@@ -378,7 +393,7 @@ public class Rev1_WA_Banking_Login extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 13: Leave username blank
+        // Step 14: Leave password blank
         {
             bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
@@ -405,6 +420,16 @@ public class Rev1_WA_Banking_Login extends BaseTest {
                 ),
                 "Password validation text must contain password required [TC_007]"
             );
+
+            // TC_007
+            Assert.assertTrue(
+                TestReporter.assertCondition(
+                    bankingLoginPage.validate(),
+                    "SUCCESS: User remains on login page [TC_007]",
+                    "FAILURE: User left login page [TC_007]"
+                ),
+                "User must remain on login page [TC_007]"
+            );
         }
     }
 
@@ -419,7 +444,7 @@ public class Rev1_WA_Banking_Login extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 14: Leave password blank
+        // Step 15: Click login without input
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.clearPassword();
@@ -468,34 +493,15 @@ public class Rev1_WA_Banking_Login extends BaseTest {
                 ),
                 "Password validation text must contain password required [TC_008]"
             );
-        }
-    }
 
-    @Test(
-        description = "TC_009: Click login without input",
-        priority = 9,
-        groups = {"regression", "banking-login", "field-validation"}
-    )
-    public void tc009_clickLoginWithoutInput() {
-        TestReporter.startTest(
-            "TC_009: Click login without input",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
-
-        // Step 15: Click login without input
-        {
-            bankingLoginPage.clearUsername();
-            bankingLoginPage.clearPassword();
-            bankingLoginPage.clickLoginButton();
-
-            // TC_009
+            // TC_008
             Assert.assertTrue(
                 TestReporter.assertCondition(
-                    bankingLoginPage.areRequiredFieldErrorsDisplayed(),
-                    "SUCCESS: Both required-field validations displayed [TC_009]",
-                    "FAILURE: Both required-field validations were not displayed [TC_009]"
+                    bankingLoginSupportPage.areRequiredFieldErrorsDisplayed(),
+                    "SUCCESS: Both required-field validations displayed [TC_008]",
+                    "FAILURE: Both required-field validations were not displayed [TC_008]"
                 ),
-                "Both required-field validations must be displayed [TC_009]"
+                "Both required-field validations must be displayed [TC_008]"
             );
         }
     }
