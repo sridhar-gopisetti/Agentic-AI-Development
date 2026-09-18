@@ -4,12 +4,8 @@ import com.aether.framework.core.BasePage;
 import com.microsoft.playwright.Page;
 
 /**
- * Stub-bearing additions for BankingLoginPage.
- *
- * These methods were approved under the human decision:
- * stub_and_continue.
- *
- * They are provisional and do not implement the underlying application behavior.
+ * Provisional stub-bearing Page Object methods approved under
+ * the human decision: stub_and_continue.
  */
 public class BankingLoginPage extends BasePage {
 
