@@ -5,7 +5,6 @@ import com.aether.framework.core.ConfigReader;
 import com.aether.framework.core.TestReporter;
 import com.aether.pages.banking.BankingDashboardPage;
 import com.aether.pages.banking.BankingLoginPage;
-
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -31,9 +30,6 @@ public class BankingLoginTc1V2 extends BaseTest {
     private String lockedPassword;
     private String disabledUsername;
     private String disabledPassword;
-    private String expiredOtp;
-    private String incorrectOtp;
-    private String previouslyUsedOtp;
 
     @BeforeMethod(alwaysRun = true)
     public void setUp() {
@@ -54,9 +50,6 @@ public class BankingLoginTc1V2 extends BaseTest {
         lockedPassword = ConfigReader.get("banking.locked.password");
         disabledUsername = ConfigReader.get("banking.disabled.username");
         disabledPassword = ConfigReader.get("banking.disabled.password");
-        expiredOtp = ConfigReader.get("banking.expired.otp");
-        incorrectOtp = ConfigReader.get("banking.incorrect.otp");
-        previouslyUsedOtp = ConfigReader.get("banking.previously.used.otp");
 
         page.navigate(ConfigReader.getBaseUrl());
         bankingLoginPage.validate();
@@ -77,10 +70,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"smoke", "regression", "banking-login"}
     )
     public void tc001_validLogin() {
-        TestReporter.startTest(
-            "TC_001: Valid banking login",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_001: Valid banking login", "Requirement: REQ-BANK-AUTH-001");
 
         // Step 1: Open login page
         page.navigate(ConfigReader.getBaseUrl());
@@ -105,10 +95,9 @@ public class BankingLoginTc1V2 extends BaseTest {
             "Valid login must display the banking dashboard [TC_001]"
         );
 
-        String currentUrl = page.url();
-        boolean authenticatedRoute = currentUrl.contains("dashboard")
-            || currentUrl.contains("home")
-            || currentUrl.contains("account");
+        boolean authenticatedRoute = page.url().contains("dashboard")
+            || page.url().contains("home")
+            || page.url().contains("account");
 
         // TC_001
         Assert.assertTrue(
@@ -120,12 +109,10 @@ public class BankingLoginTc1V2 extends BaseTest {
             "Valid login must navigate to an authenticated route [TC_001]"
         );
 
-        String displayedUsername = bankingDashboardPage.getLoggedInUsername();
-
         // TC_001
         Assert.assertTrue(
             TestReporter.assertCondition(
-                !displayedUsername.isEmpty(),
+                !bankingDashboardPage.getLoggedInUsername().isEmpty(),
                 "SUCCESS: Logged-in username displayed [TC_001]",
                 "FAILURE: Logged-in username was not displayed [TC_001]"
             ),
@@ -139,21 +126,19 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"regression", "banking-login", "mfa"}
     )
     public void tc002_validLoginWithOtp() {
-        TestReporter.startTest(
-            "TC_002: Valid banking login with OTP",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_002: Valid banking login with OTP", "Requirement: REQ-BANK-AUTH-001");
 
         // Step 5: Enter valid credentials
-        bankingLoginPage.loginFirstFactor(mfaUsername, mfaPassword);
+        bankingLoginPage.enterUsername(mfaUsername);
+        bankingLoginPage.enterPassword(mfaPassword);
 
-        // Step 6: Click Login and verify OTP page
-        boolean otpPageDisplayed = bankingLoginPage.validateOtpPage();
+        // Step 6: Click Login
+        bankingLoginPage.clickLoginButton();
 
         // TC_002
         Assert.assertTrue(
             TestReporter.assertCondition(
-                otpPageDisplayed,
+                bankingLoginPage.validateOtpPage(),
                 "SUCCESS: OTP page displayed [TC_002]",
                 "FAILURE: OTP page was not displayed [TC_002]"
             ),
@@ -161,9 +146,11 @@ public class BankingLoginTc1V2 extends BaseTest {
         );
 
         // Step 7: Enter valid OTP
+        bankingLoginPage.enterUsername(validOtp);
+
+        // Step 8: Submit
         bankingLoginPage.submitOtp(validOtp);
 
-        // Step 8: Submit OTP and verify dashboard
         // TC_002
         Assert.assertTrue(
             TestReporter.assertCondition(
@@ -174,10 +161,9 @@ public class BankingLoginTc1V2 extends BaseTest {
             "Successful OTP submission must display the dashboard [TC_002]"
         );
 
-        String currentUrl = page.url();
-        boolean authenticatedRoute = currentUrl.contains("dashboard")
-            || currentUrl.contains("home")
-            || currentUrl.contains("account");
+        boolean authenticatedRoute = page.url().contains("dashboard")
+            || page.url().contains("home")
+            || page.url().contains("account");
 
         // TC_002
         Assert.assertTrue(
@@ -196,12 +182,9 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"regression", "banking-login", "negative"}
     )
     public void tc003_invalidUsername() {
-        TestReporter.startTest(
-            "TC_003: Invalid username",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_003: Invalid username", "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 9: Enter invalid username and valid password, then submit
+        // Step 9: Enter invalid username + valid password
         bankingLoginPage.login(invalidUsername, validPassword);
 
         // TC_003
@@ -214,12 +197,10 @@ public class BankingLoginTc1V2 extends BaseTest {
             "An invalid username must display an error [TC_003]"
         );
 
-        String errorText = bankingLoginPage.getErrorBannerText();
-
         // TC_003
         Assert.assertTrue(
             TestReporter.assertCondition(
-                errorText.contains("Invalid username or password"),
+                bankingLoginPage.getErrorBannerText().contains("Invalid username or password"),
                 "SUCCESS: Expected invalid-credentials message displayed [TC_003]",
                 "FAILURE: Unexpected invalid-credentials message [TC_003]"
             ),
@@ -243,12 +224,9 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"regression", "banking-login", "negative"}
     )
     public void tc004_invalidPassword() {
-        TestReporter.startTest(
-            "TC_004: Invalid password",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_004: Invalid password", "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 10: Enter valid username and invalid password, then submit
+        // Step 10: Enter valid username + invalid password
         bankingLoginPage.login(invalidPasswordUser, invalidPassword);
 
         // TC_004
@@ -261,12 +239,10 @@ public class BankingLoginTc1V2 extends BaseTest {
             "An invalid password must display an error [TC_004]"
         );
 
-        String errorText = bankingLoginPage.getErrorBannerText();
-
         // TC_004
         Assert.assertTrue(
             TestReporter.assertCondition(
-                errorText.contains("Invalid username or password"),
+                bankingLoginPage.getErrorBannerText().contains("Invalid username or password"),
                 "SUCCESS: Expected invalid-credentials message displayed [TC_004]",
                 "FAILURE: Unexpected invalid-credentials message [TC_004]"
             ),
@@ -290,12 +266,9 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"regression", "banking-login", "negative"}
     )
     public void tc005_bothInvalid() {
-        TestReporter.startTest(
-            "TC_005: Both credentials invalid",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_005: Both credentials invalid", "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 11: Enter invalid credentials and submit
+        // Step 11: Enter invalid credentials
         bankingLoginPage.login(bothInvalidUsername, bothInvalidPassword);
 
         // TC_005
@@ -308,12 +281,10 @@ public class BankingLoginTc1V2 extends BaseTest {
             "Both invalid credentials must be rejected [TC_005]"
         );
 
-        String errorText = bankingLoginPage.getErrorBannerText();
-
         // TC_005
         Assert.assertFalse(
             TestReporter.assertCondition(
-                errorText.isEmpty(),
+                bankingLoginPage.getErrorBannerText().isEmpty(),
                 "SUCCESS: Login-denial message is non-empty [TC_005]",
                 "FAILURE: Login-denial message is empty [TC_005]"
             ),
@@ -337,12 +308,9 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"regression", "banking-login", "field-validation"}
     )
     public void tc006_emptyUsername() {
-        TestReporter.startTest(
-            "TC_006: Blank username",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_006: Blank username", "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 12: Leave username blank and submit valid password
+        // Step 12: Leave username blank
         bankingLoginPage.clearUsername();
         bankingLoginPage.enterPassword(validPassword);
         bankingLoginPage.clickLoginButton();
@@ -357,12 +325,10 @@ public class BankingLoginTc1V2 extends BaseTest {
             "Blank username must display required-field validation [TC_006]"
         );
 
-        String usernameError = bankingLoginPage.getUsernameErrorText().toLowerCase();
-
         // TC_006
         Assert.assertTrue(
             TestReporter.assertCondition(
-                usernameError.contains("username required"),
+                bankingLoginPage.getUsernameErrorText().toLowerCase().contains("username required"),
                 "SUCCESS: Username-required message is correct [TC_006]",
                 "FAILURE: Username-required message is incorrect [TC_006]"
             ),
@@ -386,12 +352,9 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"regression", "banking-login", "field-validation"}
     )
     public void tc007_emptyPassword() {
-        TestReporter.startTest(
-            "TC_007: Blank password",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_007: Blank password", "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 13: Enter valid username, leave password blank, and submit
+        // Step 13: Leave password blank
         bankingLoginPage.enterUsername(validUsername);
         bankingLoginPage.clearPassword();
         bankingLoginPage.clickLoginButton();
@@ -406,12 +369,10 @@ public class BankingLoginTc1V2 extends BaseTest {
             "Blank password must display required-field validation [TC_007]"
         );
 
-        String passwordError = bankingLoginPage.getPasswordErrorText().toLowerCase();
-
         // TC_007
         Assert.assertTrue(
             TestReporter.assertCondition(
-                passwordError.contains("password required"),
+                bankingLoginPage.getPasswordErrorText().toLowerCase().contains("password required"),
                 "SUCCESS: Password-required message is correct [TC_007]",
                 "FAILURE: Password-required message is incorrect [TC_007]"
             ),
@@ -435,10 +396,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"regression", "banking-login", "field-validation"}
     )
     public void tc008_bothFieldsEmpty() {
-        TestReporter.startTest(
-            "TC_008: Login without input",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_008: Login without input", "Requirement: REQ-BANK-AUTH-001");
 
         // Step 14: Click login without input
         bankingLoginPage.clearUsername();
@@ -455,12 +413,10 @@ public class BankingLoginTc1V2 extends BaseTest {
             "Blank username must display required-field validation [TC_008]"
         );
 
-        String usernameError = bankingLoginPage.getUsernameErrorText().toLowerCase();
-
         // TC_008
         Assert.assertTrue(
             TestReporter.assertCondition(
-                usernameError.contains("username required"),
+                bankingLoginPage.getUsernameErrorText().toLowerCase().contains("username required"),
                 "SUCCESS: Username-required message is correct [TC_008]",
                 "FAILURE: Username-required message is incorrect [TC_008]"
             ),
@@ -477,12 +433,10 @@ public class BankingLoginTc1V2 extends BaseTest {
             "Blank password must display required-field validation [TC_008]"
         );
 
-        String passwordError = bankingLoginPage.getPasswordErrorText().toLowerCase();
-
         // TC_008
         Assert.assertTrue(
             TestReporter.assertCondition(
-                passwordError.contains("password required"),
+                bankingLoginPage.getPasswordErrorText().toLowerCase().contains("password required"),
                 "SUCCESS: Password-required message is correct [TC_008]",
                 "FAILURE: Password-required message is incorrect [TC_008]"
             ),
@@ -506,10 +460,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"regression", "banking-login", "account-state"}
     )
     public void tc009_lockedAccount() {
-        TestReporter.startTest(
-            "TC_009: Locked account",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_009: Locked account", "Requirement: REQ-BANK-AUTH-001");
 
         // Step 15: Enter credentials for an account flagged locked
         bankingLoginPage.login(lockedUsername, lockedPassword);
@@ -531,10 +482,7 @@ public class BankingLoginTc1V2 extends BaseTest {
         groups = {"regression", "banking-login", "account-state"}
     )
     public void tc010_disabledAccount() {
-        TestReporter.startTest(
-            "TC_010: Disabled account",
-            "Requirement: REQ-BANK-AUTH-001"
-        );
+        TestReporter.startTest("TC_010: Disabled account", "Requirement: REQ-BANK-AUTH-001");
 
         // Step 16: Enter credentials for an account flagged disabled
         bankingLoginPage.login(disabledUsername, disabledPassword);
