@@ -1,21 +1,22 @@
 package com.aether.tests;
 
-import org.testng.Assert;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import com.aether.framework.core.BaseTest;
 import com.aether.framework.core.ConfigReader;
 import com.aether.framework.core.TestReporter;
 import com.aether.pages.banking.BankingDashboardPage;
 import com.aether.pages.banking.BankingLoginPage;
 
+import org.testng.Assert;
+import org.testng.ITestResult;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+
 public class BankingLoginTc1V5 extends BaseTest {
 
     private BankingLoginPage bankingLoginPage;
     private BankingDashboardPage bankingDashboardPage;
+    private SoftAssert softAssert;
 
     private String validUsername;
     private String validPassword;
@@ -46,15 +47,6 @@ public class BankingLoginTc1V5 extends BaseTest {
 
         page.navigate(ConfigReader.getBaseUrl());
         bankingLoginPage.validate();
-    }
-
-    @AfterMethod(alwaysRun = true, dependsOnMethods = {})
-    public void reportStatus(ITestResult result) {
-        if (result.getStatus() == ITestResult.FAILURE) {
-            TestReporter.fail("TEST FAILED: " + result.getName());
-        } else if (result.getStatus() == ITestResult.SUCCESS) {
-            TestReporter.pass("TEST PASSED: " + result.getName());
-        }
     }
 
     @Test(
@@ -194,6 +186,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             "TC_003: Invalid username",
             "Requirement: REQ-BANK-AUTH-001"
         );
+        softAssert = new SoftAssert();
 
         // Step 9: Enter invalid username + valid password
         {
@@ -210,7 +203,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 : "";
 
             // TC_003
-            Assert.assertTrue(
+            softAssert.assertTrue(
                 TestReporter.assertCondition(
                     remainsOnLoginRoute,
                     "SUCCESS: Invalid username did not create a session [TC_003]",
@@ -220,7 +213,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             );
 
             // TC_003
-            Assert.assertTrue(
+            softAssert.assertTrue(
                 TestReporter.assertCondition(
                     errorDisplayed,
                     "SUCCESS: Invalid-username error displayed [TC_003]",
@@ -230,7 +223,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             );
 
             // TC_003
-            Assert.assertTrue(
+            softAssert.assertTrue(
                 TestReporter.assertCondition(
                     errorText.contains("Invalid username or password"),
                     "SUCCESS: Invalid-username message is correct [TC_003]",
@@ -238,6 +231,9 @@ public class BankingLoginTc1V5 extends BaseTest {
                 ),
                 "The invalid-username message must identify invalid credentials [TC_003]"
             );
+
+            // TC_003
+            softAssert.assertAll();
         }
     }
 
@@ -251,6 +247,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             "TC_004: Invalid password",
             "Requirement: REQ-BANK-AUTH-001"
         );
+        softAssert = new SoftAssert();
 
         // Step 10: Enter valid username + invalid password
         {
@@ -267,7 +264,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 : "";
 
             // TC_004
-            Assert.assertTrue(
+            softAssert.assertTrue(
                 TestReporter.assertCondition(
                     remainsOnLoginRoute,
                     "SUCCESS: Invalid password did not create a session [TC_004]",
@@ -277,7 +274,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             );
 
             // TC_004
-            Assert.assertTrue(
+            softAssert.assertTrue(
                 TestReporter.assertCondition(
                     errorDisplayed,
                     "SUCCESS: Invalid-password error displayed [TC_004]",
@@ -287,7 +284,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             );
 
             // TC_004
-            Assert.assertTrue(
+            softAssert.assertTrue(
                 TestReporter.assertCondition(
                     errorText.contains("Invalid username or password"),
                     "SUCCESS: Invalid-password message is correct [TC_004]",
@@ -295,6 +292,9 @@ public class BankingLoginTc1V5 extends BaseTest {
                 ),
                 "The invalid-password message must identify invalid credentials [TC_004]"
             );
+
+            // TC_004
+            softAssert.assertAll();
         }
     }
 
@@ -308,6 +308,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             "TC_005: Both credentials invalid",
             "Requirement: REQ-BANK-AUTH-001"
         );
+        softAssert = new SoftAssert();
 
         // Step 11: Enter invalid credentials
         {
@@ -324,7 +325,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 : "";
 
             // TC_005
-            Assert.assertTrue(
+            softAssert.assertTrue(
                 TestReporter.assertCondition(
                     remainsOnLoginRoute,
                     "SUCCESS: Both invalid credentials did not create a session [TC_005]",
@@ -334,7 +335,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             );
 
             // TC_005
-            Assert.assertTrue(
+            softAssert.assertTrue(
                 TestReporter.assertCondition(
                     errorDisplayed,
                     "SUCCESS: Login-denial error displayed [TC_005]",
@@ -344,7 +345,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             );
 
             // TC_005
-            Assert.assertTrue(
+            softAssert.assertTrue(
                 TestReporter.assertCondition(
                     errorText.contains("Invalid username or password"),
                     "SUCCESS: Invalid-login message is correct [TC_005]",
@@ -352,6 +353,9 @@ public class BankingLoginTc1V5 extends BaseTest {
                 ),
                 "The invalid-login message must identify invalid credentials [TC_005]"
             );
+
+            // TC_005
+            softAssert.assertAll();
         }
     }
 
