@@ -71,7 +71,16 @@ public class BankingLoginTc1V5 extends BaseTest {
         // Step 1: Open login page
         {
             page.navigate(ConfigReader.getBaseUrl());
-            bankingLoginPage.validate();
+
+            // TC_001
+            Assert.assertTrue(
+                TestReporter.assertCondition(
+                    bankingLoginPage.validate(),
+                    "SUCCESS: Banking login page displayed [TC_001]",
+                    "FAILURE: Banking login page was not displayed [TC_001]"
+                ),
+                "The banking login page must be displayed [TC_001]"
+            );
         }
 
         // Step 2: Enter valid username
@@ -88,7 +97,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         {
             bankingLoginPage.clickLoginButton();
 
-            // Traceability: TC_001
+            // TC_001
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingDashboardPage.validate(),
@@ -100,7 +109,7 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             String displayedUsername = bankingDashboardPage.getLoggedInUsername();
 
-            // Traceability: TC_001
+            // TC_001
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     !displayedUsername.isEmpty(),
@@ -125,19 +134,33 @@ public class BankingLoginTc1V5 extends BaseTest {
 
         // Step 5: Enter valid credentials
         {
-            bankingLoginPage.loginFirstFactor(mfaUsername, mfaPassword);
+            bankingLoginPage.enterUsername(mfaUsername);
+            bankingLoginPage.enterPassword(mfaPassword);
         }
 
-        // Step 6: Enter valid OTP
+        // Step 6: Click Login
         {
-            bankingLoginPage.getOtpFieldLocator().fill(validOtp);
+            bankingLoginPage.clickLoginButton();
+
+            // TC_002
+            Assert.assertTrue(
+                TestReporter.assertCondition(
+                    bankingLoginPage.validateOtpPage(),
+                    "SUCCESS: OTP verification page displayed [TC_002]",
+                    "FAILURE: OTP verification page was not displayed [TC_002]"
+                ),
+                "First-factor login must display the OTP verification page [TC_002]"
+            );
         }
 
-        // Step 7: Submit
+        // Step 7: Enter valid OTP
         {
             bankingLoginPage.submitOtp(validOtp);
+        }
 
-            // Traceability: TC_002
+        // Step 8: Submit
+        {
+            // TC_002
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingDashboardPage.validate(),
@@ -149,7 +172,7 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             String displayedUsername = bankingDashboardPage.getLoggedInUsername();
 
-            // Traceability: TC_002
+            // TC_002
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     !displayedUsername.isEmpty(),
@@ -172,40 +195,46 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 8: Enter invalid username + valid password
+        // Step 9: Enter invalid username + valid password
         {
-            bankingLoginPage.login(invalidUsername, validPassword);
+            bankingLoginPage.enterUsername(invalidUsername);
+            bankingLoginPage.enterPassword(validPassword);
+        }
 
-            // Traceability: TC_003
+        // Step 10: Enter valid username + invalid password
+        {
+            bankingLoginPage.login(invalidPasswordUser, invalidPassword);
+
+            // TC_004
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.isErrorBannerDisplayed(),
-                    "SUCCESS: Invalid-login error displayed [TC_003]",
-                    "FAILURE: Invalid-login error was not displayed [TC_003]"
+                    "SUCCESS: Invalid-password error displayed [TC_004]",
+                    "FAILURE: Invalid-password error was not displayed [TC_004]"
                 ),
-                "An invalid username must display an error [TC_003]"
+                "An invalid password must display an error [TC_004]"
             );
 
-            // Traceability: TC_003
+            // TC_004
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getErrorBannerText()
                         .contains("Invalid username or password"),
-                    "SUCCESS: Expected invalid-credentials message displayed [TC_003]",
-                    "FAILURE: Unexpected invalid-credentials message [TC_003]"
+                    "SUCCESS: Expected invalid-credentials message displayed [TC_004]",
+                    "FAILURE: Unexpected invalid-credentials message [TC_004]"
                 ),
-                "The invalid-login message must identify invalid credentials [TC_003]"
+                "The invalid-password message must identify invalid credentials [TC_004]"
             );
 
-            // Traceability: TC_003
+            // TC_004
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getCurrentUrl()
                         .equals(ConfigReader.getBaseUrl() + "/"),
-                    "SUCCESS: User remains on the login route [TC_003]",
-                    "FAILURE: User was redirected from the login route [TC_003]"
+                    "SUCCESS: User remains on the login route [TC_004]",
+                    "FAILURE: User was redirected from the login route [TC_004]"
                 ),
-                "Invalid credentials must not authenticate the user [TC_003]"
+                "Invalid credentials must not authenticate the user [TC_004]"
             );
         }
     }
@@ -221,11 +250,11 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 9: Enter valid username + invalid password
+        // Step 10: Enter valid username + invalid password
         {
             bankingLoginPage.login(invalidPasswordUser, invalidPassword);
 
-            // Traceability: TC_004
+            // TC_004
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.isErrorBannerDisplayed(),
@@ -235,7 +264,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "An invalid password must display an error [TC_004]"
             );
 
-            // Traceability: TC_004
+            // TC_004
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getErrorBannerText()
@@ -246,7 +275,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "The invalid-password message must identify invalid credentials [TC_004]"
             );
 
-            // Traceability: TC_004
+            // TC_004
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getCurrentUrl()
@@ -270,11 +299,11 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 10: Enter invalid credentials
+        // Step 11: Enter invalid credentials
         {
             bankingLoginPage.login(bothInvalidUsername, bothInvalidPassword);
 
-            // Traceability: TC_005
+            // TC_005
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.isErrorBannerDisplayed(),
@@ -284,7 +313,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Both invalid credentials must be rejected [TC_005]"
             );
 
-            // Traceability: TC_005
+            // TC_005
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getErrorBannerText()
@@ -295,7 +324,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "The invalid-login message must identify invalid credentials [TC_005]"
             );
 
-            // Traceability: TC_005
+            // TC_005
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getCurrentUrl()
@@ -319,13 +348,17 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 11: Leave username blank, click Login
+        // Step 12: Leave username blank
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.enterPassword(validPassword);
+        }
+
+        // Step 13: Click Login
+        {
             bankingLoginPage.clickLoginButton();
 
-            // Traceability: TC_006
+            // TC_006
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.isUsernameErrorDisplayed(),
@@ -335,7 +368,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Blank username must display required-field validation [TC_006]"
             );
 
-            // Traceability: TC_006
+            // TC_006
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getUsernameErrorText()
@@ -360,13 +393,17 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 12: Leave password blank, click Login
+        // Step 14: Leave password blank
         {
             bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
+        }
+
+        // Step 15: Click Login
+        {
             bankingLoginPage.clickLoginButton();
 
-            // Traceability: TC_007
+            // TC_007
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.isPasswordErrorDisplayed(),
@@ -376,7 +413,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Blank password must display required-field validation [TC_007]"
             );
 
-            // Traceability: TC_007
+            // TC_007
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getPasswordErrorText()
@@ -401,13 +438,13 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 13: Click login without entering username or password
+        // Step 16: Click login without entering username or password
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.clearPassword();
             bankingLoginPage.clickLoginButton();
 
-            // Traceability: TC_008
+            // TC_008
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.isUsernameErrorDisplayed(),
@@ -417,7 +454,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Blank username must display required-field validation [TC_008]"
             );
 
-            // Traceability: TC_008
+            // TC_008
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getUsernameErrorText()
@@ -429,7 +466,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Username validation must contain the required-field message [TC_008]"
             );
 
-            // Traceability: TC_008
+            // TC_008
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.isPasswordErrorDisplayed(),
@@ -439,7 +476,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Blank password must display required-field validation [TC_008]"
             );
 
-            // Traceability: TC_008
+            // TC_008
             Assert.assertTrue(
                 TestReporter.assertCondition(
                     bankingLoginPage.getPasswordErrorText()
