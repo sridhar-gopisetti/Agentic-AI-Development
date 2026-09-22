@@ -49,7 +49,6 @@ public class BankingLoginTc1V5 extends BaseTest {
     }
 
     @Test(
-        description = "TC_001: Valid banking login",
         priority = 1,
         groups = {"smoke", "regression", "banking-login"}
     )
@@ -113,7 +112,6 @@ public class BankingLoginTc1V5 extends BaseTest {
     }
 
     @Test(
-        description = "TC_002: Valid banking login with OTP",
         priority = 2,
         groups = {"regression", "banking-login", "mfa"}
     )
@@ -167,7 +165,6 @@ public class BankingLoginTc1V5 extends BaseTest {
     }
 
     @Test(
-        description = "TC_003: Invalid username with valid password",
         priority = 3,
         groups = {"regression", "banking-login", "negative"}
     )
@@ -227,7 +224,6 @@ public class BankingLoginTc1V5 extends BaseTest {
     }
 
     @Test(
-        description = "TC_004: Valid username with invalid password",
         priority = 4,
         groups = {"regression", "banking-login", "negative"}
     )
@@ -287,7 +283,6 @@ public class BankingLoginTc1V5 extends BaseTest {
     }
 
     @Test(
-        description = "TC_005: Invalid username and password",
         priority = 5,
         groups = {"regression", "banking-login", "negative"}
     )
@@ -347,7 +342,6 @@ public class BankingLoginTc1V5 extends BaseTest {
     }
 
     @Test(
-        description = "TC_006: Blank username",
         priority = 6,
         groups = {"regression", "banking-login", "field-validation"}
     )
@@ -388,7 +382,6 @@ public class BankingLoginTc1V5 extends BaseTest {
     }
 
     @Test(
-        description = "TC_007: Blank password",
         priority = 7,
         groups = {"regression", "banking-login", "field-validation"}
     )
@@ -429,7 +422,6 @@ public class BankingLoginTc1V5 extends BaseTest {
     }
 
     @Test(
-        description = "TC_008: Login without input",
         priority = 8,
         groups = {"regression", "banking-login", "field-validation"}
     )
