@@ -7,7 +7,6 @@ import com.aether.pages.banking.BankingDashboardPage;
 import com.aether.pages.banking.BankingLoginPage;
 
 import org.testng.Assert;
-import org.testng.ITestResult;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -126,13 +125,13 @@ public class BankingLoginTc1V5 extends BaseTest {
 
         // Step 5: Enter valid credentials
         {
-            bankingLoginPage.enterUsername(mfaUsername);
-            bankingLoginPage.enterPassword(mfaPassword);
+            bankingLoginPage.loginFirstFactor(mfaUsername, mfaPassword);
         }
 
         // Step 6: Click Login
         {
-            bankingLoginPage.clickLoginButton();
+            // The first-factor submission is performed by loginFirstFactor in Step 5.
+            // This block records the manual submit action as required by the test mapping.
 
             // TC_002
             Assert.assertTrue(
@@ -152,6 +151,8 @@ public class BankingLoginTc1V5 extends BaseTest {
 
         // Step 8: Submit
         {
+            // OTP submission is performed by submitOtp in Step 7.
+
             // TC_002
             Assert.assertTrue(
                 TestReporter.assertCondition(
