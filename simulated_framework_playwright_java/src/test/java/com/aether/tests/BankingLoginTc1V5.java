@@ -87,7 +87,10 @@ public class BankingLoginTc1V5 extends BaseTest {
         // Step 4: Click Login
         {
             bankingLoginPage.clickLoginButton();
+        }
 
+        // Step 5: Verify dashboard is displayed
+        {
             // TC_001
             Assert.assertTrue(
                 TestReporter.assertCondition(
@@ -97,7 +100,10 @@ public class BankingLoginTc1V5 extends BaseTest {
                 ),
                 "Valid login must display the banking dashboard [TC_001]"
             );
+        }
 
+        // Step 6: Verify logged-in username is displayed
+        {
             String displayedUsername = bankingDashboardPage.getLoggedInUsername();
 
             // TC_001
@@ -123,16 +129,13 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 5: Enter valid credentials
+        // Step 1: Enter valid MFA credentials
         {
             bankingLoginPage.loginFirstFactor(mfaUsername, mfaPassword);
         }
 
-        // Step 6: Click Login
+        // Step 2: Verify OTP page is displayed
         {
-            // The first-factor submission is performed by loginFirstFactor in Step 5.
-            // This block records the manual submit action as required by the test mapping.
-
             // TC_002
             Assert.assertTrue(
                 TestReporter.assertCondition(
@@ -144,15 +147,13 @@ public class BankingLoginTc1V5 extends BaseTest {
             );
         }
 
-        // Step 7: Enter valid OTP
+        // Step 3: Enter valid OTP
         {
             bankingLoginPage.submitOtp(validOtp);
         }
 
-        // Step 8: Submit
+        // Step 4: Verify dashboard is displayed
         {
-            // OTP submission is performed by submitOtp in Step 7.
-
             // TC_002
             Assert.assertTrue(
                 TestReporter.assertCondition(
@@ -162,7 +163,10 @@ public class BankingLoginTc1V5 extends BaseTest {
                 ),
                 "Successful OTP submission must display the dashboard [TC_002]"
             );
+        }
 
+        // Step 5: Verify logged-in username is displayed
+        {
             String displayedUsername = bankingDashboardPage.getLoggedInUsername();
 
             // TC_002
@@ -189,7 +193,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         );
         softAssert = new SoftAssert();
 
-        // Step 9: Enter invalid username + valid password
+        // Step 1: Enter invalid username and valid password
         {
             bankingLoginPage.enterUsername(invalidUsername);
             bankingLoginPage.enterPassword(validPassword);
@@ -233,7 +237,6 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "The invalid-username message must identify invalid credentials [TC_003]"
             );
 
-            // TC_003
             softAssert.assertAll();
         }
     }
@@ -250,7 +253,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         );
         softAssert = new SoftAssert();
 
-        // Step 10: Enter valid username + invalid password
+        // Step 1: Enter valid username and invalid password
         {
             bankingLoginPage.enterUsername(invalidPasswordUser);
             bankingLoginPage.enterPassword(invalidPassword);
@@ -294,7 +297,6 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "The invalid-password message must identify invalid credentials [TC_004]"
             );
 
-            // TC_004
             softAssert.assertAll();
         }
     }
@@ -311,7 +313,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         );
         softAssert = new SoftAssert();
 
-        // Step 11: Enter invalid credentials
+        // Step 1: Enter invalid username and invalid password
         {
             bankingLoginPage.enterUsername(bothInvalidUsername);
             bankingLoginPage.enterPassword(bothInvalidPassword);
@@ -355,7 +357,6 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "The invalid-login message must identify invalid credentials [TC_005]"
             );
 
-            // TC_005
             softAssert.assertAll();
         }
     }
@@ -371,7 +372,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 12: Leave username blank, click Login
+        // Step 1: Leave username blank, provide password, and click Login
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.enterPassword(validPassword);
@@ -412,7 +413,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 13: Leave password blank, click Login
+        // Step 1: Provide username, leave password blank, and click Login
         {
             bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
@@ -453,7 +454,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 14: Click login without entering username or password
+        // Step 1: Leave username and password blank, then click Login
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.clearPassword();
