@@ -199,42 +199,44 @@ public class BankingLoginTc1V5 extends BaseTest {
         {
             bankingLoginPage.enterUsername(invalidUsername);
             bankingLoginPage.enterPassword(validPassword);
-        }
+            bankingLoginPage.clickLoginButton();
 
-        // Step 10: Enter valid username + invalid password
-        {
-            bankingLoginPage.login(invalidPasswordUser, invalidPassword);
+            String currentUrl = bankingLoginPage.getCurrentUrl();
+            boolean remainsOnLoginRoute =
+                currentUrl.equals(ConfigReader.getBaseUrl() + "/");
+            boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
+            String errorText = errorDisplayed
+                ? bankingLoginPage.getErrorBannerText()
+                : "";
 
-            // TC_004
+            // TC_003
             Assert.assertTrue(
                 TestReporter.assertCondition(
-                    bankingLoginPage.isErrorBannerDisplayed(),
-                    "SUCCESS: Invalid-password error displayed [TC_004]",
-                    "FAILURE: Invalid-password error was not displayed [TC_004]"
+                    remainsOnLoginRoute,
+                    "SUCCESS: Invalid username did not create a session [TC_003]",
+                    "FAILURE: Invalid username changed the login route [TC_003]"
                 ),
-                "An invalid password must display an error [TC_004]"
+                "Invalid username must not authenticate the user [TC_003]"
             );
 
-            // TC_004
+            // TC_003
             Assert.assertTrue(
                 TestReporter.assertCondition(
-                    bankingLoginPage.getErrorBannerText()
-                        .contains("Invalid username or password"),
-                    "SUCCESS: Expected invalid-credentials message displayed [TC_004]",
-                    "FAILURE: Unexpected invalid-credentials message [TC_004]"
+                    errorDisplayed,
+                    "SUCCESS: Invalid-username error displayed [TC_003]",
+                    "FAILURE: Invalid-username error was not displayed [TC_003]"
                 ),
-                "The invalid-password message must identify invalid credentials [TC_004]"
+                "Invalid username must display an error [TC_003]"
             );
 
-            // TC_004
+            // TC_003
             Assert.assertTrue(
                 TestReporter.assertCondition(
-                    bankingLoginPage.getCurrentUrl()
-                        .equals(ConfigReader.getBaseUrl() + "/"),
-                    "SUCCESS: User remains on the login route [TC_004]",
-                    "FAILURE: User was redirected from the login route [TC_004]"
+                    errorText.contains("Invalid username or password"),
+                    "SUCCESS: Invalid-username message is correct [TC_003]",
+                    "FAILURE: Invalid-username message is incorrect [TC_003]"
                 ),
-                "Invalid credentials must not authenticate the user [TC_004]"
+                "The invalid-username message must identify invalid credentials [TC_003]"
             );
         }
     }
@@ -252,12 +254,32 @@ public class BankingLoginTc1V5 extends BaseTest {
 
         // Step 10: Enter valid username + invalid password
         {
-            bankingLoginPage.login(invalidPasswordUser, invalidPassword);
+            bankingLoginPage.enterUsername(invalidPasswordUser);
+            bankingLoginPage.enterPassword(invalidPassword);
+            bankingLoginPage.clickLoginButton();
+
+            String currentUrl = bankingLoginPage.getCurrentUrl();
+            boolean remainsOnLoginRoute =
+                currentUrl.equals(ConfigReader.getBaseUrl() + "/");
+            boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
+            String errorText = errorDisplayed
+                ? bankingLoginPage.getErrorBannerText()
+                : "";
 
             // TC_004
             Assert.assertTrue(
                 TestReporter.assertCondition(
-                    bankingLoginPage.isErrorBannerDisplayed(),
+                    remainsOnLoginRoute,
+                    "SUCCESS: Invalid password did not create a session [TC_004]",
+                    "FAILURE: Invalid password changed the login route [TC_004]"
+                ),
+                "Invalid password must not authenticate the user [TC_004]"
+            );
+
+            // TC_004
+            Assert.assertTrue(
+                TestReporter.assertCondition(
+                    errorDisplayed,
                     "SUCCESS: Invalid-password error displayed [TC_004]",
                     "FAILURE: Invalid-password error was not displayed [TC_004]"
                 ),
@@ -267,23 +289,11 @@ public class BankingLoginTc1V5 extends BaseTest {
             // TC_004
             Assert.assertTrue(
                 TestReporter.assertCondition(
-                    bankingLoginPage.getErrorBannerText()
-                        .contains("Invalid username or password"),
-                    "SUCCESS: Expected invalid-credentials message displayed [TC_004]",
-                    "FAILURE: Unexpected invalid-credentials message [TC_004]"
+                    errorText.contains("Invalid username or password"),
+                    "SUCCESS: Invalid-password message is correct [TC_004]",
+                    "FAILURE: Invalid-password message is incorrect [TC_004]"
                 ),
                 "The invalid-password message must identify invalid credentials [TC_004]"
-            );
-
-            // TC_004
-            Assert.assertTrue(
-                TestReporter.assertCondition(
-                    bankingLoginPage.getCurrentUrl()
-                        .equals(ConfigReader.getBaseUrl() + "/"),
-                    "SUCCESS: User remains on the login route [TC_004]",
-                    "FAILURE: User was redirected from the login route [TC_004]"
-                ),
-                "Invalid credentials must not authenticate the user [TC_004]"
             );
         }
     }
@@ -301,38 +311,46 @@ public class BankingLoginTc1V5 extends BaseTest {
 
         // Step 11: Enter invalid credentials
         {
-            bankingLoginPage.login(bothInvalidUsername, bothInvalidPassword);
+            bankingLoginPage.enterUsername(bothInvalidUsername);
+            bankingLoginPage.enterPassword(bothInvalidPassword);
+            bankingLoginPage.clickLoginButton();
+
+            String currentUrl = bankingLoginPage.getCurrentUrl();
+            boolean remainsOnLoginRoute =
+                currentUrl.equals(ConfigReader.getBaseUrl() + "/");
+            boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
+            String errorText = errorDisplayed
+                ? bankingLoginPage.getErrorBannerText()
+                : "";
 
             // TC_005
             Assert.assertTrue(
                 TestReporter.assertCondition(
-                    bankingLoginPage.isErrorBannerDisplayed(),
+                    remainsOnLoginRoute,
+                    "SUCCESS: Both invalid credentials did not create a session [TC_005]",
+                    "FAILURE: Both invalid credentials changed the login route [TC_005]"
+                ),
+                "Both invalid credentials must not authenticate the user [TC_005]"
+            );
+
+            // TC_005
+            Assert.assertTrue(
+                TestReporter.assertCondition(
+                    errorDisplayed,
                     "SUCCESS: Login-denial error displayed [TC_005]",
                     "FAILURE: Login-denial error was not displayed [TC_005]"
                 ),
-                "Both invalid credentials must be rejected [TC_005]"
+                "Both invalid credentials must display an error [TC_005]"
             );
 
             // TC_005
             Assert.assertTrue(
                 TestReporter.assertCondition(
-                    bankingLoginPage.getErrorBannerText()
-                        .contains("Invalid username or password"),
-                    "SUCCESS: Expected invalid-credentials message displayed [TC_005]",
-                    "FAILURE: Unexpected invalid-credentials message [TC_005]"
+                    errorText.contains("Invalid username or password"),
+                    "SUCCESS: Invalid-login message is correct [TC_005]",
+                    "FAILURE: Invalid-login message is incorrect [TC_005]"
                 ),
                 "The invalid-login message must identify invalid credentials [TC_005]"
-            );
-
-            // TC_005
-            Assert.assertTrue(
-                TestReporter.assertCondition(
-                    bankingLoginPage.getCurrentUrl()
-                        .equals(ConfigReader.getBaseUrl() + "/"),
-                    "SUCCESS: User remains on the login route [TC_005]",
-                    "FAILURE: User was redirected from the login route [TC_005]"
-                ),
-                "Invalid credentials must not authenticate the user [TC_005]"
             );
         }
     }
@@ -348,14 +366,10 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 12: Leave username blank
+        // Step 12: Leave username blank, click Login
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.enterPassword(validPassword);
-        }
-
-        // Step 13: Click Login
-        {
             bankingLoginPage.clickLoginButton();
 
             // TC_006
@@ -393,14 +407,10 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 14: Leave password blank
+        // Step 13: Leave password blank, click Login
         {
             bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
-        }
-
-        // Step 15: Click Login
-        {
             bankingLoginPage.clickLoginButton();
 
             // TC_007
@@ -438,7 +448,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 16: Click login without entering username or password
+        // Step 14: Click login without entering username or password
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.clearPassword();
