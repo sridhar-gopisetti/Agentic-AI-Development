@@ -121,8 +121,9 @@ public class TestReporter {
             String safe = testName.replaceAll("[^a-zA-Z0-9_-]", "_");
             Path   dir  = Paths.get(REPORT_DIR, "screenshots");
             Files.createDirectories(dir);
+            Path   path = dir.resolve(safe + ".png");
             byte[] screenshot = page.screenshot(
-                    new Page.ScreenshotOptions().setFullPage(true));
+                    new Page.ScreenshotOptions().setFullPage(true).setPath(path));
             String b64   = Base64.getEncoder().encodeToString(screenshot);
             String label = "Screenshot on failure: " + testName;
             ExtentTest test = testNode.get();
