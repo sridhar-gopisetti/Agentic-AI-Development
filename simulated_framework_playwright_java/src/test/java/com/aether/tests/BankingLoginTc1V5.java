@@ -48,10 +48,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         bankingLoginPage.validate();
     }
 
-    @Test(
-        priority = 1,
-        groups = {"smoke", "regression", "banking-login"}
-    )
+    @Test(priority = 1, groups = {"smoke", "regression", "banking-login"})
     public void tc001_validLogin() {
         TestReporter.startTest(
             "TC_001: Valid banking login",
@@ -111,19 +108,22 @@ public class BankingLoginTc1V5 extends BaseTest {
         }
     }
 
-    @Test(
-        priority = 2,
-        groups = {"regression", "banking-login", "mfa"}
-    )
+    @Test(priority = 2, groups = {"regression", "banking-login", "mfa"})
     public void tc002_validLoginWithOtp() {
         TestReporter.startTest(
             "TC_002: Valid banking login with OTP",
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 5: Enter valid OTP
+        // Step 5: Enter valid credentials
         {
-            bankingLoginPage.loginFirstFactor(mfaUsername, mfaPassword);
+            bankingLoginPage.enterUsername(mfaUsername);
+            bankingLoginPage.enterPassword(mfaPassword);
+        }
+
+        // Step 6: Click Login
+        {
+            bankingLoginPage.clickLoginButton();
 
             // TC_002
             Assert.assertTrue(
@@ -136,7 +136,12 @@ public class BankingLoginTc1V5 extends BaseTest {
             );
         }
 
-        // Step 6: Submit
+        // Step 7: Enter valid OTP
+        {
+            bankingLoginPage.enterUsername(validOtp);
+        }
+
+        // Step 8: Submit
         {
             bankingLoginPage.submitOtp(validOtp);
 
@@ -164,10 +169,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         }
     }
 
-    @Test(
-        priority = 3,
-        groups = {"regression", "banking-login", "negative"}
-    )
+    @Test(priority = 3, groups = {"regression", "banking-login", "negative"})
     public void tc003_invalidUsername() {
         TestReporter.startTest(
             "TC_003: Invalid username",
@@ -175,7 +177,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         );
         softAssert = new SoftAssert();
 
-        // Step 7: Enter invalid username + valid password
+        // Step 9: Enter invalid username + valid password
         {
             bankingLoginPage.enterUsername(invalidUsername);
             bankingLoginPage.enterPassword(validPassword);
@@ -223,10 +225,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         }
     }
 
-    @Test(
-        priority = 4,
-        groups = {"regression", "banking-login", "negative"}
-    )
+    @Test(priority = 4, groups = {"regression", "banking-login", "negative"})
     public void tc004_invalidPassword() {
         TestReporter.startTest(
             "TC_004: Invalid password",
@@ -234,7 +233,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         );
         softAssert = new SoftAssert();
 
-        // Step 8: Enter valid username + invalid password
+        // Step 10: Enter valid username + invalid password
         {
             bankingLoginPage.enterUsername(invalidPasswordUser);
             bankingLoginPage.enterPassword(invalidPassword);
@@ -282,10 +281,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         }
     }
 
-    @Test(
-        priority = 5,
-        groups = {"regression", "banking-login", "negative"}
-    )
+    @Test(priority = 5, groups = {"regression", "banking-login", "negative"})
     public void tc005_bothInvalid() {
         TestReporter.startTest(
             "TC_005: Both credentials invalid",
@@ -293,7 +289,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         );
         softAssert = new SoftAssert();
 
-        // Step 9: Enter invalid credentials
+        // Step 11: Enter invalid credentials
         {
             bankingLoginPage.enterUsername(bothInvalidUsername);
             bankingLoginPage.enterPassword(bothInvalidPassword);
@@ -341,17 +337,14 @@ public class BankingLoginTc1V5 extends BaseTest {
         }
     }
 
-    @Test(
-        priority = 6,
-        groups = {"regression", "banking-login", "field-validation"}
-    )
+    @Test(priority = 6, groups = {"regression", "banking-login", "field-validation"})
     public void tc006_emptyUsername() {
         TestReporter.startTest(
             "TC_006: Blank username",
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 10: Leave username blank, click Login
+        // Step 12: Leave username blank, click Login
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.enterPassword(validPassword);
@@ -381,17 +374,14 @@ public class BankingLoginTc1V5 extends BaseTest {
         }
     }
 
-    @Test(
-        priority = 7,
-        groups = {"regression", "banking-login", "field-validation"}
-    )
+    @Test(priority = 7, groups = {"regression", "banking-login", "field-validation"})
     public void tc007_emptyPassword() {
         TestReporter.startTest(
             "TC_007: Blank password",
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 11: Leave password blank, click Login
+        // Step 13: Leave password blank, click Login
         {
             bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
@@ -421,17 +411,14 @@ public class BankingLoginTc1V5 extends BaseTest {
         }
     }
 
-    @Test(
-        priority = 8,
-        groups = {"regression", "banking-login", "field-validation"}
-    )
+    @Test(priority = 8, groups = {"regression", "banking-login", "field-validation"})
     public void tc008_bothFieldsEmpty() {
         TestReporter.startTest(
             "TC_008: Login without input",
             "Requirement: REQ-BANK-AUTH-001"
         );
 
-        // Step 12: Click login without entering username or password
+        // Step 14: Click login without entering username or password
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.clearPassword();
