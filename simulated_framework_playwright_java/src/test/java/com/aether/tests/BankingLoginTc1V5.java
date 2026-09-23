@@ -160,7 +160,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             bankingLoginPage.enterPassword(validPassword);
             bankingLoginPage.clickLoginButton();
 
-            String currentUrl = bankingLoginPage.getCurrentUrl();
+            String currentUrl = page.url();
             boolean remainsOnLoginRoute =
                     currentUrl.equals(ConfigReader.getBaseUrl() + "/");
 
@@ -211,7 +211,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             bankingLoginPage.enterPassword(invalidPassword);
             bankingLoginPage.clickLoginButton();
 
-            String currentUrl = bankingLoginPage.getCurrentUrl();
+            String currentUrl = page.url();
             boolean remainsOnLoginRoute =
                     currentUrl.equals(ConfigReader.getBaseUrl() + "/");
 
@@ -262,7 +262,7 @@ public class BankingLoginTc1V5 extends BaseTest {
             bankingLoginPage.enterPassword(bothInvalidPassword);
             bankingLoginPage.clickLoginButton();
 
-            String currentUrl = bankingLoginPage.getCurrentUrl();
+            String currentUrl = page.url();
             boolean remainsOnLoginRoute =
                     currentUrl.equals(ConfigReader.getBaseUrl() + "/");
 
