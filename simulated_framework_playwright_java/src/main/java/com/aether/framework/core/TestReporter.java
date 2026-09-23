@@ -126,6 +126,18 @@ public class TestReporter {
                     new Page.ScreenshotOptions().setFullPage(true).setPath(path));
             String b64   = Base64.getEncoder().encodeToString(screenshot);
             String label = "Screenshot on failure: " + testName;
+
+            // Evidence file - the one TEEA collects (profile evidence_globs: screenshots/**).
+            // Embedding in the HTML report alone left no file, so no screenshot ever reached
+            // the evidence catalog.
+            try {
+                Path file = Paths.get("screenshots", safe + ".png");
+                Files.createDirectories(file.getParent());
+                Files.write(file, screenshot);
+            } catch (Exception fileEx) {
+                System.err.println("[TestReporter] Screenshot file write failed (non-fatal): "
+                        + fileEx.getMessage());
+            }
             ExtentTest test = testNode.get();
             if (test != null) {
                 test.fail(label);
@@ -133,6 +145,30 @@ public class TestReporter {
             }
         } catch (Exception e) {
             System.err.println("[TestReporter] Screenshot capture failed: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Writes the page's DOM at the moment of failure, headed by the URL and title the browser
+     * was on, to target/dom-snapshots/{testName}_dom.html (profile evidence_globs).
+     *
+     * This is the DOM Snapshot evidence item: it shows whether the application or the test
+     * was wrong - e.g. a rejected login that correctly re-rendered the form with its error
+     * banner at /banking/login, versus one that redirected to the dashboard.
+     */
+    public static void captureDomSnapshot(Page page, String testName) {
+        try {
+            String safe = testName.replaceAll("[^a-zA-Z0-9_-]", "_");
+            Path   file = Paths.get("target", "dom-snapshots", safe + "_dom.html");
+            Files.createDirectories(file.getParent());
+            String header = "<!-- AETHER failure evidence\n"
+                    + "     test:  " + testName + "\n"
+                    + "     url:   " + page.url() + "\n"
+                    + "     title: " + page.title() + "\n"
+                    + "-->\n";
+            Files.write(file, (header + page.content()).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            System.err.println("[TestReporter] DOM snapshot capture failed (non-fatal): " + e.getMessage());
         }
     }
 }
