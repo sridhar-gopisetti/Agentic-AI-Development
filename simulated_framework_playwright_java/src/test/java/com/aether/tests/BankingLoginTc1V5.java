@@ -128,11 +128,13 @@ public class BankingLoginTc1V5 extends BaseTest {
 
         // Step 7: Enter valid OTP
         {
-            bankingLoginPage.submitOtp(validOtp);
+            bankingLoginPage.enterUsername(validOtp);
         }
 
         // Step 8: Submit
         {
+            bankingLoginPage.submitOtp(validOtp);
+
             // [TC_002]
             Assert.assertTrue(
                     TestReporter.assertCondition(
@@ -306,14 +308,10 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_006: Blank username",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 12: Leave username blank
+        // Step 12: Leave username blank, click Login
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.enterPassword(validPassword);
-        }
-
-        // Step 13: Click Login
-        {
             bankingLoginPage.clickLoginButton();
 
             // [TC_006]
@@ -342,14 +340,10 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_007: Blank password",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 14: Leave password blank
+        // Step 13: Leave password blank, click Login
         {
             bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
-        }
-
-        // Step 15: Click Login
-        {
             bankingLoginPage.clickLoginButton();
 
             // [TC_007]
@@ -378,7 +372,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_008: Login without input",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 16: Click login without entering username or password
+        // Step 14: Click login without entering username or password
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.clearPassword();
