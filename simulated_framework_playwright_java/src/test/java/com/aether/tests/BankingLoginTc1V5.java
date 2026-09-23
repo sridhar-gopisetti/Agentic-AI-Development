@@ -99,15 +99,32 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_002: Valid banking login with OTP",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 5: Enter valid OTP
+        // Step 5: Enter valid credentials
         {
-            bankingLoginPage.getOtpFieldLocator().fill(validOtp);
+            bankingLoginPage.enterUsername(mfaUsername);
+            bankingLoginPage.enterPassword(mfaPassword);
         }
 
-        // Step 6: Submit
+        // Step 6: Click Login
+        {
+            bankingLoginPage.clickLoginButton();
+
+            // [TC_002]
+            Assert.assertTrue(
+                    TestReporter.assertCondition(
+                            bankingLoginPage.validateOtpPage(),
+                            "SUCCESS: OTP verification page displayed [TC_002]",
+                            "FAILURE: OTP verification page was not displayed [TC_002]"),
+                    "First-factor login must display the OTP verification page [TC_002]");
+        }
+
+        // Step 7: Enter valid OTP
         {
             bankingLoginPage.submitOtp(validOtp);
+        }
 
+        // Step 8: Submit
+        {
             // [TC_002]
             Assert.assertTrue(
                     TestReporter.assertCondition(
@@ -135,7 +152,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
-        // Step 7: Enter invalid username + valid password
+        // Step 9: Enter invalid username + valid password
         {
             bankingLoginPage.enterUsername(invalidUsername);
             bankingLoginPage.enterPassword(validPassword);
@@ -144,10 +161,6 @@ public class BankingLoginTc1V5 extends BaseTest {
             String currentUrl = bankingLoginPage.getCurrentUrl();
             boolean remainsOnLoginRoute =
                     currentUrl.equals(ConfigReader.getBaseUrl() + "/");
-            boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
-            String errorText = errorDisplayed
-                    ? bankingLoginPage.getErrorBannerText()
-                    : "";
 
             // [TC_003]
             softAssert.assertTrue(
@@ -157,6 +170,8 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "FAILURE: Invalid username changed the login route [TC_003]"),
                     "Invalid username must not authenticate the user [TC_003]");
 
+            boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
+
             // [TC_003]
             softAssert.assertTrue(
                     TestReporter.assertCondition(
@@ -164,6 +179,10 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "SUCCESS: Invalid-username error displayed [TC_003]",
                             "FAILURE: Invalid-username error was not displayed [TC_003]"),
                     "Invalid username must display an error [TC_003]");
+
+            String errorText = errorDisplayed
+                    ? bankingLoginPage.getErrorBannerText()
+                    : "";
 
             // [TC_003]
             softAssert.assertTrue(
@@ -184,7 +203,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
-        // Step 8: Enter valid username + invalid password
+        // Step 10: Enter valid username + invalid password
         {
             bankingLoginPage.enterUsername(invalidPasswordUser);
             bankingLoginPage.enterPassword(invalidPassword);
@@ -193,10 +212,6 @@ public class BankingLoginTc1V5 extends BaseTest {
             String currentUrl = bankingLoginPage.getCurrentUrl();
             boolean remainsOnLoginRoute =
                     currentUrl.equals(ConfigReader.getBaseUrl() + "/");
-            boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
-            String errorText = errorDisplayed
-                    ? bankingLoginPage.getErrorBannerText()
-                    : "";
 
             // [TC_004]
             softAssert.assertTrue(
@@ -206,6 +221,8 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "FAILURE: Invalid password changed the login route [TC_004]"),
                     "Invalid password must not authenticate the user [TC_004]");
 
+            boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
+
             // [TC_004]
             softAssert.assertTrue(
                     TestReporter.assertCondition(
@@ -213,6 +230,10 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "SUCCESS: Invalid-password error displayed [TC_004]",
                             "FAILURE: Invalid-password error was not displayed [TC_004]"),
                     "An invalid password must display an error [TC_004]");
+
+            String errorText = errorDisplayed
+                    ? bankingLoginPage.getErrorBannerText()
+                    : "";
 
             // [TC_004]
             softAssert.assertTrue(
@@ -233,7 +254,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
-        // Step 9: Enter invalid credentials
+        // Step 11: Enter invalid credentials
         {
             bankingLoginPage.enterUsername(bothInvalidUsername);
             bankingLoginPage.enterPassword(bothInvalidPassword);
@@ -242,10 +263,6 @@ public class BankingLoginTc1V5 extends BaseTest {
             String currentUrl = bankingLoginPage.getCurrentUrl();
             boolean remainsOnLoginRoute =
                     currentUrl.equals(ConfigReader.getBaseUrl() + "/");
-            boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
-            String errorText = errorDisplayed
-                    ? bankingLoginPage.getErrorBannerText()
-                    : "";
 
             // [TC_005]
             softAssert.assertTrue(
@@ -255,6 +272,8 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "FAILURE: Both invalid credentials changed the login route [TC_005]"),
                     "Both invalid credentials must not authenticate the user [TC_005]");
 
+            boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
+
             // [TC_005]
             softAssert.assertTrue(
                     TestReporter.assertCondition(
@@ -262,6 +281,10 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "SUCCESS: Login-denial error displayed [TC_005]",
                             "FAILURE: Login-denial error was not displayed [TC_005]"),
                     "Both invalid credentials must display an error [TC_005]");
+
+            String errorText = errorDisplayed
+                    ? bankingLoginPage.getErrorBannerText()
+                    : "";
 
             // [TC_005]
             softAssert.assertTrue(
@@ -281,7 +304,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_006: Blank username",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 10: Leave username blank, click Login
+        // Step 12: Leave username blank, click Login
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.enterPassword(validPassword);
@@ -313,7 +336,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_007: Blank password",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 11: Leave password blank, click Login
+        // Step 13: Leave password blank, click Login
         {
             bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
@@ -345,7 +368,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_008: Login without input",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 12: Click login without entering username or password
+        // Step 14: Click login without entering username or password
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.clearPassword();
