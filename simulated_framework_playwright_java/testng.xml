@@ -25,7 +25,7 @@
             </run>
         </groups>
         <classes>
-            <class name="com.aether.tests.BankingLoginTc1V5"/>
+            <class name="com.automation.tests.BankingLoginTc1V5"/>
         </classes>
     </test>
 
