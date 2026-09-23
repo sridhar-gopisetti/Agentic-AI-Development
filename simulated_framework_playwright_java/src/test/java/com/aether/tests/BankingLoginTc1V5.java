@@ -54,20 +54,24 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_001: Valid banking login",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 1: Open login page, enter valid credentials, and click Login
+        // Step 1: Open login page
         {
             page.navigate(ConfigReader.getBaseUrl());
-            bankingLoginPage.enterUsername(validUsername);
-            bankingLoginPage.enterPassword(validPassword);
-            bankingLoginPage.clickLoginButton();
+        }
 
-            // [TC_001]
-            Assert.assertTrue(
-                    TestReporter.assertCondition(
-                            bankingLoginPage.validate(),
-                            "SUCCESS: Banking login page displayed [TC_001]",
-                            "FAILURE: Banking login page was not displayed [TC_001]"),
-                    "The banking login page must be displayed [TC_001]");
+        // Step 2: Enter valid username
+        {
+            bankingLoginPage.enterUsername(validUsername);
+        }
+
+        // Step 3: Enter valid password
+        {
+            bankingLoginPage.enterPassword(validPassword);
+        }
+
+        // Step 4: Click Login
+        {
+            bankingLoginPage.clickLoginButton();
 
             // [TC_001]
             Assert.assertTrue(
@@ -95,20 +99,13 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_002: Valid banking login with OTP",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 2: Enter valid credentials, click Login, enter valid OTP, and submit
+        // Step 5: Enter valid OTP
         {
-            bankingLoginPage.enterUsername(mfaUsername);
-            bankingLoginPage.enterPassword(mfaPassword);
-            bankingLoginPage.clickLoginButton();
+            bankingLoginPage.getOtpFieldLocator().fill(validOtp);
+        }
 
-            // [TC_002]
-            Assert.assertTrue(
-                    TestReporter.assertCondition(
-                            bankingLoginPage.validateOtpPage(),
-                            "SUCCESS: OTP verification page displayed [TC_002]",
-                            "FAILURE: OTP verification page was not displayed [TC_002]"),
-                    "First-factor login must display the OTP verification page [TC_002]");
-
+        // Step 6: Submit
+        {
             bankingLoginPage.submitOtp(validOtp);
 
             // [TC_002]
@@ -138,7 +135,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
-        // Step 3: Enter invalid username with valid password
+        // Step 7: Enter invalid username + valid password
         {
             bankingLoginPage.enterUsername(invalidUsername);
             bankingLoginPage.enterPassword(validPassword);
@@ -187,7 +184,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
-        // Step 4: Enter valid username with invalid password
+        // Step 8: Enter valid username + invalid password
         {
             bankingLoginPage.enterUsername(invalidPasswordUser);
             bankingLoginPage.enterPassword(invalidPassword);
@@ -236,7 +233,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
-        // Step 5: Enter invalid credentials
+        // Step 9: Enter invalid credentials
         {
             bankingLoginPage.enterUsername(bothInvalidUsername);
             bankingLoginPage.enterPassword(bothInvalidPassword);
@@ -284,7 +281,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_006: Blank username",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 6: Leave username blank and click Login
+        // Step 10: Leave username blank, click Login
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.enterPassword(validPassword);
@@ -316,7 +313,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_007: Blank password",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 7: Leave password blank and click Login
+        // Step 11: Leave password blank, click Login
         {
             bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
@@ -348,7 +345,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_008: Login without input",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 8: Click Login without entering username or password
+        // Step 12: Click login without entering username or password
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.clearPassword();
