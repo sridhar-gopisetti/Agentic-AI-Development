@@ -56,6 +56,7 @@ public abstract class BaseTest {
         if (result.getStatus() == ITestResult.FAILURE) {
             if (ConfigReader.screenshotOnFailure()) {
                 TestReporter.captureScreenshot(page, result.getName());
+                TestReporter.captureDomSnapshot(page, result.getName());
             }
         }
         PlaywrightManager.closeContext();
