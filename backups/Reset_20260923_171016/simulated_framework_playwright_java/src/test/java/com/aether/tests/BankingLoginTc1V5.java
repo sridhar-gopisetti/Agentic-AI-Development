@@ -1,4 +1,4 @@
-package com.aether.tests;
+package com.automation.tests;
 
 import com.aether.framework.core.BaseTest;
 import com.aether.framework.core.ConfigReader;
@@ -6,10 +6,9 @@ import com.aether.framework.core.TestReporter;
 import com.aether.pages.banking.BankingDashboardPage;
 import com.aether.pages.banking.BankingLoginPage;
 
-import com.microsoft.playwright.Page;
-
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
@@ -30,8 +29,12 @@ public class BankingLoginTc1V5 extends BaseTest {
     private String bothInvalidUsername;
     private String bothInvalidPassword;
 
-    @BeforeMethod(alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     public void setUp() {
+        if (page == null) {
+            throw new IllegalStateException("Playwright page was not initialized by BaseTest");
+        }
+
         bankingLoginPage = new BankingLoginPage(page);
         bankingDashboardPage = new BankingDashboardPage(page);
 
@@ -47,7 +50,10 @@ public class BankingLoginTc1V5 extends BaseTest {
         bothInvalidPassword = ConfigReader.get("banking.both.invalid.password");
 
         page.navigate(ConfigReader.getBaseUrl());
-        bankingLoginPage.validate();
+
+        if (!bankingLoginPage.validate()) {
+            throw new IllegalStateException("Banking login page was not available during setup");
+        }
     }
 
     @Test(priority = 1, groups = {"smoke", "regression", "banking-login"})
@@ -59,6 +65,10 @@ public class BankingLoginTc1V5 extends BaseTest {
         // Step 1: Open login page
         {
             page.navigate(ConfigReader.getBaseUrl());
+
+            if (!bankingLoginPage.validate()) {
+                throw new IllegalStateException("Login page was not available [TC_001]");
+            }
         }
 
         // Step 2: Enter valid username
@@ -101,12 +111,14 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_002: Valid banking login with OTP",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 1: Enter valid credentials
+        page.navigate(ConfigReader.getBaseUrl());
+
+        // Step 5: Enter valid credentials
         {
             bankingLoginPage.loginFirstFactor(mfaUsername, mfaPassword);
         }
 
-        // Step 2: Click Login
+        // Step 6: Click Login
         {
             // TC_002
             Assert.assertTrue(
@@ -117,12 +129,12 @@ public class BankingLoginTc1V5 extends BaseTest {
                     "First-factor login must display the OTP verification page [TC_002]");
         }
 
-        // Step 3: Enter valid OTP
+        // Step 7: Enter valid OTP
         {
             bankingLoginPage.submitOtp(validOtp);
         }
 
-        // Step 4: Submit
+        // Step 8: Submit
         {
             // TC_002
             Assert.assertTrue(
@@ -151,21 +163,22 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
+        page.navigate(ConfigReader.getBaseUrl());
+
         // Step 9: Enter invalid username + valid password
         {
             bankingLoginPage.enterUsername(invalidUsername);
             bankingLoginPage.enterPassword(validPassword);
             bankingLoginPage.clickLoginButton();
 
-            boolean remainsOnLoginRoute =
-                    page.url().equals(ConfigReader.getBaseUrl() + "/");
+            boolean remainsOnLoginPage = bankingLoginPage.isStillOnLoginPage();
 
             // TC_003
             softAssert.assertTrue(
                     TestReporter.assertCondition(
-                            remainsOnLoginRoute,
+                            remainsOnLoginPage,
                             "SUCCESS: Invalid username did not create a session [TC_003]",
-                            "FAILURE: Invalid username changed the login route [TC_003]"),
+                            "FAILURE: Invalid username changed the login state [TC_003]"),
                     "Invalid username must not authenticate the user [TC_003]");
 
             boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
@@ -178,9 +191,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "FAILURE: Invalid-username error was not displayed [TC_003]"),
                     "Invalid username must display an error [TC_003]");
 
-            String errorText = errorDisplayed
-                    ? bankingLoginPage.getErrorBannerText()
-                    : "";
+            String errorText = bankingLoginPage.getErrorBannerText();
 
             // TC_003
             softAssert.assertTrue(
@@ -201,21 +212,22 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
+        page.navigate(ConfigReader.getBaseUrl());
+
         // Step 10: Enter valid username + invalid password
         {
             bankingLoginPage.enterUsername(invalidPasswordUser);
             bankingLoginPage.enterPassword(invalidPassword);
             bankingLoginPage.clickLoginButton();
 
-            boolean remainsOnLoginRoute =
-                    page.url().equals(ConfigReader.getBaseUrl() + "/");
+            boolean remainsOnLoginPage = bankingLoginPage.isStillOnLoginPage();
 
             // TC_004
             softAssert.assertTrue(
                     TestReporter.assertCondition(
-                            remainsOnLoginRoute,
+                            remainsOnLoginPage,
                             "SUCCESS: Invalid password did not create a session [TC_004]",
-                            "FAILURE: Invalid password changed the login route [TC_004]"),
+                            "FAILURE: Invalid password changed the login state [TC_004]"),
                     "Invalid password must not authenticate the user [TC_004]");
 
             boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
@@ -228,9 +240,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "FAILURE: Invalid-password error was not displayed [TC_004]"),
                     "An invalid password must display an error [TC_004]");
 
-            String errorText = errorDisplayed
-                    ? bankingLoginPage.getErrorBannerText()
-                    : "";
+            String errorText = bankingLoginPage.getErrorBannerText();
 
             // TC_004
             softAssert.assertTrue(
@@ -251,21 +261,22 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
+        page.navigate(ConfigReader.getBaseUrl());
+
         // Step 11: Enter invalid credentials
         {
             bankingLoginPage.enterUsername(bothInvalidUsername);
             bankingLoginPage.enterPassword(bothInvalidPassword);
             bankingLoginPage.clickLoginButton();
 
-            boolean remainsOnLoginRoute =
-                    page.url().equals(ConfigReader.getBaseUrl() + "/");
+            boolean remainsOnLoginPage = bankingLoginPage.isStillOnLoginPage();
 
             // TC_005
             softAssert.assertTrue(
                     TestReporter.assertCondition(
-                            remainsOnLoginRoute,
+                            remainsOnLoginPage,
                             "SUCCESS: Both invalid credentials did not create a session [TC_005]",
-                            "FAILURE: Both invalid credentials changed the login route [TC_005]"),
+                            "FAILURE: Both invalid credentials changed the login state [TC_005]"),
                     "Both invalid credentials must not authenticate the user [TC_005]");
 
             boolean errorDisplayed = bankingLoginPage.isErrorBannerDisplayed();
@@ -278,9 +289,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "FAILURE: Login-denial error was not displayed [TC_005]"),
                     "Both invalid credentials must display an error [TC_005]");
 
-            String errorText = errorDisplayed
-                    ? bankingLoginPage.getErrorBannerText()
-                    : "";
+            String errorText = bankingLoginPage.getErrorBannerText();
 
             // TC_005
             softAssert.assertTrue(
@@ -299,6 +308,8 @@ public class BankingLoginTc1V5 extends BaseTest {
         TestReporter.startTest(
                 "TC_006: Blank username",
                 "Requirement: REQ-BANK-AUTH-001");
+
+        page.navigate(ConfigReader.getBaseUrl());
 
         // Step 12: Leave username blank, click Login
         {
@@ -332,6 +343,8 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_007: Blank password",
                 "Requirement: REQ-BANK-AUTH-001");
 
+        page.navigate(ConfigReader.getBaseUrl());
+
         // Step 13: Leave password blank, click Login
         {
             bankingLoginPage.enterUsername(validUsername);
@@ -363,6 +376,8 @@ public class BankingLoginTc1V5 extends BaseTest {
         TestReporter.startTest(
                 "TC_008: Login without input",
                 "Requirement: REQ-BANK-AUTH-001");
+
+        page.navigate(ConfigReader.getBaseUrl());
 
         // Step 14: Click login without entering username or password
         {
@@ -406,5 +421,10 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "FAILURE: Password-required message was incorrect [TC_008]"),
                     "Password validation must contain the required-field message [TC_008]");
         }
+    }
+
+    @AfterClass(alwaysRun = true)
+    public void tearDown() {
+        // Browser, context, and page cleanup remain owned by the verified BaseTest lifecycle.
     }
 }
