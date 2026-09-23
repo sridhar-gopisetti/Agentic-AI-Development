@@ -6,6 +6,8 @@ import com.aether.framework.core.TestReporter;
 import com.aether.pages.banking.BankingDashboardPage;
 import com.aether.pages.banking.BankingLoginPage;
 
+import com.microsoft.playwright.Page;
+
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -57,8 +59,20 @@ public class BankingLoginTc1V5 extends BaseTest {
         // Step 1: Open login page
         {
             page.navigate(ConfigReader.getBaseUrl());
+        }
+
+        // Step 2: Enter valid username
+        {
             bankingLoginPage.enterUsername(validUsername);
+        }
+
+        // Step 3: Enter valid password
+        {
             bankingLoginPage.enterPassword(validPassword);
+        }
+
+        // Step 4: Click Login
+        {
             bankingLoginPage.clickLoginButton();
 
             // TC_001
@@ -87,10 +101,13 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_002: Valid banking login with OTP",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 2: Enter valid username
+        // Step 1: Enter valid credentials
         {
             bankingLoginPage.loginFirstFactor(mfaUsername, mfaPassword);
+        }
 
+        // Step 2: Click Login
+        {
             // TC_002
             Assert.assertTrue(
                     TestReporter.assertCondition(
@@ -98,9 +115,15 @@ public class BankingLoginTc1V5 extends BaseTest {
                             "SUCCESS: OTP verification page displayed [TC_002]",
                             "FAILURE: OTP verification page was not displayed [TC_002]"),
                     "First-factor login must display the OTP verification page [TC_002]");
+        }
 
+        // Step 3: Enter valid OTP
+        {
             bankingLoginPage.submitOtp(validOtp);
+        }
 
+        // Step 4: Submit
+        {
             // TC_002
             Assert.assertTrue(
                     TestReporter.assertCondition(
@@ -128,7 +151,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
-        // Step 3: Enter valid password
+        // Step 9: Enter invalid username + valid password
         {
             bankingLoginPage.enterUsername(invalidUsername);
             bankingLoginPage.enterPassword(validPassword);
@@ -178,7 +201,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
-        // Step 4: Click Login
+        // Step 10: Enter valid username + invalid password
         {
             bankingLoginPage.enterUsername(invalidPasswordUser);
             bankingLoginPage.enterPassword(invalidPassword);
@@ -228,7 +251,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "Requirement: REQ-BANK-AUTH-001");
         softAssert = new SoftAssert();
 
-        // Step 5: Enter valid OTP
+        // Step 11: Enter invalid credentials
         {
             bankingLoginPage.enterUsername(bothInvalidUsername);
             bankingLoginPage.enterPassword(bothInvalidPassword);
@@ -277,7 +300,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_006: Blank username",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 6: Submit
+        // Step 12: Leave username blank, click Login
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.enterPassword(validPassword);
@@ -309,7 +332,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_007: Blank password",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 7: Leave username blank, click Login
+        // Step 13: Leave password blank, click Login
         {
             bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
@@ -341,7 +364,7 @@ public class BankingLoginTc1V5 extends BaseTest {
                 "TC_008: Login without input",
                 "Requirement: REQ-BANK-AUTH-001");
 
-        // Step 8: Click login without entering username or password
+        // Step 14: Click login without entering username or password
         {
             bankingLoginPage.clearUsername();
             bankingLoginPage.clearPassword();
