@@ -7,7 +7,10 @@ import com.microsoft.playwright.Page;
 /**
  * BankingLoginPage — Playwright-Java Page Object for the Banking Login page.
  *
- * AUT route: GET / (root — banking login form)
+ * AUT routes: GET / renders the banking login form, and the form POSTs to /banking/login.
+ *   A rejected login re-renders this same form at /banking/login, so after a rejected
+ *   login the URL is NOT the site root. To assert that no session was established, use
+ *   {@link #isStillOnLoginPage()} rather than comparing page.url() to a constructed URL.
  *
  * Locator IDs match the mock AUT HTML:
  *   #bankingUsername, #bankingPassword, #bankingLoginBtn,
@@ -89,6 +92,18 @@ public class BankingLoginPage extends BasePage {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * True when the banking login form is still displayed after a login attempt — the
+     * page-level signal that no session was established (TC_003, TC_004, TC_005).
+     *
+     * Route-independent on purpose: a rejected login re-renders this form at
+     * /banking/login, so checking page.url() against the site root fails even when the
+     * application correctly rejected the credentials.
+     */
+    public boolean isStillOnLoginPage() {
+        return validate();
     }
 
     /**
