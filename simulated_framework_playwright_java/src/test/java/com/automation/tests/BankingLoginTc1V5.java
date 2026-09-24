@@ -1,6 +1,10 @@
 package com.automation.tests;
 
+import java.nio.file.Paths;
+
 import org.testng.Assert;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -82,6 +86,7 @@ public class BankingLoginTc1V5 extends BaseTest {
         // Step 1: Open login page
         {
             page.navigate(ConfigReader.getBaseUrl());
+
             if (!bankingLoginPage.validate()) {
                 throw new IllegalStateException(
                         "Login page was not available [TC_001]");
@@ -104,7 +109,10 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             // Traceability: TC_001
             Assert.assertTrue(
-                    bankingDashboardPage.validate(),
+                    TestReporter.assertCondition(
+                            bankingDashboardPage.validate(),
+                            "Valid login displayed the banking dashboard [TC_001]",
+                            "Valid login did not display the banking dashboard [TC_001]"),
                     "Valid login must display the banking dashboard [TC_001]");
 
             String displayedUsername =
@@ -112,7 +120,10 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             // Traceability: TC_001
             Assert.assertTrue(
-                    !displayedUsername.isEmpty(),
+                    TestReporter.assertCondition(
+                            !displayedUsername.isEmpty(),
+                            "Authenticated username was displayed [TC_001]",
+                            "Authenticated username was not displayed [TC_001]"),
                     "The authenticated username must be displayed [TC_001]");
         }
     }
@@ -135,7 +146,10 @@ public class BankingLoginTc1V5 extends BaseTest {
         {
             // Traceability: TC_002
             Assert.assertTrue(
-                    bankingLoginPage.validateOtpPage(),
+                    TestReporter.assertCondition(
+                            bankingLoginPage.validateOtpPage(),
+                            "OTP page was displayed [TC_002]",
+                            "OTP page was not displayed [TC_002]"),
                     "First-factor login must display the OTP page [TC_002]");
         }
 
@@ -148,18 +162,22 @@ public class BankingLoginTc1V5 extends BaseTest {
         {
             // Traceability: TC_002
             Assert.assertTrue(
-                    bankingDashboardPage.validate(),
-                    "Successful OTP submission must display the dashboard "
-                            + "[TC_002]");
+                    TestReporter.assertCondition(
+                            bankingDashboardPage.validate(),
+                            "Dashboard was displayed after OTP [TC_002]",
+                            "Dashboard was not displayed after OTP [TC_002]"),
+                    "Successful OTP submission must display the dashboard [TC_002]");
 
             String displayedUsername =
                     bankingDashboardPage.getLoggedInUsername();
 
             // Traceability: TC_002
             Assert.assertTrue(
-                    !displayedUsername.isEmpty(),
-                    "The authenticated username must be displayed after OTP "
-                            + "[TC_002]");
+                    TestReporter.assertCondition(
+                            !displayedUsername.isEmpty(),
+                            "Authenticated username was displayed after OTP [TC_002]",
+                            "Authenticated username was not displayed after OTP [TC_002]"),
+                    "The authenticated username must be displayed after OTP [TC_002]");
         }
     }
 
@@ -184,27 +202,33 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             // Traceability: TC_003
             softAssert.assertTrue(
-                    remainsOnLoginPage,
-                    "Invalid username must not authenticate the user "
-                            + "[TC_003]");
+                    TestReporter.assertCondition(
+                            remainsOnLoginPage,
+                            "Invalid username was rejected [TC_003]",
+                            "Invalid username established a session [TC_003]"),
+                    "Invalid username must not authenticate the user [TC_003]");
 
             boolean errorDisplayed =
                     bankingLoginPage.isErrorBannerDisplayed();
 
             // Traceability: TC_003
             softAssert.assertTrue(
-                    errorDisplayed,
+                    TestReporter.assertCondition(
+                            errorDisplayed,
+                            "Invalid username error was displayed [TC_003]",
+                            "Invalid username error was not displayed [TC_003]"),
                     "Invalid username must display an error [TC_003]");
 
             String errorText = bankingLoginPage.getErrorBannerText();
 
             // Traceability: TC_003
             softAssert.assertTrue(
-                    errorText.contains("Invalid username or password"),
-                    "The invalid-username message must identify invalid "
-                            + "credentials [TC_003]");
+                    TestReporter.assertCondition(
+                            errorText.contains("Invalid username or password"),
+                            "Invalid credential text was displayed [TC_003]",
+                            "Expected invalid credential text was not displayed [TC_003]"),
+                    "The invalid-username message must identify invalid credentials [TC_003]");
 
-            // Traceability: TC_003
             softAssert.assertAll();
         }
     }
@@ -230,27 +254,33 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             // Traceability: TC_004
             softAssert.assertTrue(
-                    remainsOnLoginPage,
-                    "Invalid password must not authenticate the user "
-                            + "[TC_004]");
+                    TestReporter.assertCondition(
+                            remainsOnLoginPage,
+                            "Invalid password was rejected [TC_004]",
+                            "Invalid password established a session [TC_004]"),
+                    "Invalid password must not authenticate the user [TC_004]");
 
             boolean errorDisplayed =
                     bankingLoginPage.isErrorBannerDisplayed();
 
             // Traceability: TC_004
             softAssert.assertTrue(
-                    errorDisplayed,
+                    TestReporter.assertCondition(
+                            errorDisplayed,
+                            "Invalid password error was displayed [TC_004]",
+                            "Invalid password error was not displayed [TC_004]"),
                     "An invalid password must display an error [TC_004]");
 
             String errorText = bankingLoginPage.getErrorBannerText();
 
             // Traceability: TC_004
             softAssert.assertTrue(
-                    errorText.contains("Invalid username or password"),
-                    "The invalid-password message must identify invalid "
-                            + "credentials [TC_004]");
+                    TestReporter.assertCondition(
+                            errorText.contains("Invalid username or password"),
+                            "Invalid credential text was displayed [TC_004]",
+                            "Expected invalid credential text was not displayed [TC_004]"),
+                    "The invalid-password message must identify invalid credentials [TC_004]");
 
-            // Traceability: TC_004
             softAssert.assertAll();
         }
     }
@@ -276,28 +306,33 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             // Traceability: TC_005
             softAssert.assertTrue(
-                    remainsOnLoginPage,
-                    "Both invalid credentials must not authenticate the user "
-                            + "[TC_005]");
+                    TestReporter.assertCondition(
+                            remainsOnLoginPage,
+                            "Both invalid credentials were rejected [TC_005]",
+                            "Both invalid credentials established a session [TC_005]"),
+                    "Both invalid credentials must not authenticate the user [TC_005]");
 
             boolean errorDisplayed =
                     bankingLoginPage.isErrorBannerDisplayed();
 
             // Traceability: TC_005
             softAssert.assertTrue(
-                    errorDisplayed,
-                    "Both invalid credentials must display an error "
-                            + "[TC_005]");
+                    TestReporter.assertCondition(
+                            errorDisplayed,
+                            "Both-invalid error was displayed [TC_005]",
+                            "Both-invalid error was not displayed [TC_005]"),
+                    "Both invalid credentials must display an error [TC_005]");
 
             String errorText = bankingLoginPage.getErrorBannerText();
 
             // Traceability: TC_005
             softAssert.assertTrue(
-                    errorText.contains("Invalid username or password"),
-                    "The invalid-login message must identify invalid "
-                            + "credentials [TC_005]");
+                    TestReporter.assertCondition(
+                            errorText.contains("Invalid username or password"),
+                            "Invalid credential text was displayed [TC_005]",
+                            "Expected invalid credential text was not displayed [TC_005]"),
+                    "The invalid-login message must identify invalid credentials [TC_005]");
 
-            // Traceability: TC_005
             softAssert.assertAll();
         }
     }
@@ -319,17 +354,21 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             // Traceability: TC_006
             Assert.assertTrue(
-                    bankingLoginPage.isUsernameErrorDisplayed(),
-                    "Blank username must display required-field validation "
-                            + "[TC_006]");
+                    TestReporter.assertCondition(
+                            bankingLoginPage.isUsernameErrorDisplayed(),
+                            "Username required validation was displayed [TC_006]",
+                            "Username required validation was not displayed [TC_006]"),
+                    "Blank username must display required-field validation [TC_006]");
 
             // Traceability: TC_006
             Assert.assertTrue(
-                    bankingLoginPage.getUsernameErrorText()
-                            .toLowerCase()
-                            .contains("username required"),
-                    "Username validation must contain the required-field "
-                            + "message [TC_006]");
+                    TestReporter.assertCondition(
+                            bankingLoginPage.getUsernameErrorText()
+                                    .toLowerCase()
+                                    .contains("username required"),
+                            "Username validation text was correct [TC_006]",
+                            "Username validation text was incorrect [TC_006]"),
+                    "Username validation must contain the required-field message [TC_006]");
         }
     }
 
@@ -350,17 +389,21 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             // Traceability: TC_007
             Assert.assertTrue(
-                    bankingLoginPage.isPasswordErrorDisplayed(),
-                    "Blank password must display required-field validation "
-                            + "[TC_007]");
+                    TestReporter.assertCondition(
+                            bankingLoginPage.isPasswordErrorDisplayed(),
+                            "Password required validation was displayed [TC_007]",
+                            "Password required validation was not displayed [TC_007]"),
+                    "Blank password must display required-field validation [TC_007]");
 
             // Traceability: TC_007
             Assert.assertTrue(
-                    bankingLoginPage.getPasswordErrorText()
-                            .toLowerCase()
-                            .contains("password required"),
-                    "Password validation must contain the required-field "
-                            + "message [TC_007]");
+                    TestReporter.assertCondition(
+                            bankingLoginPage.getPasswordErrorText()
+                                    .toLowerCase()
+                                    .contains("password required"),
+                            "Password validation text was correct [TC_007]",
+                            "Password validation text was incorrect [TC_007]"),
+                    "Password validation must contain the required-field message [TC_007]");
         }
     }
 
@@ -381,31 +424,49 @@ public class BankingLoginTc1V5 extends BaseTest {
 
             // Traceability: TC_008
             Assert.assertTrue(
-                    bankingLoginPage.isUsernameErrorDisplayed(),
-                    "Blank username must display required-field validation "
-                            + "[TC_008]");
+                    TestReporter.assertCondition(
+                            bankingLoginPage.isUsernameErrorDisplayed(),
+                            "Username required validation was displayed [TC_008]",
+                            "Username required validation was not displayed [TC_008]"),
+                    "Blank username must display required-field validation [TC_008]");
 
             // Traceability: TC_008
             Assert.assertTrue(
-                    bankingLoginPage.getUsernameErrorText()
-                            .toLowerCase()
-                            .contains("username required"),
-                    "Username validation must contain the required-field "
-                            + "message [TC_008]");
+                    TestReporter.assertCondition(
+                            bankingLoginPage.getUsernameErrorText()
+                                    .toLowerCase()
+                                    .contains("username required"),
+                            "Username validation text was correct [TC_008]",
+                            "Username validation text was incorrect [TC_008]"),
+                    "Username validation must contain the required-field message [TC_008]");
 
             // Traceability: TC_008
             Assert.assertTrue(
-                    bankingLoginPage.isPasswordErrorDisplayed(),
-                    "Blank password must display required-field validation "
-                            + "[TC_008]");
+                    TestReporter.assertCondition(
+                            bankingLoginPage.isPasswordErrorDisplayed(),
+                            "Password required validation was displayed [TC_008]",
+                            "Password required validation was not displayed [TC_008]"),
+                    "Blank password must display required-field validation [TC_008]");
 
             // Traceability: TC_008
             Assert.assertTrue(
-                    bankingLoginPage.getPasswordErrorText()
-                            .toLowerCase()
-                            .contains("password required"),
-                    "Password validation must contain the required-field "
-                            + "message [TC_008]");
+                    TestReporter.assertCondition(
+                            bankingLoginPage.getPasswordErrorText()
+                                    .toLowerCase()
+                                    .contains("password required"),
+                            "Password validation text was correct [TC_008]",
+                            "Password validation text was incorrect [TC_008]"),
+                    "Password validation must contain the required-field message [TC_008]");
+        }
+    }
+
+    @AfterClass(alwaysRun = true)
+    public void tearDown(ITestResult result) {
+        if (result != null
+                && result.getStatus() == ITestResult.FAILURE
+                && page != null
+                && ConfigReader.screenshotOnFailure()) {
+            TestReporter.captureScreenshot(page, result.getName());
         }
     }
 }
