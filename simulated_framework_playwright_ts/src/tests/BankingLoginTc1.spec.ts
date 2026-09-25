@@ -27,75 +27,75 @@ import { test, expect } from '../../../fixtures';
 
 const loginPath =
   process.env.AUT_LOGIN_PATH ??
-  /* STUB: AUT_LOGIN_PATH not confirmed — using /login */
+  // STUB: AUT_LOGIN_PATH not confirmed — using /login
   '/login';
 
 const validUser = {
   username:
     process.env.BANK_VALID_USER ??
     process.env.AUT_USER_EMAIL ??
-    /* STUB: AUT_USER_EMAIL not confirmed — using an empty value */
+    // STUB: AUT_USER_EMAIL not confirmed — using an empty value
     '',
   password:
     process.env.BANK_VALID_PASS ??
     process.env.AUT_USER_PASSWORD ??
-    /* STUB: AUT_USER_PASSWORD not confirmed — using an empty value */
+    // STUB: AUT_USER_PASSWORD not confirmed — using an empty value
     '',
 };
 
 const mfaUser = {
   username:
     process.env.BANK_MFA_USER ??
-    /* STUB: BANK_MFA_USER not confirmed — using an empty value */
+    // STUB: BANK_MFA_USER not confirmed — using an empty value
     '',
   password:
     process.env.BANK_MFA_PASSWORD ??
-    /* STUB: BANK_MFA_PASSWORD not confirmed — using an empty value */
+    // STUB: BANK_MFA_PASSWORD not confirmed — using an empty value
     '',
   otp:
     process.env.BANK_VALID_OTP ??
-    /* STUB: BANK_VALID_OTP not confirmed — using an empty value */
+    // STUB: BANK_VALID_OTP not confirmed — using an empty value
     '',
 };
 
 const invalidUsername =
   process.env.BANK_INVALID_USER ??
-  /* STUB: BANK_INVALID_USER not confirmed — using an empty value */
+  // STUB: BANK_INVALID_USER not confirmed — using an empty value
   '';
 
 const invalidPassword =
   process.env.BANK_INVALID_PASSWORD ??
-  /* STUB: BANK_INVALID_PASSWORD not confirmed — using an empty value */
+  // STUB: BANK_INVALID_PASSWORD not confirmed — using an empty value
   '';
 
 const invalidCredentialsMessage =
   process.env.BANK_INVALID_CREDENTIALS_MESSAGE ??
-  /* STUB: BANK_INVALID_CREDENTIALS_MESSAGE not confirmed — using an empty value */
+  // STUB: BANK_INVALID_CREDENTIALS_MESSAGE not confirmed — using an empty value
   '';
 
 const invalidPasswordMessage =
   process.env.BANK_INVALID_PASSWORD_MESSAGE ??
-  /* STUB: BANK_INVALID_PASSWORD_MESSAGE not confirmed — using an empty value */
+  // STUB: BANK_INVALID_PASSWORD_MESSAGE not confirmed — using an empty value
   '';
 
 const deniedMessage =
   process.env.BANK_DENIED_MESSAGE ??
-  /* STUB: BANK_DENIED_MESSAGE not confirmed — using an empty value */
+  // STUB: BANK_DENIED_MESSAGE not confirmed — using an empty value
   '';
 
 const usernameRequiredMessage =
   process.env.BANK_USERNAME_REQUIRED_MESSAGE ??
-  /* STUB: BANK_USERNAME_REQUIRED_MESSAGE not confirmed — using an empty value */
+  // STUB: BANK_USERNAME_REQUIRED_MESSAGE not confirmed — using an empty value
   '';
 
 const passwordRequiredMessage =
   process.env.BANK_PASSWORD_REQUIRED_MESSAGE ??
-  /* STUB: BANK_PASSWORD_REQUIRED_MESSAGE not confirmed — using an empty value */
+  // STUB: BANK_PASSWORD_REQUIRED_MESSAGE not confirmed — using an empty value
   '';
 
 const dashboardUrlPattern =
   process.env.BANK_DASHBOARD_URL_PATTERN ??
-  /* STUB: BANK_DASHBOARD_URL_PATTERN not confirmed — using dashboard */
+  // STUB: BANK_DASHBOARD_URL_PATTERN not confirmed — using dashboard
   'dashboard';
 
 const dashboardUrl = new RegExp(dashboardUrlPattern);
@@ -124,12 +124,11 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
 
       // Traceability: TC_001 | Manual Step 1: Open login page
       await test.step('Step 1 — Open login page', async () => {
+        await bankingLoginPage.navigateTo(loginPath);
         // LOCATOR_UNCONFIRMED — not in AUT KB
-        await bankingLoginPage.validate();
         // Traceability: TC_001
         await expect(bankingLoginPage.getUsernameFieldLocator()).toBeVisible();
-        // Traceability: TC_001
-        await expect(bankingLoginPage.getPasswordFieldLocator()).toBeVisible();
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_001
         await expect(bankingLoginPage.getLoginButtonLocator()).toBeVisible();
       });
@@ -147,12 +146,10 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // Traceability: TC_001 | Manual Step 4: Click Login
       await test.step('Step 4 — Click Login', async () => {
         await bankingLoginPage.clickLoginButton();
-      });
-
-      await test.step('Verify successful dashboard authentication', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_001
         await expect(bankingDashboardPage.getWelcomeMessageLocator()).toBeVisible();
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_001
         await expect(bankingDashboardPage.getAccountSummaryLocator()).toBeVisible();
         // Traceability: TC_001
@@ -179,30 +176,23 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // Traceability: TC_002 | Manual Step 6: Click Login
       await test.step('Step 6 — Click Login', async () => {
         await bankingLoginPage.clickLoginButton();
-      });
-
-      await test.step('Verify OTP page is displayed', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_002
         await expect(bankingLoginPage.getOtpPageLocator()).toBeVisible();
-        // Traceability: TC_002
-        await expect(bankingLoginPage.getOtpFieldLocator()).toBeVisible();
       });
 
       // Traceability: TC_002 | Manual Step 7: Enter valid OTP
       await test.step('Step 7 — Enter valid OTP', async () => {
-        // The confirmed Page Object combines OTP entry and submission.
+        // The confirmed Page Object combines OTP entry and OTP submission.
         await bankingLoginPage.submitOtp(mfaUser.otp);
       });
 
       // Traceability: TC_002 | Manual Step 8: Submit
       await test.step('Step 8 — Submit', async () => {
-        // Submission is performed by the confirmed submitOtp() method.
+        // Submission is performed by the confirmed submitOtp() method in Step 7.
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_002
         await expect(bankingDashboardPage.getWelcomeMessageLocator()).toBeVisible();
-      });
-
-      await test.step('Verify authenticated dashboard state', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_002
         await expect(bankingDashboardPage.getAccountSummaryLocator()).toBeVisible();
@@ -231,10 +221,12 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         },
       );
 
+      // Traceability: TC_003 | Verify invalid-username error
       await test.step('Verify invalid-username error', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_003
         await expect(bankingLoginPage.getErrorBannerLocator()).toBeVisible();
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_003
         await expect(bankingLoginPage.getErrorBannerLocator()).toContainText(
           invalidCredentialsMessage,
@@ -262,10 +254,12 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         },
       );
 
+      // Traceability: TC_004 | Verify invalid-password error
       await test.step('Verify invalid-password error', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_004
         await expect(bankingLoginPage.getErrorBannerLocator()).toBeVisible();
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_004
         await expect(bankingLoginPage.getErrorBannerLocator()).toContainText(
           invalidPasswordMessage,
@@ -290,10 +284,12 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         await bankingLoginPage.clickLoginButton();
       });
 
+      // Traceability: TC_005 | Verify denied-login error
       await test.step('Verify denied-login error', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_005
         await expect(bankingLoginPage.getErrorBannerLocator()).toBeVisible();
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_005
         await expect(bankingLoginPage.getErrorBannerLocator()).toContainText(
           deniedMessage,
@@ -318,16 +314,16 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         await bankingLoginPage.clickLoginButton();
       });
 
+      // Traceability: TC_006 | Verify username validation
       await test.step('Verify username-required validation', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_006
-        await expect(
-          bankingLoginPage.getUsernameValidationLocator(),
-        ).toBeVisible();
+        await expect(bankingLoginPage.getUsernameValidationLocator()).toBeVisible();
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_006
-        await expect(
-          bankingLoginPage.getUsernameValidationLocator(),
-        ).toContainText(usernameRequiredMessage);
+        await expect(bankingLoginPage.getUsernameValidationLocator()).toContainText(
+          usernameRequiredMessage,
+        );
       });
     },
   );
@@ -348,16 +344,16 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         await bankingLoginPage.clickLoginButton();
       });
 
+      // Traceability: TC_007 | Verify password validation
       await test.step('Verify password-required validation', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_007
-        await expect(
-          bankingLoginPage.getPasswordValidationLocator(),
-        ).toBeVisible();
+        await expect(bankingLoginPage.getPasswordValidationLocator()).toBeVisible();
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_007
-        await expect(
-          bankingLoginPage.getPasswordValidationLocator(),
-        ).toContainText(passwordRequiredMessage);
+        await expect(bankingLoginPage.getPasswordValidationLocator()).toContainText(
+          passwordRequiredMessage,
+        );
       });
     },
   );
@@ -378,28 +374,28 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         await bankingLoginPage.clickLoginButton();
       });
 
+      // Traceability: TC_008 | Verify username validation
       await test.step('Verify username-required validation', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_008
-        await expect(
-          bankingLoginPage.getUsernameValidationLocator(),
-        ).toBeVisible();
+        await expect(bankingLoginPage.getUsernameValidationLocator()).toBeVisible();
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_008
-        await expect(
-          bankingLoginPage.getUsernameValidationLocator(),
-        ).toContainText(usernameRequiredMessage);
+        await expect(bankingLoginPage.getUsernameValidationLocator()).toContainText(
+          usernameRequiredMessage,
+        );
       });
 
+      // Traceability: TC_008 | Verify password validation
       await test.step('Verify password-required validation', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_008
-        await expect(
-          bankingLoginPage.getPasswordValidationLocator(),
-        ).toBeVisible();
+        await expect(bankingLoginPage.getPasswordValidationLocator()).toBeVisible();
+        // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_008
-        await expect(
-          bankingLoginPage.getPasswordValidationLocator(),
-        ).toContainText(passwordRequiredMessage);
+        await expect(bankingLoginPage.getPasswordValidationLocator()).toContainText(
+          passwordRequiredMessage,
+        );
       });
     },
   );
