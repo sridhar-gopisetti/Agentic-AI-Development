@@ -122,7 +122,7 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // acg_run_id   : 6b54ef33-591e-4583-91b7-ce5f3bbe8be1
       // ─────────────────────────────────────────────────────────
 
-      // Manual Step 1: Open login page
+      // Step 1 — Open login page
       await test.step('Step 1 — Open login page', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_001
@@ -137,17 +137,17 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         await expect(bankingLoginPage.getLoginButtonLocator()).toBeVisible();
       });
 
-      // Manual Step 2: Enter valid username
+      // Step 2 — Enter valid username
       await test.step('Step 2 — Enter valid username', async () => {
         await bankingLoginPage.enterUsername(validUser.username);
       });
 
-      // Manual Step 3: Enter valid password
+      // Step 3 — Enter valid password
       await test.step('Step 3 — Enter valid password', async () => {
         await bankingLoginPage.enterPassword(validUser.password);
       });
 
-      // Manual Step 4: Click Login
+      // Step 4 — Click Login
       await test.step('Step 4 — Click Login', async () => {
         await bankingLoginPage.clickLoginButton();
 
@@ -174,13 +174,13 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // acg_run_id   : 6b54ef33-591e-4583-91b7-ce5f3bbe8be1
       // ─────────────────────────────────────────────────────────
 
-      // Manual Step 5: Enter valid credentials
+      // Step 5 — Enter valid credentials
       await test.step('Step 5 — Enter valid credentials', async () => {
         await bankingLoginPage.enterUsername(mfaUser.username);
         await bankingLoginPage.enterPassword(mfaUser.password);
       });
 
-      // Manual Step 6: Click Login
+      // Step 6 — Click Login
       await test.step('Step 6 — Click Login', async () => {
         await bankingLoginPage.clickLoginButton();
 
@@ -193,12 +193,12 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         await expect(bankingLoginPage.getOtpFieldLocator()).toBeVisible();
       });
 
-      // Manual Step 7: Enter valid OTP
+      // Step 7 — Enter valid OTP
       await test.step('Step 7 — Enter valid OTP', async () => {
         await bankingLoginPage.submitOtp(mfaUser.otp);
       });
 
-      // Manual Step 8: Submit
+      // Step 8 — Submit
       await test.step('Step 8 — Submit', async () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_002
@@ -223,9 +223,9 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // acg_run_id   : 6b54ef33-591e-4583-91b7-ce5f3bbe8be1
       // ─────────────────────────────────────────────────────────
 
-      // Manual Step 9: Enter invalid username + valid password
+      // Step 9 — Enter invalid username + valid password
       await test.step(
-        'Step 9 — Enter invalid username and valid password',
+        'Step 9 — Enter invalid username + valid password',
         async () => {
           await bankingLoginPage.enterUsername(invalidUsername);
           await bankingLoginPage.enterPassword(validUser.password);
@@ -254,9 +254,9 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // acg_run_id   : 6b54ef33-591e-4583-91b7-ce5f3bbe8be1
       // ─────────────────────────────────────────────────────────
 
-      // Manual Step 10: Enter valid username + invalid password
+      // Step 10 — Enter valid username + invalid password
       await test.step(
-        'Step 10 — Enter valid username and invalid password',
+        'Step 10 — Enter valid username + invalid password',
         async () => {
           await bankingLoginPage.enterUsername(validUser.username);
           await bankingLoginPage.enterPassword(invalidPassword);
@@ -285,7 +285,7 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // acg_run_id   : 6b54ef33-591e-4583-91b7-ce5f3bbe8be1
       // ─────────────────────────────────────────────────────────
 
-      // Manual Step 11: Enter invalid credentials
+      // Step 11 — Enter invalid credentials
       await test.step('Step 11 — Enter invalid credentials', async () => {
         await bankingLoginPage.enterUsername(invalidUsername);
         await bankingLoginPage.enterPassword(invalidPassword);
@@ -297,9 +297,9 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
 
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_005
-        await expect(
-          bankingLoginPage.getErrorBannerLocator(),
-        ).toContainText(deniedMessage);
+        await expect(bankingLoginPage.getErrorBannerLocator()).toContainText(
+          deniedMessage,
+        );
       });
     },
   );
@@ -313,7 +313,7 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // acg_run_id   : 6b54ef33-591e-4583-91b7-ce5f3bbe8be1
       // ─────────────────────────────────────────────────────────
 
-      // Manual Step 12: Leave username blank
+      // Step 12 — Leave username blank
       await test.step('Step 12 — Leave username blank', async () => {
         await bankingLoginPage.clearUsername();
         await bankingLoginPage.enterPassword(validUser.password);
@@ -343,7 +343,7 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // acg_run_id   : 6b54ef33-591e-4583-91b7-ce5f3bbe8be1
       // ─────────────────────────────────────────────────────────
 
-      // Manual Step 13: Leave password blank
+      // Step 13 — Leave password blank
       await test.step('Step 13 — Leave password blank', async () => {
         await bankingLoginPage.enterUsername(validUser.username);
         await bankingLoginPage.clearPassword();
@@ -373,7 +373,7 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
       // acg_run_id   : 6b54ef33-591e-4583-91b7-ce5f3bbe8be1
       // ─────────────────────────────────────────────────────────
 
-      // Manual Step 14: Click login without input
+      // Step 14 — Click login without input
       await test.step('Step 14 — Click login without input', async () => {
         await bankingLoginPage.clearUsername();
         await bankingLoginPage.clearPassword();
