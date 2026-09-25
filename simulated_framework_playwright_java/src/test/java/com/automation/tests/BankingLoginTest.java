@@ -4,7 +4,7 @@
 // placeholders for the following missing values.
 // Supply these before executing:
 //
-// AUT_LOGIN_PATH  → set AUT_LOGIN_PATH in .env (assumed: /login)
+// AUT_LOGIN_PATH  → set AUT_LOGIN_PATH in .env
 // AUT_USER_EMAIL  → set AUT_USER_EMAIL in .env
 // AUT_USER_PASSWORD  → set AUT_USER_PASSWORD in .env
 // TARGET_BROWSER  → set TARGET_BROWSER in .env
@@ -19,6 +19,7 @@ import com.aether.framework.core.ConfigReader;
 import com.aether.pages.banking.BankingDashboardPage;
 import com.aether.pages.banking.BankingLoginPage;
 import com.microsoft.playwright.Page;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -68,7 +69,7 @@ public class BankingLoginTest extends BaseTest {
 
         validateConfiguration();
 
-        // STUB: AUT_LOGIN_PATH not confirmed — using /login through the approved openLoginPage stub.
+        // STUB: AUT_LOGIN_PATH not confirmed — using the approved openLoginPage stub.
         bankingLoginPage.openLoginPage();
 
         if (!bankingLoginPage.validate()) {
@@ -97,6 +98,19 @@ public class BankingLoginTest extends BaseTest {
         return value == null || value.trim().isEmpty();
     }
 
+    @AfterClass(alwaysRun = true)
+    public void tearDown() {
+        if (page != null) {
+            page.close();
+        }
+        if (browser != null) {
+            browser.close();
+        }
+        if (playwright != null) {
+            playwright.close();
+        }
+    }
+
     @Test(
             priority = 1,
             groups = {"smoke", "regression", "banking-login"},
@@ -110,7 +124,7 @@ public class BankingLoginTest extends BaseTest {
 
         // Step 1: Open login page
         {
-            // STUB: AUT_LOGIN_PATH not confirmed — using /login through the approved openLoginPage stub.
+            // STUB: AUT_LOGIN_PATH not confirmed — using the approved openLoginPage stub.
             bankingLoginPage.openLoginPage();
         }
 
@@ -156,7 +170,7 @@ public class BankingLoginTest extends BaseTest {
 
         // Step 1: Open login page
         {
-            // STUB: AUT_LOGIN_PATH not confirmed — using /login through the approved openLoginPage stub.
+            // STUB: AUT_LOGIN_PATH not confirmed — using the approved openLoginPage stub.
             bankingLoginPage.openLoginPage();
         }
 
@@ -217,7 +231,7 @@ public class BankingLoginTest extends BaseTest {
 
         // Step 1: Open login page
         {
-            // STUB: AUT_LOGIN_PATH not confirmed — using /login through the approved openLoginPage stub.
+            // STUB: AUT_LOGIN_PATH not confirmed — using the approved openLoginPage stub.
             bankingLoginPage.openLoginPage();
         }
 
@@ -267,7 +281,7 @@ public class BankingLoginTest extends BaseTest {
 
         // Step 1: Open login page
         {
-            // STUB: AUT_LOGIN_PATH not confirmed — using /login through the approved openLoginPage stub.
+            // STUB: AUT_LOGIN_PATH not confirmed — using the approved openLoginPage stub.
             bankingLoginPage.openLoginPage();
         }
 
@@ -317,7 +331,7 @@ public class BankingLoginTest extends BaseTest {
 
         // Step 1: Open login page
         {
-            // STUB: AUT_LOGIN_PATH not confirmed — using /login through the approved openLoginPage stub.
+            // STUB: AUT_LOGIN_PATH not confirmed — using the approved openLoginPage stub.
             bankingLoginPage.openLoginPage();
         }
 
@@ -346,7 +360,7 @@ public class BankingLoginTest extends BaseTest {
             // Traceability: TC_005
             softAssert.assertTrue(
                     errorText.contains("Invalid username or password"),
-                    "Invalid-login message must identify invalid credentials [TC_005]");
+                    "Invalid-login text must identify invalid credentials [TC_005]");
 
             softAssert.assertAll();
         }
@@ -365,7 +379,7 @@ public class BankingLoginTest extends BaseTest {
 
         // Step 1: Open login page
         {
-            // STUB: AUT_LOGIN_PATH not confirmed — using /login through the approved openLoginPage stub.
+            // STUB: AUT_LOGIN_PATH not confirmed — using the approved openLoginPage stub.
             bankingLoginPage.openLoginPage();
         }
 
@@ -389,7 +403,7 @@ public class BankingLoginTest extends BaseTest {
                     bankingLoginPage.getUsernameErrorText()
                             .toLowerCase()
                             .contains("username required"),
-                    "Username validation must contain the required-field message [TC_006]");
+                    "Username validation must contain the required message [TC_006]");
         }
     }
 
@@ -406,17 +420,13 @@ public class BankingLoginTest extends BaseTest {
 
         // Step 1: Open login page
         {
-            // STUB: AUT_LOGIN_PATH not confirmed — using /login through the approved openLoginPage stub.
+            // STUB: AUT_LOGIN_PATH not confirmed — using the approved openLoginPage stub.
             bankingLoginPage.openLoginPage();
-        }
-
-        // Step 10: Enter valid username
-        {
-            bankingLoginPage.enterUsername(validUsername);
         }
 
         // Step 11: Leave password blank
         {
+            bankingLoginPage.enterUsername(validUsername);
             bankingLoginPage.clearPassword();
         }
 
@@ -434,7 +444,7 @@ public class BankingLoginTest extends BaseTest {
                     bankingLoginPage.getPasswordErrorText()
                             .toLowerCase()
                             .contains("password required"),
-                    "Password validation must contain the required-field message [TC_007]");
+                    "Password validation must contain the required message [TC_007]");
         }
     }
 
@@ -451,7 +461,7 @@ public class BankingLoginTest extends BaseTest {
 
         // Step 1: Open login page
         {
-            // STUB: AUT_LOGIN_PATH not confirmed — using /login through the approved openLoginPage stub.
+            // STUB: AUT_LOGIN_PATH not confirmed — using the approved openLoginPage stub.
             bankingLoginPage.openLoginPage();
         }
 
@@ -478,19 +488,6 @@ public class BankingLoginTest extends BaseTest {
             Assert.assertTrue(
                     bankingLoginPage.isPasswordErrorDisplayed(),
                     "Blank password must display validation [TC_008]");
-        }
-    }
-
-    @AfterClass(alwaysRun = true)
-    public void tearDown() {
-        if (page != null) {
-            page.close();
-        }
-        if (browser != null) {
-            browser.close();
-        }
-        if (playwright != null) {
-            playwright.close();
         }
     }
 }
