@@ -25,7 +25,7 @@
             </run>
         </groups>
         <classes>
-            <class name="com.automation.tests.BankingLoginTc1"/>
+            <class name="com.automation.tests.BankingLoginTest"/>
         </classes>
     </test>
 
