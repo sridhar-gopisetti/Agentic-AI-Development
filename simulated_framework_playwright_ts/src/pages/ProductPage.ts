@@ -25,7 +25,9 @@ export class ProductPage extends BasePage {
     super(page);
     this.quantityInput    = this.page.locator('[data-test="quantity"]');
     this.addToCartButton  = this.page.locator('[data-test="add-to-cart"]');
-    this.successToast     = this.page.locator('.alert-success');
+    // FIX-TEW-PST: PST AUT v5.0 removed .alert-success; both add-to-cart and add-to-favorites
+    // confirmations now surface as [role="alert"] live-region toasts.
+    this.successToast     = this.page.locator('[role="alert"]');
     this.productTitle     = this.page.locator('[data-test="product-name"]');
     this.wishlistButton   = this.page.locator('[data-test="add-to-favorites"]');
   }

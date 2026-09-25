@@ -25,13 +25,14 @@ export class ProfilePage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.pageHeader    = this.page.locator('h1, h2').first();
-    this.firstNameField = this.page.locator('[data-test="first-name"]');
-    this.lastNameField  = this.page.locator('[data-test="last-name"]');
-    this.addressField  = this.page.locator('[data-test="address"]');
-    this.cityField     = this.page.locator('[data-test="city"]');
-    this.phoneField    = this.page.locator('[data-test="phone"]');
-    this.postcodeField = this.page.locator('[data-test="postcode"]');
+    // FIX-TEW-TC2: PST AUT v5.0 profile page uses label-bound textboxes, not data-test attrs.
+    this.pageHeader     = this.page.locator('h1, h2, h3').first();
+    this.firstNameField = this.page.getByLabel('First name');
+    this.lastNameField  = this.page.getByLabel('Last name');
+    this.addressField   = this.page.getByLabel('Street');
+    this.cityField      = this.page.getByLabel('City');
+    this.phoneField     = this.page.getByLabel('Phone');
+    this.postcodeField  = this.page.getByLabel('Postal code');
   }
 
   // ── Validation ────────────────────────────────────────────────────────────────
@@ -52,6 +53,7 @@ export class ProfilePage extends BasePage {
   async getPhone(): Promise<string>    { return this.getText(this.phoneField); }
   async getPostcode(): Promise<string> { return this.getText(this.postcodeField); }
 
+  getFirstNameLocator(): Locator  { return this.firstNameField; }
   getAddressLocator(): Locator  { return this.addressField; }
   getCityLocator(): Locator     { return this.cityField; }
   getPhoneLocator(): Locator    { return this.phoneField; }

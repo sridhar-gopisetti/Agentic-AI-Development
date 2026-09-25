@@ -55,8 +55,14 @@ export class PSTLoginPage extends BasePage {
     // The login-submit button was found visible/enabled/stable but the click action exceeded
     // 120s test timeout in Firefox. Using { force: true } bypasses actionability re-checks
     // and fires the click immediately once the element is visible.
+    // FIX-TEW-TC4: Also wait for network-idle after the forced click so the auth session
+    // cookie is persisted before the next page.goto() call (TC-4 Step 500 was landing on
+    // the login page because the cookie had not been written yet).
     await this.waitForVisible(this.loginButton);
-    await this.loginButton.click({ force: true });
+    await Promise.all([
+      this.page.waitForLoadState('networkidle').catch(() => {/* timeout is fine */}),
+      this.loginButton.click({ force: true }),
+    ]);
   }
 
   /**

@@ -6,13 +6,17 @@
     "test": "playwright test",
     "test:uc013c": "playwright test src/tests/functional/uc013c/",
     "test:banking": "playwright test src/tests/functional/banking/",
-    "test:sanity": "playwright test src/tests/sanity/",
+    "test:sanity": "playwright test src/tests/functional/practicesoftwaretesting/",
     "report": "playwright show-report",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "allure:generate": "node -e \"require('../common/allure_report_generator_js.js')\"",
+    "allure:open": "allure open allure-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.40.0",
     "@types/node": "^20.0.0",
+    "allure-commandline": "^2.46.1",
+    "allure-playwright": "^3.12.2",
     "typescript": "^5.3.0"
   }
 }

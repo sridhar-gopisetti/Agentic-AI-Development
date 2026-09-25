@@ -19,10 +19,6 @@
  *   - creditCardRadio → paymentMethodSelect ([data-test="payment-method"])
  *   - selectCreditCard(): uses selectOption('credit-card') on payment-method select
  *   - MEGA-51: coupon-code / apply-coupon-btn / discount-percentage removed from AUT v5.0
- * FIX-001-TEW-003 (FIARA TEW-RUN-20260802-003):
- *   - clickProceedCheckout(): added waitFor enabled state before click on proceed-3.
- *     WebKit Angular form validation marks proceed-3 disabled until all required fields
- *     pass client-side validation. Waiting for enabled state resolves the 120s timeout.
  *
  * Traceability:
  *   Requirement: REQ-PST-001
@@ -140,6 +136,11 @@ export class CheckoutPage extends BasePage {
     await this.fillField(this.cityField, address.city);
     await this.fillField(this.stateField, address.state);
     await this.countryDropdown.selectOption(address.country);
+    // FIX-001-TEW-009 (FIARA): PST AUT v5.0 awnextstep directive requires the Angular
+    // (change) event to re-evaluate form validity and enable proceed-3. Playwright's
+    // selectOption() sets the native <select> value but does not fire the change event
+    // on Chromium. dispatchEvent('change') forces Angular's reactive form to revalidate.
+    await this.countryDropdown.dispatchEvent('change');
     await this.fillField(this.postcodeField, address.postcode);
     if (address.houseNumber) {
       await this.fillField(this.houseNumberField, address.houseNumber);
@@ -149,26 +150,9 @@ export class CheckoutPage extends BasePage {
   /**
    * Submits the billing address form (proceed-3).
    * After this call the payment-method select becomes visible.
-   *
-   * FIX-001-TEW-003: Wait for proceed-3 to be both visible AND enabled before clicking.
-   * WebKit Angular form validation keeps proceed-3 disabled until all required fields
-   * pass validation. Chromium/Firefox both pass without this wait; WebKit requires it
-   * because Angular's ChangeDetectorRef triggers are delayed in the WebKit rendering engine.
-   * Using waitFor({ state: 'visible' }) followed by expect().toBeEnabled() poll loop.
    */
   async clickProceedCheckout(): Promise<void> {
-    await this.waitForVisible(this.proceedBillingButton);
-    // FIX-001-TEW-003: Poll for enabled state before clicking (WebKit Angular validation delay)
-    await this.proceedBillingButton.waitFor({ state: 'visible', timeout: 10_000 });
-    // Wait until the button is no longer disabled — Angular validation must complete
-    await this.page.waitForFunction(
-      () => {
-        const btn = document.querySelector('[data-test="proceed-3"]') as HTMLButtonElement | null;
-        return btn !== null && !btn.disabled;
-      },
-      { timeout: 15_000 }
-    );
-    await this.proceedBillingButton.click();
+    await this.clickWhenReady(this.proceedBillingButton);
   }
 
   /**

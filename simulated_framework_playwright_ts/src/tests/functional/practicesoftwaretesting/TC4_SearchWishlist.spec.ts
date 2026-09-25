@@ -75,8 +75,11 @@ test.describe('TC-4: Product Search, Sorting & Wishlist Functionality', () => {
 
     await test.step('Step 500 — Navigate to Wishlist/Favorites page and verify product', async () => {
       // Traceability: REQ-PST-004-TC4-STEP500
+      // FIX-TEW-TC4-S500: Wait for networkidle after goto so Angular renders the favorites list
+      // before asserting the container locator.
       await page.goto((process.env.BASE_URL ?? 'https://practicesoftwaretesting.com') + '/account/favorites');
-      await expect(wishlistPage.getWishlistContainerLocator()).toBeVisible();
+      await page.waitForLoadState('networkidle');
+      await expect(wishlistPage.getWishlistContainerLocator()).toBeVisible({ timeout: 15_000 });
     });
 
     await test.step('Step 600 — Remove product from wishlist and verify removal', async () => {

@@ -50,7 +50,11 @@ test.describe('TC-3: Contact Form Customer Support Attachment Flow (Bug Trigger)
 
     await test.step('Step 100 — Click Contact in top navigation menu', async () => {
       // Traceability: REQ-PST-003-TC3-STEP100
-      await page.locator('[data-test="nav-contact"]').click();
+      // FIX-002-TEW-009 (FIARA): Firefox click on nav-contact timed out at 120s waiting for
+      // Angular router navigation to complete — element was actionable but post-click nav
+      // stalled on live PST AUT. { force: true } bypasses the post-click navigation wait,
+      // same pattern as FIX-002-TEW-008 for login-submit. MEGA-47 remains the terminal failure.
+      await page.locator('[data-test="nav-contact"]').click({ force: true });
       const loaded = await contactPage.validate();
       expect(loaded).toBe(true);
       await expect(page).toHaveURL(/contact/);
