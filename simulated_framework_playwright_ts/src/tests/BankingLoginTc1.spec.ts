@@ -358,8 +358,8 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         // LOCATOR_UNCONFIRMED — not in AUT KB
         // Traceability: TC_005
         await expect(
-        bankingLoginPage.getErrorBannerLocator(),
-        ).toContainText(expectedMessages.invalidCredentials as string);
+          bankingLoginPage.getErrorBannerLocator(),
+        ).toContainText(expectedMessages.denied as string);
 
         // Traceability: TC_005
         await expect(page).not.toHaveURL(dashboardUrlPattern);
