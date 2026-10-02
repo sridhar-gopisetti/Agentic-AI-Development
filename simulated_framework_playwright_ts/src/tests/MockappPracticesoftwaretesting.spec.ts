@@ -5,24 +5,19 @@
 // Supply these before executing:
 //
 // TARGET_BROWSER  → set TARGET_BROWSER in .env (assumed: framework primary browser)
-// AUT_MODULES_IN_SCOPE  → set AUT_MODULES_IN_SCOPE in .env (assumed: inferred from test case document titles/tags)
+// AUT_MODULES_IN_SCOPE → set AUT_MODULES_IN_SCOPE in .env (assumed: inferred from test case document titles/tags)
 // LIVE_AUT_ACCESSIBLE  → set LIVE_AUT_ACCESSIBLE in .env (assumed: false)
 // PST_EMAIL  → set PST_EMAIL in .env
 // PST_PASSWORD  → set PST_PASSWORD in .env
-// PST_BILLING_*  → set billing fields in .env
-// PST_CARD_*  → set mock card fields in .env
-// PST_REG_*  → set registration fields in .env
-// PST_CONTACT_EMAIL  → set PST_CONTACT_EMAIL in .env
-// PST_CONTACT_MESSAGE  → set PST_CONTACT_MESSAGE in .env
+// PST_HAMMER_SELECTOR  → set PST_HAMMER_SELECTOR in .env
+// PST_SANDER_SELECTOR  → set PST_SANDER_SELECTOR in .env
+// PST_CART_NAV_SELECTOR  → set PST_CART_NAV_SELECTOR in .env
+// PST_PROFILE_PATH  → set PST_PROFILE_PATH in .env
+// PST_CONTACT_NAV_SELECTOR  → set PST_CONTACT_NAV_SELECTOR in .env
 // PST_CONTACT_ATTACHMENT_PATH  → set PST_CONTACT_ATTACHMENT_PATH in .env
-// PST_HAMMER_SELECTOR  → set confirmed Hammer selector in .env
-// PST_SANDER_SELECTOR  → set confirmed Sander selector in .env
-// PST_CART_NAV_SELECTOR  → set confirmed cart navigation selector in .env
-// PST_PROFILE_PATH  → set confirmed Profile path in .env
-// PST_CONTACT_NAV_SELECTOR  → set confirmed Contact navigation selector in .env
-// PST_FAVORITES_PATH  → set confirmed Favorites path in .env
-// PST_SORT_PRICE_ASC_VALUE  → set confirmed sort option value in .env
-// PST_CONTACT_CONFIRMATION_TIMEOUT  → set approved confirmation timeout in .env
+// PST_SORT_PRICE_ASC_VALUE  → set PST_SORT_PRICE_ASC_VALUE in .env
+// PST_FAVORITES_PATH  → set PST_FAVORITES_PATH in .env
+// PST_CONTACT_CONFIRMATION_TIMEOUT  → set PST_CONTACT_CONFIRMATION_TIMEOUT in .env
 // CheckoutPage.enterPromoCode()  → implement the approved Page Object stub
 // CheckoutPage.applyPromoCode()  → implement the approved Page Object stub
 // CheckoutPage.getDiscountLocator()  → implement the approved Page Object stub
@@ -122,8 +117,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(homePage.getCategoryPageTitleLocator()).toBeVisible();
         });
 
-        // Step 2 — Open Hammer, set quantity to 2, and add it to cart
-        await test.step('Step 2 — Open Hammer, set quantity to 2, and add it to cart', async () => {
+        // Step 2 — Locate the "Hammer" product, set quantity to "2", and click "Add to cart"
+        await test.step('Step 2 — Locate the "Hammer" product, set quantity to "2", and click "Add to cart"', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
           const hammerSelector =
             process.env.PST_HAMMER_SELECTOR ??
@@ -140,8 +135,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(productPage.getSuccessToastLocator()).toBeVisible();
         });
 
-        // Step 3 — Return home, select Power Tools, open Sander, and add it
-        await test.step('Step 3 — Return home, select Power Tools, open Sander, and add it', async () => {
+        // Step 3 — Return to the homepage, select "Power Tools", open "Sander", and click "Add to cart"
+        await test.step('Step 3 — Return to the homepage, select "Power Tools", open "Sander", and click "Add to cart"', async () => {
           await homePage.navigateTo('/');
           await homePage.clickCategory('Power Tools');
 
@@ -160,8 +155,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(productPage.getSuccessToastLocator()).toBeVisible();
         });
 
-        // Step 4 — Open the shopping cart overview page
-        await test.step('Step 4 — Open the shopping cart overview page', async () => {
+        // Step 4 — Click on the shopping cart icon in the top right corner to open the shopping cart overview page
+        await test.step('Step 4 — Click on the shopping cart icon in the top right corner to open the shopping cart overview page', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
           const cartSelector =
             process.env.PST_CART_NAV_SELECTOR ??
@@ -180,8 +175,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(cartPage.getProductRowLocator('Sander')).toBeVisible();
         });
 
-        // Step 5 — Complete billing navigation and apply promo code
-        await test.step('Step 5 — Complete billing navigation and apply promo code SPRING20', async () => {
+        // Step 5 — Proceed to checkout, fill out billing information, navigate to Payment, enter promo code SPRING20, and click Apply
+        await test.step('Step 5 — Proceed to checkout, fill out billing information, navigate to Payment, enter promo code SPRING20, and click Apply', async () => {
           await cartPage.clickProceedToCheckout();
           await checkoutPage.clickProceedStep2();
           await checkoutPage.fillBillingAddress(billingAddress);
@@ -196,8 +191,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(checkoutPage.getDiscountLocator()).toBeVisible();
         });
 
-        // Step 6 — Select Credit Card, enter card details, and confirm payment
-        await test.step('Step 6 — Select Credit Card, enter card details, and confirm payment', async () => {
+        // Step 6 — Select "Credit Card", enter valid mock card details, and click "Confirm"
+        await test.step('Step 6 — Select "Credit Card", enter valid mock card details, and click "Confirm"', async () => {
           await checkoutPage.selectCreditCard();
           await checkoutPage.fillCardDetails(cardDetails);
           await checkoutPage.clickConfirm();
@@ -229,14 +224,14 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // acg_run_id   : ACG-RUN-20261002-020
         // ─────────────────────────────────────────────────────────
 
-        // Step 7 — Navigate to the registration interface
-        await test.step('Step 7 — Navigate to the registration interface', async () => {
+        // Step 7 — Navigate directly to the registration interface
+        await test.step('Step 7 — Navigate directly to the registration interface', async () => {
           // Traceability: TC-ACG-RU-002
           await expect(registerPage.getRegisterButtonLocator()).toBeVisible();
         });
 
-        // Step 8 — Fill all required registration fields and click Register
-        await test.step('Step 8 — Fill all required registration fields and click Register', async () => {
+        // Step 8 — Enter valid data into all required fields and click "Register"
+        await test.step('Step 8 — Enter valid data into all required fields and click "Register"', async () => {
           await registerPage.fillRegistrationForm(registrationData);
           await registerPage.clickRegister();
 
@@ -244,8 +239,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(page).toHaveURL(/auth\/login/);
         });
 
-        // Step 9 — Log in with the newly created credentials
-        await test.step('Step 9 — Log in with the newly created credentials', async () => {
+        // Step 9 — Enter the newly created email address and password, then click "Login"
+        await test.step('Step 9 — Enter the newly created email address and password, then click "Login"', async () => {
           await pstLoginPage.login(
             registrationData.email,
             registrationData.password,
@@ -255,8 +250,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(page).toHaveURL(/account/);
         });
 
-        // Step 10 — Navigate to the Profile page
-        await test.step('Step 10 — Navigate to the Profile page', async () => {
+        // Step 10 — Click on the "Profile" link or user icon in the main navigation header
+        await test.step('Step 10 — Click on the "Profile" link or user icon in the main navigation header', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
           const profilePath =
             process.env.PST_PROFILE_PATH ??
@@ -269,8 +264,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(profilePage.getPageHeaderLocator()).toBeVisible();
         });
 
-        // Step 11 — Verify profile fields match registration data
-        await test.step('Step 11 — Verify profile fields match registration data', async () => {
+        // Step 11 — Verify that Address, Phone, City, and Postal Code exactly match the entered strings
+        await test.step('Step 11 — Verify that Address, Phone, City, and Postal Code exactly match the entered strings', async () => {
           // Traceability: TC-ACG-RU-002
           await expect(profilePage.getAddressLocator()).toHaveValue(
             registrationData.address,
@@ -306,8 +301,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // acg_run_id   : ACG-RUN-20261002-020
         // ─────────────────────────────────────────────────────────
 
-        // Step 12 — Open the Contact page
-        await test.step('Step 12 — Open the Contact page', async () => {
+        // Step 12 — Click on the "Contact" option in the top navigation menu bar
+        await test.step('Step 12 — Click on the "Contact" option in the top navigation menu bar', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
           const contactSelector =
             process.env.PST_CONTACT_NAV_SELECTOR ??
@@ -322,31 +317,31 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(contactPage.getSendButtonLocator()).toBeVisible();
         });
 
-        // Step 13 — Select Customer Service from Subject
-        await test.step('Step 13 — Select Customer Service from Subject', async () => {
+        // Step 13 — Select "Customer Service" from the Subject dropdown menu list
+        await test.step('Step 13 — Select "Customer Service" from the Subject dropdown menu list', async () => {
           await contactPage.selectSubject('Customer Service');
 
           // Traceability: TC-ACG-RU-003
           await expect(contactPage.getSendButtonLocator()).toBeVisible();
         });
 
-        // Step 14 — Fill Name, Email, and Message
-        await test.step('Step 14 — Fill Name, Email, and Message', async () => {
+        // Step 14 — Populate Name with "QA Tester", enter a valid email address, and type a detailed message
+        await test.step('Step 14 — Populate Name with "QA Tester", enter a valid email address, and type a detailed message', async () => {
           await contactPage.fillName(contactName);
           await contactPage.fillEmail(contactEmail);
           await contactPage.fillMessage(contactMessage);
         });
 
-        // Step 15 — Attach the test log file
-        await test.step('Step 15 — Attach the test log file', async () => {
+        // Step 15 — Click "Choose File", select test_log.txt, and attach it
+        await test.step('Step 15 — Click "Choose File", select test_log.txt, and attach it', async () => {
           await contactPage.attachFile(attachmentPath);
 
           // Traceability: TC-ACG-RU-003
           await expect(contactPage.getSendButtonLocator()).toBeVisible();
         });
 
-        // Step 16 — Send the support request ticket
-        await test.step('Step 16 — Send the support request ticket', async () => {
+        // Step 16 — Click the "Send" button to dispatch the support request ticket
+        await test.step('Step 16 — Click the "Send" button to dispatch the support request ticket', async () => {
           await contactPage.clickSend();
 
           const confirmationTimeout = Number(
@@ -381,8 +376,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
 
         let selectedProductName = '';
 
-        // Step 17 — Search for Drill from the homepage
-        await test.step('Step 17 — Search for Drill from the homepage', async () => {
+        // Step 17 — Navigate to the homepage, enter "Drill" in the search box, and click the search icon
+        await test.step('Step 17 — Navigate to the homepage, enter "Drill" in the search box, and click the search icon', async () => {
           await homePage.navigateTo('/');
           await homePage.searchProduct(searchTerm);
 
@@ -390,8 +385,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(homePage.getSearchResultsLocator().first()).toBeVisible();
         });
 
-        // Step 18 — Sort results by Price Low to High
-        await test.step('Step 18 — Sort results by Price Low to High', async () => {
+        // Step 18 — Select the Sort By Price (Low to High) option
+        await test.step('Step 18 — Select the Sort By Price (Low to High) option', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
           const priceAscendingValue =
             process.env.PST_SORT_PRICE_ASC_VALUE ??
@@ -406,8 +401,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(homePage.getSearchResultsLocator().first()).toBeVisible();
         });
 
-        // Step 19 — Open the first product from search results
-        await test.step('Step 19 — Open the first product from search results', async () => {
+        // Step 19 — Open the first product from the search results
+        await test.step('Step 19 — Open the first product from the search results', async () => {
           selectedProductName =
             (await homePage.getSearchResultsLocator().first().textContent())?.trim() ?? '';
 
@@ -417,16 +412,16 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(productPage.getProductTitleLocator()).toBeVisible();
         });
 
-        // Step 20 — Add the product to Favorites
-        await test.step('Step 20 — Add the product to Favorites', async () => {
+        // Step 20 — Click the "Add to Favorites" or wishlist icon
+        await test.step('Step 20 — Click the "Add to Favorites" or wishlist icon', async () => {
           await productPage.clickAddToFavorites();
 
           // Traceability: TC-ACG-RU-004
           await expect(productPage.getSuccessToastLocator()).toBeVisible();
         });
 
-        // Step 21 — Open the Wishlist/Favorites page
-        await test.step('Step 21 — Open the Wishlist/Favorites page', async () => {
+        // Step 21 — Navigate to the Wishlist/Favorites page from the user account menu
+        await test.step('Step 21 — Navigate to the Wishlist/Favorites page from the user account menu', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
           const favoritesPath =
             process.env.PST_FAVORITES_PATH ??
