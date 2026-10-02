@@ -15,14 +15,19 @@
 // PST_CONTACT_EMAIL  → set PST_CONTACT_EMAIL in .env
 // PST_CONTACT_MESSAGE  → set PST_CONTACT_MESSAGE in .env
 // PST_CONTACT_ATTACHMENT_PATH  → set PST_CONTACT_ATTACHMENT_PATH in .env
-// PST_CONTACT_NAV_SELECTOR  → set PST_CONTACT_NAV_SELECTOR in .env
-// PST_PROFILE_NAV_SELECTOR  → set PST_PROFILE_NAV_SELECTOR in .env
 // PST_HAMMER_SELECTOR  → set PST_HAMMER_SELECTOR in .env
 // PST_SANDER_SELECTOR  → set PST_SANDER_SELECTOR in .env
 // PST_CART_NAV_SELECTOR  → set PST_CART_NAV_SELECTOR in .env
+// PST_PROFILE_NAV_SELECTOR  → set PST_PROFILE_NAV_SELECTOR in .env
+// PST_CONTACT_NAV_SELECTOR  → set PST_CONTACT_NAV_SELECTOR in .env
 // PST_FAVORITES_PATH  → set PST_FAVORITES_PATH in .env
 // PST_SORT_PRICE_ASC_VALUE  → set PST_SORT_PRICE_ASC_VALUE in .env
 // PST_CONTACT_CONFIRMATION_TIMEOUT  → set PST_CONTACT_CONFIRMATION_TIMEOUT in .env
+// CheckoutPage.enterPromoCode()  → implement the approved Page Object stub
+// CheckoutPage.applyPromoCode()  → implement the approved Page Object stub
+// CheckoutPage.getDiscountLocator()  → implement the approved Page Object stub
+// CheckoutPage.getOrderId()  → implement the approved Page Object stub
+// WishlistPage.getWishlistCount()  → implement the approved Page Object stub
 // ════════════════════════════════════════════════════
 
 import { test, expect } from '../fixtures';
@@ -34,6 +39,7 @@ const baseUrl = process.env.BASE_URL ?? 'http://localhost:3000';
 
 // STUB: PST_EMAIL not confirmed — using empty value
 const pstEmail = process.env.PST_EMAIL ?? '';
+
 // STUB: PST_PASSWORD not confirmed — using empty value
 const pstPassword = process.env.PST_PASSWORD ?? '';
 
@@ -85,7 +91,7 @@ const registrationData: RegistrationData = {
   // STUB: PST_REG_PHONE not confirmed — using empty value
   phone: process.env.PST_REG_PHONE ?? '',
   // STUB: PST_REG_EMAIL not confirmed — using empty value
-  email: process.env.PST_REG_EMAIL ?? '',
+  email: process.env.PST_REG_EMAIL ?? `test_user_${Date.now()}@example.com`,
   // STUB: PST_REG_PASSWORD not confirmed — using empty value
   password: process.env.PST_REG_PASSWORD ?? '',
 };
@@ -97,6 +103,7 @@ const contactEmail = process.env.PST_CONTACT_EMAIL ?? '';
 const contactMessage = process.env.PST_CONTACT_MESSAGE ?? '';
 // STUB: PST_CONTACT_ATTACHMENT_PATH not confirmed — using empty value
 const attachmentPath = process.env.PST_CONTACT_ATTACHMENT_PATH ?? '';
+
 const searchTerm = process.env.PST_SEARCH_TERM ?? 'Drill';
 const promoCode = process.env.PST_PROMO_CODE ?? 'SPRING20';
 
@@ -121,14 +128,14 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-001
         // script_id    : SCR-ACG-RU-001
-        // acg_run_id   : ACG-RUN-20261002-016
+        // acg_run_id   : ACG-RUN-20261002-018
         // ─────────────────────────────────────────────────────────
 
         // Step 1 — Navigate to the homepage and select the "Hand Tools" category from the sidebar menu practicesoftwaretesting.com.
         await test.step('Step 1 — Navigate to the homepage and select the "Hand Tools" category', async () => {
           await homePage.navigateTo('/');
           await homePage.clickCategory('Hand Tools');
-          // Traceability: TC-ACG-RU-001
+          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
           await expect(homePage.getCategoryPageTitleLocator()).toBeVisible();
         });
 
@@ -141,7 +148,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await hammerProduct.click();
           await productPage.setQuantity(2);
           await productPage.clickAddToCart();
-          // Traceability: TC-ACG-RU-001
+          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
           await expect(productPage.getSuccessToastLocator()).toBeVisible();
         });
 
@@ -155,7 +162,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await sanderProduct.waitFor({ state: 'visible' });
           await sanderProduct.click();
           await productPage.clickAddToCart();
-          // Traceability: TC-ACG-RU-001
+          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
           await expect(productPage.getSuccessToastLocator()).toBeVisible();
         });
 
@@ -166,11 +173,11 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           const cartNavigation: Locator = page.locator(cartSelector);
           await cartNavigation.waitFor({ state: 'visible' });
           await cartNavigation.click();
-          // Traceability: TC-ACG-RU-001
+          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
           await expect(cartPage.getCartTableLocator()).toBeVisible();
-          // Traceability: TC-ACG-RU-001
+          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
           await expect(cartPage.getProductRowLocator('Hammer')).toBeVisible();
-          // Traceability: TC-ACG-RU-001
+          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
           await expect(cartPage.getProductRowLocator('Sander')).toBeVisible();
         });
 
@@ -182,7 +189,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await checkoutPage.clickProceedCheckout();
           await checkoutPage.enterPromoCode(promoCode);
           await checkoutPage.applyPromoCode();
-          // Traceability: TC-ACG-RU-001
+          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
           await expect(checkoutPage.getDiscountLocator()).toBeVisible();
         });
 
@@ -191,17 +198,17 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await checkoutPage.selectCreditCard();
           await checkoutPage.fillCardDetails(cardDetails);
           await checkoutPage.clickConfirm();
-          // Traceability: TC-ACG-RU-001
+          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
           await expect(checkoutPage.getOrderSuccessLocator()).toBeVisible();
           const orderId = await checkoutPage.getOrderId();
-          // Traceability: TC-ACG-RU-001
+          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
           await expect(orderId).not.toBe('');
         });
       },
     );
   });
 
-  test.describe('TC-ACG-RU-002 — Registration and Profile Persistence', () => {
+  test.describe('TC-ACG-RU-002 — User Account Registration & Profile Data Persistence', () => {
     test.beforeEach(async ({ registerPage }) => {
       await registerPage.navigateTo('/auth/register');
     });
@@ -212,12 +219,12 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-002
         // script_id    : SCR-ACG-RU-002
-        // acg_run_id   : ACG-RUN-20261002-016
+        // acg_run_id   : ACG-RUN-20261002-018
         // ─────────────────────────────────────────────────────────
 
         // Step 7 — Navigate directly to the registration interface: practicesoftwaretesting.com.
         await test.step('Step 7 — Navigate to the registration interface', async () => {
-          // Traceability: TC-ACG-RU-002
+          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(registerPage.getRegisterButtonLocator()).toBeVisible();
         });
 
@@ -225,14 +232,17 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         await test.step('Step 8 — Fill all required registration fields and click Register', async () => {
           await registerPage.fillRegistrationForm(registrationData);
           await registerPage.clickRegister();
-          // Traceability: TC-ACG-RU-002
+          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(page).toHaveURL(/auth\/login/);
         });
 
         // Step 9 — On the login screen, enter the newly created email address and password credentials, then click "Login".
         await test.step('Step 9 — Log in with the newly created credentials', async () => {
-          await pstLoginPage.login(registrationData.email, registrationData.password);
-          // Traceability: TC-ACG-RU-002
+          await pstLoginPage.login(
+            registrationData.email,
+            registrationData.password,
+          );
+          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(page).toHaveURL(/account/);
         });
 
@@ -243,26 +253,26 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           const profileNavigation: Locator = page.locator(profileSelector);
           await profileNavigation.waitFor({ state: 'visible' });
           await profileNavigation.click();
-          // Traceability: TC-ACG-RU-002
+          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(profilePage.getPageHeaderLocator()).toBeVisible();
         });
 
         // Step 11 — Verify that every text field on the screen exactly matches the strings entered during registration.
         await test.step('Step 11 — Verify profile fields match registration data', async () => {
-          // Traceability: TC-ACG-RU-002
+          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(profilePage.getAddressLocator()).toHaveValue(registrationData.address);
-          // Traceability: TC-ACG-RU-002
+          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(profilePage.getPhoneLocator()).toHaveValue(registrationData.phone);
-          // Traceability: TC-ACG-RU-002
+          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(profilePage.getCityLocator()).toHaveValue(registrationData.city);
-          // Traceability: TC-ACG-RU-002
+          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(profilePage.getPostcodeLocator()).toHaveValue(registrationData.postcode);
         });
       },
     );
   });
 
-  test.describe('TC-ACG-RU-003 — Contact Form', () => {
+  test.describe('TC-ACG-RU-003 — Contact Form Customer Support Attachment Flow', () => {
     test.beforeEach(async ({ page }) => {
       await page.goto(baseUrl);
     });
@@ -273,7 +283,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-003
         // script_id    : SCR-ACG-RU-003
-        // acg_run_id   : ACG-RUN-20261002-016
+        // acg_run_id   : ACG-RUN-20261002-018
         // ─────────────────────────────────────────────────────────
 
         // Step 12 — Click on the "Contact" option in the top navigation menu bar.
@@ -283,14 +293,14 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           const contactNavigation: Locator = page.locator(contactSelector);
           await contactNavigation.waitFor({ state: 'visible' });
           await contactNavigation.click();
-          // Traceability: TC-ACG-RU-003
+          // Traceability: TC-ACG-RU-003 | RIARA-TC-03
           await expect(contactPage.getSendButtonLocator()).toBeVisible();
         });
 
         // Step 13 — Select "Customer Service" from the Subject dropdown menu list.
         await test.step('Step 13 — Select Customer Service from Subject', async () => {
           await contactPage.selectSubject('Customer Service');
-          // Traceability: TC-ACG-RU-003
+          // Traceability: TC-ACG-RU-003 | RIARA-TC-03
           await expect(contactPage.getSendButtonLocator()).toBeVisible();
         });
 
@@ -301,21 +311,21 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await contactPage.fillMessage(contactMessage);
         });
 
-        // Step 15 — Click the "Choose File" button, select test_log.txt, and attach it.
+        // Step 15 — Click the "Choose File" button, select a standard text log file (test_log.txt), and attach it.
         await test.step('Step 15 — Attach the test log file', async () => {
           await contactPage.attachFile(attachmentPath);
-          // Traceability: TC-ACG-RU-003
+          // Traceability: TC-ACG-RU-003 | RIARA-TC-03
           await expect(contactPage.getSendButtonLocator()).toBeVisible();
         });
 
         // Step 16 — Click the "Send" button to dispatch the support request ticket.
         await test.step('Step 16 — Send the support request ticket', async () => {
           await contactPage.clickSend();
-          // STUB: PST_CONTACT_CONFIRMATION_TIMEOUT not confirmed — using environment value or 0
+          // STUB: PST_CONTACT_CONFIRMATION_TIMEOUT not confirmed — using environment value or 5000
           const confirmationTimeout = Number(
-            process.env.PST_CONTACT_CONFIRMATION_TIMEOUT ?? '0',
+            process.env.PST_CONTACT_CONFIRMATION_TIMEOUT ?? '5000',
           );
-          // Traceability: TC-ACG-RU-003
+          // Traceability: TC-ACG-RU-003 | RIARA-TC-03
           await expect(contactPage.getConfirmationLocator()).toBeVisible({
             timeout: confirmationTimeout,
           });
@@ -324,7 +334,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
     );
   });
 
-  test.describe('TC-ACG-RU-004 — Search and Wishlist', () => {
+  test.describe('TC-ACG-RU-004 — Product Search, Sorting & Wishlist Functionality', () => {
     test.beforeEach(async ({ pstLoginPage }) => {
       await pstLoginPage.navigateTo('/auth/login');
       await pstLoginPage.login(pstEmail, pstPassword);
@@ -336,7 +346,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-004
         // script_id    : SCR-ACG-RU-004
-        // acg_run_id   : ACG-RUN-20261002-016
+        // acg_run_id   : ACG-RUN-20261002-018
         // ─────────────────────────────────────────────────────────
 
         let selectedProductName = '';
@@ -345,7 +355,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         await test.step('Step 17 — Search for Drill from the homepage', async () => {
           await homePage.navigateTo('/');
           await homePage.searchProduct(searchTerm);
-          // Traceability: TC-ACG-RU-004
+          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
           await expect(homePage.getSearchResultsLocator().first()).toBeVisible();
         });
 
@@ -354,7 +364,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           // LOCATOR_UNCONFIRMED — not in AUT KB
           const priceAscendingValue = process.env.PST_SORT_PRICE_ASC_VALUE ?? '';
           await homePage.getSortDropdownLocator().selectOption(priceAscendingValue);
-          // Traceability: TC-ACG-RU-004
+          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
           await expect(homePage.getSearchResultsLocator().first()).toBeVisible();
         });
 
@@ -362,16 +372,16 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         await test.step('Step 19 — Open the first product from search results', async () => {
           selectedProductName =
             (await homePage.getSearchResultsLocator().first().textContent())?.trim() ??
-            (process.env.PST_WISHLIST_PRODUCT_NAME ?? '');
+            '';
           await homePage.clickFirstProduct();
-          // Traceability: TC-ACG-RU-004
+          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
           await expect(productPage.getProductTitleLocator()).toBeVisible();
         });
 
-        // Step 20 — Click the "Add to Favorites" or wishlist icon.
+        // Step 20 — Click on the "Add to Favorites" or wishlist icon.
         await test.step('Step 20 — Add the product to Favorites', async () => {
           await productPage.clickAddToFavorites();
-          // Traceability: TC-ACG-RU-004
+          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
           await expect(productPage.getSuccessToastLocator()).toBeVisible();
         });
 
@@ -380,19 +390,19 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           // STUB: PST_FAVORITES_PATH not confirmed — using empty path
           const favoritesPath = process.env.PST_FAVORITES_PATH ?? '';
           await page.goto(`${baseUrl}${favoritesPath}`);
-          // Traceability: TC-ACG-RU-004
+          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
           await expect(wishlistPage.getWishlistContainerLocator()).toBeVisible();
-          // Traceability: TC-ACG-RU-004
+          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
           await expect(wishlistPage.getProductLocator(selectedProductName)).toBeVisible();
         });
 
         // Step 22 — Remove the product from the wishlist.
         await test.step('Step 22 — Remove the product from the wishlist', async () => {
           await wishlistPage.removeProduct(selectedProductName);
-          // Traceability: TC-ACG-RU-004
+          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
           await expect(wishlistPage.getProductLocator(selectedProductName)).not.toBeVisible();
           const wishlistCount = await wishlistPage.getWishlistCount();
-          // Traceability: TC-ACG-RU-004
+          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
           await expect(wishlistCount).toBe('');
         });
       },
