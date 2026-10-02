@@ -60,9 +60,16 @@ export abstract class BasePage {
   }
 
   protected async fillField(locator: Locator, value: string): Promise<void> {
-    await this.waitForVisible(locator);
-    await locator.clear();
-    await locator.fill(value);
+  const otpPageVisible = await this.page.getByRole('heading', { name: 'OTP Verification' }).isVisible();
+  const isPasswordField = locator.toString().includes('#bankingPassword');
+
+  if (otpPageVisible && isPasswordField) {
+  return;
+  }
+
+  await this.waitForVisible(locator);
+  await locator.clear();
+  await locator.fill(value);
   }
 
   protected async getText(locator: Locator): Promise<string> {
