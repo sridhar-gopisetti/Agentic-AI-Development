@@ -5,8 +5,8 @@
 // Supply these before executing:
 //
 // TARGET_BROWSER  → set TARGET_BROWSER in .env (assumed: framework primary browser)
-// AUT_MODULES_IN_SCOPE  → set AUT_MODULES_IN_SCOPE in .env (assumed: four PST workflows)
-// LIVE_AUT_ACCESSIBLE  → set LIVE_AUT_ACCESSIBLE in .env (assumed: false)
+// AUT_MODULES_IN_SCOPE  → set AUT_MODULES_IN_SCOPE in .env
+// LIVE_AUT_ACCESSIBLE  → set LIVE_AUT_ACCESSIBLE in .env
 // PST_EMAIL  → set PST_EMAIL in .env
 // PST_PASSWORD  → set PST_PASSWORD in .env
 // PST_BILLING_*  → set billing fields in .env
@@ -15,14 +15,14 @@
 // PST_CONTACT_EMAIL  → set PST_CONTACT_EMAIL in .env
 // PST_CONTACT_MESSAGE  → set PST_CONTACT_MESSAGE in .env
 // PST_CONTACT_ATTACHMENT_PATH  → set PST_CONTACT_ATTACHMENT_PATH in .env
-// PST_HAMMER_SELECTOR  → set PST_HAMMER_SELECTOR in .env
-// PST_SANDER_SELECTOR  → set PST_SANDER_SELECTOR in .env
-// PST_CART_NAV_SELECTOR  → set PST_CART_NAV_SELECTOR in .env
-// PST_PROFILE_NAV_SELECTOR  → set PST_PROFILE_NAV_SELECTOR in .env
-// PST_CONTACT_NAV_SELECTOR  → set PST_CONTACT_NAV_SELECTOR in .env
-// PST_FAVORITES_PATH  → set PST_FAVORITES_PATH in .env
-// PST_SORT_PRICE_ASC_VALUE  → set PST_SORT_PRICE_ASC_VALUE in .env
-// PST_CONTACT_CONFIRMATION_TIMEOUT  → set PST_CONTACT_CONFIRMATION_TIMEOUT in .env
+// PST_HAMMER_SELECTOR  → set confirmed Hammer selector in .env
+// PST_SANDER_SELECTOR  → set confirmed Sander selector in .env
+// PST_CART_NAV_SELECTOR  → set confirmed cart navigation selector in .env
+// PST_PROFILE_NAV_SELECTOR  → set confirmed Profile navigation selector in .env
+// PST_CONTACT_NAV_SELECTOR  → set confirmed Contact navigation selector in .env
+// PST_FAVORITES_PATH  → set confirmed Favorites path in .env
+// PST_SORT_PRICE_ASC_VALUE  → set confirmed sort option value in .env
+// PST_CONTACT_CONFIRMATION_TIMEOUT  → set approved confirmation timeout in .env
 // CheckoutPage.enterPromoCode()  → implement the approved Page Object stub
 // CheckoutPage.applyPromoCode()  → implement the approved Page Object stub
 // CheckoutPage.getDiscountLocator()  → implement the approved Page Object stub
@@ -32,7 +32,10 @@
 
 import { test, expect } from '../fixtures';
 import type { Locator } from '@playwright/test';
-import type { BillingAddress, CardDetails } from '../pages/CheckoutPage';
+import type {
+  BillingAddress,
+  CardDetails,
+} from '../pages/CheckoutPage';
 import type { RegistrationData } from '../pages/RegisterPage';
 
 const baseUrl = process.env.BASE_URL ?? 'http://localhost:3000';
@@ -90,7 +93,7 @@ const registrationData: RegistrationData = {
   postcode: process.env.PST_REG_POSTCODE ?? '',
   // STUB: PST_REG_PHONE not confirmed — using empty value
   phone: process.env.PST_REG_PHONE ?? '',
-  // STUB: PST_REG_EMAIL not confirmed — using empty value
+  // STUB: PST_REG_EMAIL not confirmed — using a unique generated value
   email: process.env.PST_REG_EMAIL ?? `test_user_${Date.now()}@example.com`,
   // STUB: PST_REG_PASSWORD not confirmed — using empty value
   password: process.env.PST_REG_PASSWORD ?? '',
@@ -124,7 +127,13 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
 
     test(
       '[TC-ACG-RU-001][SCR-ACG-RU-001] Complex Multi-Item Checkout with Promo Code Validation',
-      async ({ page, homePage, productPage, cartPage, checkoutPage }) => {
+      async ({
+        page,
+        homePage,
+        productPage,
+        cartPage,
+        checkoutPage,
+      }) => {
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-001
         // script_id    : SCR-ACG-RU-001
@@ -215,7 +224,12 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
 
     test(
       '[TC-ACG-RU-002][SCR-ACG-RU-002] User Account Registration & Profile Data Persistence',
-      async ({ page, registerPage, pstLoginPage, profilePage }) => {
+      async ({
+        page,
+        registerPage,
+        pstLoginPage,
+        profilePage,
+      }) => {
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-002
         // script_id    : SCR-ACG-RU-002
@@ -228,7 +242,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(registerPage.getRegisterButtonLocator()).toBeVisible();
         });
 
-        // Step 8 — Enter valid data into all required fields and click "Register".
+        // Step 8 — Enter valid data into all required fields: First Name, Last Name, Date of Birth, Address, City, State, Country, Postal Code, Phone, Email, and Password. Click "Register".
         await test.step('Step 8 — Fill all required registration fields and click Register', async () => {
           await registerPage.fillRegistrationForm(registrationData);
           await registerPage.clickRegister();
@@ -257,7 +271,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await expect(profilePage.getPageHeaderLocator()).toBeVisible();
         });
 
-        // Step 11 — Verify that every text field on the screen exactly matches the strings entered during registration.
+        // Step 11 — Verify that every text field on the screen (Address, Phone, City, Postal Code) exactly matches the strings entered during registration.
         await test.step('Step 11 — Verify profile fields match registration data', async () => {
           // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(profilePage.getAddressLocator()).toHaveValue(registrationData.address);
@@ -311,7 +325,7 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
           await contactPage.fillMessage(contactMessage);
         });
 
-        // Step 15 — Click the "Choose File" button, select a standard text log file (test_log.txt), and attach it.
+        // Step 15 — Click the "Choose File" button under the attachment section, select a standard text log file (test_log.txt), and attach it.
         await test.step('Step 15 — Attach the test log file', async () => {
           await contactPage.attachFile(attachmentPath);
           // Traceability: TC-ACG-RU-003 | RIARA-TC-03
@@ -371,14 +385,13 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // Step 19 — Open the first product from the search results.
         await test.step('Step 19 — Open the first product from search results', async () => {
           selectedProductName =
-            (await homePage.getSearchResultsLocator().first().textContent())?.trim() ??
-            '';
+            (await homePage.getSearchResultsLocator().first().textContent())?.trim() ?? '';
           await homePage.clickFirstProduct();
           // Traceability: TC-ACG-RU-004 | RIARA-TC-04
           await expect(productPage.getProductTitleLocator()).toBeVisible();
         });
 
-        // Step 20 — Click on the "Add to Favorites" or wishlist icon.
+        // Step 20 — Click the "Add to Favorites" or wishlist icon.
         await test.step('Step 20 — Add the product to Favorites', async () => {
           await productPage.clickAddToFavorites();
           // Traceability: TC-ACG-RU-004 | RIARA-TC-04
