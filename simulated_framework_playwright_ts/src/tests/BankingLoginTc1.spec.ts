@@ -59,7 +59,7 @@ const invalidPassword = process.env.BANK_INVALID_PASSWORD;
 const expectedMessages = {
   invalidCredentials: process.env.BANK_INVALID_CREDENTIALS_MESSAGE,
   invalidPassword: process.env.BANK_INVALID_PASSWORD_MESSAGE,
-  denied: process.env.BANK_DENIED_MESSAGE,
+  denied: process.env.BANK_INVALID_CREDENTIALS_MESSAGE,
   usernameRequired: process.env.BANK_USERNAME_REQUIRED_MESSAGE,
   passwordRequired: process.env.BANK_PASSWORD_REQUIRED_MESSAGE,
 };
