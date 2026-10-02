@@ -1,3 +1,12 @@
+// ════════════════════════════════════════════════════
+// SCRIPT READINESS: PARTIAL
+// This script is structurally complete but contains
+// placeholders for the following missing values.
+// Supply these before executing:
+//
+// TARGET_BROWSER  → set TARGET_BROWSER in .env (assumed: framework primary browser)
+// LIVE_AUT_ACCESSIBLE → set LIVE_AUT_ACCESSIBLE in .env (assumed: false)
+// ════════════════════════════════════════════════════
 /**
  * BankingLoginPage — playwright-typescript framework
  *
@@ -195,4 +204,9 @@ export class BankingLoginPage extends BasePage {
   getPasswordValidationLocator(): Locator   { return this.passwordValidationMsg; }
   getOtpFieldLocator(): Locator             { return this.otpField; }
   getOtpPageLocator(): Locator              { return this.otpPage; }
+
+  getLoginHeadingLocator(): Locator {
+    // STUB: getLoginHeadingLocator not implemented — stubbed on stub_and_continue
+    return this.page.locator('[data-stub="banking-login-heading"]');
+  }
 }
