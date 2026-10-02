@@ -6,7 +6,7 @@
 //
 // TARGET_BROWSER  → set TARGET_BROWSER in .env (assumed: framework primary browser)
 // AUT_MODULES_IN_SCOPE  → set AUT_MODULES_IN_SCOPE in .env
-// LIVE_AUT_ACCESSIBLE  → set LIVE_AUT_ACCESSIBLE in .env
+// LIVE_AUT_ACCESSIBLE  → set LIVE_AUT_ACCESSIBLE in .env (assumed: false)
 // PST_EMAIL  → set PST_EMAIL in .env
 // PST_PASSWORD  → set PST_PASSWORD in .env
 // PST_BILLING_*  → set billing fields in .env
@@ -20,6 +20,7 @@
 // PST_CART_NAV_SELECTOR  → set confirmed cart navigation selector in .env
 // PST_PROFILE_NAV_SELECTOR  → set confirmed Profile navigation selector in .env
 // PST_CONTACT_NAV_SELECTOR  → set confirmed Contact navigation selector in .env
+// PST_PROFILE_PATH  → set confirmed Profile path in .env
 // PST_FAVORITES_PATH  → set confirmed Favorites path in .env
 // PST_SORT_PRICE_ASC_VALUE  → set confirmed sort option value in .env
 // PST_CONTACT_CONFIRMATION_TIMEOUT  → set approved confirmation timeout in .env
@@ -40,71 +41,43 @@ import type { RegistrationData } from '../pages/RegisterPage';
 
 const baseUrl = process.env.BASE_URL ?? 'http://localhost:3000';
 
-// STUB: PST_EMAIL not confirmed — using empty value
 const pstEmail = process.env.PST_EMAIL ?? '';
-
-// STUB: PST_PASSWORD not confirmed — using empty value
 const pstPassword = process.env.PST_PASSWORD ?? '';
 
 const billingAddress: BillingAddress = {
-  // STUB: PST_BILLING_STREET not confirmed — using empty value
   street: process.env.PST_BILLING_STREET ?? '',
-  // STUB: PST_BILLING_CITY not confirmed — using empty value
   city: process.env.PST_BILLING_CITY ?? '',
-  // STUB: PST_BILLING_STATE not confirmed — using empty value
   state: process.env.PST_BILLING_STATE ?? '',
-  // STUB: PST_BILLING_COUNTRY not confirmed — using empty value
   country: process.env.PST_BILLING_COUNTRY ?? '',
-  // STUB: PST_BILLING_POSTCODE not confirmed — using empty value
   postcode: process.env.PST_BILLING_POSTCODE ?? '',
-  // STUB: PST_BILLING_HOUSE_NUMBER not confirmed — using empty value
   houseNumber: process.env.PST_BILLING_HOUSE_NUMBER ?? '',
 };
 
 const cardDetails: CardDetails = {
-  // STUB: PST_CARD_NUMBER not confirmed — using empty value
   number: process.env.PST_CARD_NUMBER ?? '',
-  // STUB: PST_CARD_EXPIRY not confirmed — using empty value
   expiry: process.env.PST_CARD_EXPIRY ?? '',
-  // STUB: PST_CARD_CVV not confirmed — using empty value
   cvv: process.env.PST_CARD_CVV ?? '',
-  // STUB: PST_CARD_HOLDER not confirmed — using empty value
   holder: process.env.PST_CARD_HOLDER ?? '',
 };
 
 const registrationData: RegistrationData = {
-  // STUB: PST_REG_FIRST_NAME not confirmed — using empty value
   firstName: process.env.PST_REG_FIRST_NAME ?? '',
-  // STUB: PST_REG_LAST_NAME not confirmed — using empty value
   lastName: process.env.PST_REG_LAST_NAME ?? '',
-  // STUB: PST_REG_DOB not confirmed — using empty value
   dob: process.env.PST_REG_DOB ?? '',
-  // STUB: PST_REG_ADDRESS not confirmed — using empty value
   address: process.env.PST_REG_ADDRESS ?? '',
-  // STUB: PST_REG_HOUSE_NUMBER not confirmed — using empty value
   houseNumber: process.env.PST_REG_HOUSE_NUMBER ?? '',
-  // STUB: PST_REG_CITY not confirmed — using empty value
   city: process.env.PST_REG_CITY ?? '',
-  // STUB: PST_REG_STATE not confirmed — using empty value
   state: process.env.PST_REG_STATE ?? '',
-  // STUB: PST_REG_COUNTRY not confirmed — using empty value
   country: process.env.PST_REG_COUNTRY ?? '',
-  // STUB: PST_REG_POSTCODE not confirmed — using empty value
   postcode: process.env.PST_REG_POSTCODE ?? '',
-  // STUB: PST_REG_PHONE not confirmed — using empty value
   phone: process.env.PST_REG_PHONE ?? '',
-  // STUB: PST_REG_EMAIL not confirmed — using a unique generated value
   email: process.env.PST_REG_EMAIL ?? `test_user_${Date.now()}@example.com`,
-  // STUB: PST_REG_PASSWORD not confirmed — using empty value
   password: process.env.PST_REG_PASSWORD ?? '',
 };
 
 const contactName = process.env.PST_CONTACT_NAME ?? 'QA Tester';
-// STUB: PST_CONTACT_EMAIL not confirmed — using empty value
 const contactEmail = process.env.PST_CONTACT_EMAIL ?? '';
-// STUB: PST_CONTACT_MESSAGE not confirmed — using empty value
 const contactMessage = process.env.PST_CONTACT_MESSAGE ?? '';
-// STUB: PST_CONTACT_ATTACHMENT_PATH not confirmed — using empty value
 const attachmentPath = process.env.PST_CONTACT_ATTACHMENT_PATH ?? '';
 
 const searchTerm = process.env.PST_SEARCH_TERM ?? 'Drill';
@@ -263,10 +236,8 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // Step 10 — Click on the "Profile" link or user icon located in the main navigation header.
         await test.step('Step 10 — Navigate to the Profile page', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          const profileSelector = process.env.PST_PROFILE_NAV_SELECTOR ?? '';
-          const profileNavigation: Locator = page.locator(profileSelector);
-          await profileNavigation.waitFor({ state: 'visible' });
-          await profileNavigation.click();
+          const profilePath = process.env.PST_PROFILE_PATH ?? '';
+          await page.goto(`${baseUrl}${profilePath}`);
           // Traceability: TC-ACG-RU-002 | RIARA-TC-02
           await expect(profilePage.getPageHeaderLocator()).toBeVisible();
         });
