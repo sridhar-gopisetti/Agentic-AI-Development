@@ -18,9 +18,8 @@
 // PST_HAMMER_SELECTOR  → set confirmed Hammer selector in .env
 // PST_SANDER_SELECTOR  → set confirmed Sander selector in .env
 // PST_CART_NAV_SELECTOR  → set confirmed cart navigation selector in .env
-// PST_PROFILE_NAV_SELECTOR  → set confirmed Profile navigation selector in .env
-// PST_CONTACT_NAV_SELECTOR  → set confirmed Contact navigation selector in .env
 // PST_PROFILE_PATH  → set confirmed Profile path in .env
+// PST_CONTACT_NAV_SELECTOR  → set confirmed Contact navigation selector in .env
 // PST_FAVORITES_PATH  → set confirmed Favorites path in .env
 // PST_SORT_PRICE_ASC_VALUE  → set confirmed sort option value in .env
 // PST_CONTACT_CONFIRMATION_TIMEOUT  → set approved confirmation timeout in .env
@@ -32,17 +31,25 @@
 // ════════════════════════════════════════════════════
 
 import { test, expect } from '../fixtures';
-import type { Locator } from '@playwright/test';
+
 import type {
   BillingAddress,
   CardDetails,
 } from '../pages/CheckoutPage';
+
 import type { RegistrationData } from '../pages/RegisterPage';
 
 const baseUrl = process.env.BASE_URL ?? 'http://localhost:3000';
 
-const pstEmail = process.env.PST_EMAIL ?? '';
-const pstPassword = process.env.PST_PASSWORD ?? '';
+const pstEmail =
+  process.env.PST_EMAIL ??
+  // STUB: PST_EMAIL not confirmed — using an empty environment fallback
+  '';
+
+const pstPassword =
+  process.env.PST_PASSWORD ??
+  // STUB: PST_PASSWORD not confirmed — using an empty environment fallback
+  '';
 
 const billingAddress: BillingAddress = {
   street: process.env.PST_BILLING_STREET ?? '',
@@ -79,7 +86,6 @@ const contactName = process.env.PST_CONTACT_NAME ?? 'QA Tester';
 const contactEmail = process.env.PST_CONTACT_EMAIL ?? '';
 const contactMessage = process.env.PST_CONTACT_MESSAGE ?? '';
 const attachmentPath = process.env.PST_CONTACT_ATTACHMENT_PATH ?? '';
-
 const searchTerm = process.env.PST_SEARCH_TERM ?? 'Drill';
 const promoCode = process.env.PST_PROMO_CODE ?? 'SPRING20';
 
@@ -100,92 +106,125 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
 
     test(
       '[TC-ACG-RU-001][SCR-ACG-RU-001] Complex Multi-Item Checkout with Promo Code Validation',
-      async ({
-        page,
-        homePage,
-        productPage,
-        cartPage,
-        checkoutPage,
-      }) => {
+      async ({ page, homePage, productPage, cartPage, checkoutPage }) => {
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-001
         // script_id    : SCR-ACG-RU-001
-        // acg_run_id   : ACG-RUN-20261002-018
+        // acg_run_id   : ACG-RUN-20261002-020
         // ─────────────────────────────────────────────────────────
 
         // Step 1 — Navigate to the homepage and select the "Hand Tools" category from the sidebar menu practicesoftwaretesting.com.
-        await test.step('Step 1 — Navigate to the homepage and select the "Hand Tools" category', async () => {
-          await homePage.navigateTo('/');
-          await homePage.clickCategory('Hand Tools');
-          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
-          await expect(homePage.getCategoryPageTitleLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 1 — Navigate to the homepage and select the "Hand Tools" category',
+          async () => {
+            await homePage.navigateTo('/');
+            await homePage.clickCategory('Hand Tools');
+
+            // Traceability: TC-ACG-RU-001
+            await expect(homePage.getCategoryPageTitleLocator()).toBeVisible();
+          },
+        );
 
         // Step 2 — Locate the "Hammer" product, click on it to open the product details page, change the quantity to "2", and click "Add to cart".
-        await test.step('Step 2 — Open Hammer, set quantity to 2, and add it to cart', async () => {
-          // LOCATOR_UNCONFIRMED — not in AUT KB
-          const hammerSelector = process.env.PST_HAMMER_SELECTOR ?? '';
-          const hammerProduct: Locator = page.locator(hammerSelector);
-          await hammerProduct.waitFor({ state: 'visible' });
-          await hammerProduct.click();
-          await productPage.setQuantity(2);
-          await productPage.clickAddToCart();
-          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
-          await expect(productPage.getSuccessToastLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 2 — Open Hammer, set quantity to 2, and add it to cart',
+          async () => {
+            // LOCATOR_UNCONFIRMED — not in AUT KB
+            const hammerSelector =
+              process.env.PST_HAMMER_SELECTOR ??
+              // STUB: PST_HAMMER_SELECTOR not confirmed — using an empty selector
+              '';
+
+            const hammerProduct = page.locator(hammerSelector);
+            await hammerProduct.waitFor({ state: 'visible' });
+            await hammerProduct.click();
+            await productPage.setQuantity(2);
+            await productPage.clickAddToCart();
+
+            // Traceability: TC-ACG-RU-001
+            await expect(productPage.getSuccessToastLocator()).toBeVisible();
+          },
+        );
 
         // Step 3 — Return to the homepage, select "Power Tools", click on the "Sander" product, and click "Add to cart" (quantity 1).
-        await test.step('Step 3 — Return home, select Power Tools, open Sander, and add it to cart', async () => {
-          await homePage.navigateTo('/');
-          await homePage.clickCategory('Power Tools');
-          // LOCATOR_UNCONFIRMED — not in AUT KB
-          const sanderSelector = process.env.PST_SANDER_SELECTOR ?? '';
-          const sanderProduct: Locator = page.locator(sanderSelector);
-          await sanderProduct.waitFor({ state: 'visible' });
-          await sanderProduct.click();
-          await productPage.clickAddToCart();
-          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
-          await expect(productPage.getSuccessToastLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 3 — Return home, select Power Tools, open Sander, and add it to cart',
+          async () => {
+            await homePage.navigateTo('/');
+            await homePage.clickCategory('Power Tools');
+
+            // LOCATOR_UNCONFIRMED — not in AUT KB
+            const sanderSelector =
+              process.env.PST_SANDER_SELECTOR ??
+              // STUB: PST_SANDER_SELECTOR not confirmed — using an empty selector
+              '';
+
+            const sanderProduct = page.locator(sanderSelector);
+            await sanderProduct.waitFor({ state: 'visible' });
+            await sanderProduct.click();
+            await productPage.clickAddToCart();
+
+            // Traceability: TC-ACG-RU-001
+            await expect(productPage.getSuccessToastLocator()).toBeVisible();
+          },
+        );
 
         // Step 4 — Click on the shopping cart icon in the top right corner to open the shopping cart overview page.
-        await test.step('Step 4 — Open the shopping cart overview page', async () => {
-          // LOCATOR_UNCONFIRMED — not in AUT KB
-          const cartSelector = process.env.PST_CART_NAV_SELECTOR ?? '';
-          const cartNavigation: Locator = page.locator(cartSelector);
-          await cartNavigation.waitFor({ state: 'visible' });
-          await cartNavigation.click();
-          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
-          await expect(cartPage.getCartTableLocator()).toBeVisible();
-          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
-          await expect(cartPage.getProductRowLocator('Hammer')).toBeVisible();
-          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
-          await expect(cartPage.getProductRowLocator('Sander')).toBeVisible();
-        });
+        await test.step(
+          'Step 4 — Open the shopping cart overview page',
+          async () => {
+            // LOCATOR_UNCONFIRMED — not in AUT KB
+            const cartSelector =
+              process.env.PST_CART_NAV_SELECTOR ??
+              // STUB: PST_CART_NAV_SELECTOR not confirmed — using an empty selector
+              '';
+
+            const cartNavigation = page.locator(cartSelector);
+            await cartNavigation.waitFor({ state: 'visible' });
+            await cartNavigation.click();
+
+            // Traceability: TC-ACG-RU-001
+            await expect(cartPage.getCartTableLocator()).toBeVisible();
+            // Traceability: TC-ACG-RU-001
+            await expect(cartPage.getProductRowLocator('Hammer')).toBeVisible();
+            // Traceability: TC-ACG-RU-001
+            await expect(cartPage.getProductRowLocator('Sander')).toBeVisible();
+          },
+        );
 
         // Step 5 — Proceed to checkout, fill out the billing address information, navigate to the Payment step, enter promo code SPRING20, and click "Apply".
-        await test.step('Step 5 — Complete billing navigation and apply promo code SPRING20', async () => {
-          await cartPage.clickProceedToCheckout();
-          await checkoutPage.clickProceedStep2();
-          await checkoutPage.fillBillingAddress(billingAddress);
-          await checkoutPage.clickProceedCheckout();
-          await checkoutPage.enterPromoCode(promoCode);
-          await checkoutPage.applyPromoCode();
-          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
-          await expect(checkoutPage.getDiscountLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 5 — Complete billing navigation and apply promo code SPRING20',
+          async () => {
+            await cartPage.clickProceedToCheckout();
+            await checkoutPage.clickProceedStep2();
+            await checkoutPage.fillBillingAddress(billingAddress);
+            await checkoutPage.clickProceedCheckout();
+            await checkoutPage.enterPromoCode(promoCode);
+            await checkoutPage.applyPromoCode();
+
+            // Traceability: TC-ACG-RU-001
+            await expect(checkoutPage.getDiscountLocator()).toBeVisible();
+          },
+        );
 
         // Step 6 — Select "Credit Card" as the payment method, enter valid mock card details, and click "Confirm".
-        await test.step('Step 6 — Select Credit Card, enter card details, and confirm payment', async () => {
-          await checkoutPage.selectCreditCard();
-          await checkoutPage.fillCardDetails(cardDetails);
-          await checkoutPage.clickConfirm();
-          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
-          await expect(checkoutPage.getOrderSuccessLocator()).toBeVisible();
-          const orderId = await checkoutPage.getOrderId();
-          // Traceability: TC-ACG-RU-001 | RIARA-TC-01
-          await expect(orderId).not.toBe('');
-        });
+        await test.step(
+          'Step 6 — Select Credit Card, enter card details, and confirm payment',
+          async () => {
+            await checkoutPage.selectCreditCard();
+            await checkoutPage.fillCardDetails(cardDetails);
+            await checkoutPage.clickConfirm();
+
+            // Traceability: TC-ACG-RU-001
+            await expect(checkoutPage.getOrderSuccessLocator()).toBeVisible();
+
+            const orderId = await checkoutPage.getOrderId();
+
+            // Traceability: TC-ACG-RU-001
+            await expect(orderId).not.toBe('');
+          },
+        );
       },
     );
   });
@@ -197,62 +236,88 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
 
     test(
       '[TC-ACG-RU-002][SCR-ACG-RU-002] User Account Registration & Profile Data Persistence',
-      async ({
-        page,
-        registerPage,
-        pstLoginPage,
-        profilePage,
-      }) => {
+      async ({ page, registerPage, pstLoginPage, profilePage }) => {
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-002
         // script_id    : SCR-ACG-RU-002
-        // acg_run_id   : ACG-RUN-20261002-018
+        // acg_run_id   : ACG-RUN-20261002-020
         // ─────────────────────────────────────────────────────────
 
         // Step 7 — Navigate directly to the registration interface: practicesoftwaretesting.com.
-        await test.step('Step 7 — Navigate to the registration interface', async () => {
-          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
-          await expect(registerPage.getRegisterButtonLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 7 — Navigate to the registration interface',
+          async () => {
+            // Traceability: TC-ACG-RU-002
+            await expect(registerPage.getRegisterButtonLocator()).toBeVisible();
+          },
+        );
 
         // Step 8 — Enter valid data into all required fields: First Name, Last Name, Date of Birth, Address, City, State, Country, Postal Code, Phone, Email, and Password. Click "Register".
-        await test.step('Step 8 — Fill all required registration fields and click Register', async () => {
-          await registerPage.fillRegistrationForm(registrationData);
-          await registerPage.clickRegister();
-          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
-          await expect(page).toHaveURL(/auth\/login/);
-        });
+        await test.step(
+          'Step 8 — Fill all required registration fields and click Register',
+          async () => {
+            await registerPage.fillRegistrationForm(registrationData);
+            await registerPage.clickRegister();
+
+            // Traceability: TC-ACG-RU-002
+            await expect(page).toHaveURL(/auth\/login/);
+          },
+        );
 
         // Step 9 — On the login screen, enter the newly created email address and password credentials, then click "Login".
-        await test.step('Step 9 — Log in with the newly created credentials', async () => {
-          await pstLoginPage.login(
-            registrationData.email,
-            registrationData.password,
-          );
-          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
-          await expect(page).toHaveURL(/account/);
-        });
+        await test.step(
+          'Step 9 — Log in with the newly created credentials',
+          async () => {
+            await pstLoginPage.login(
+              registrationData.email,
+              registrationData.password,
+            );
+
+            // Traceability: TC-ACG-RU-002
+            await expect(page).toHaveURL(/account/);
+          },
+        );
 
         // Step 10 — Click on the "Profile" link or user icon located in the main navigation header.
-        await test.step('Step 10 — Navigate to the Profile page', async () => {
-          // LOCATOR_UNCONFIRMED — not in AUT KB
-          const profilePath = process.env.PST_PROFILE_PATH ?? '';
-          await page.goto(`${baseUrl}${profilePath}`);
-          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
-          await expect(profilePage.getPageHeaderLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 10 — Navigate to the Profile page',
+          async () => {
+            // LOCATOR_UNCONFIRMED — not in AUT KB
+            const profilePath =
+              process.env.PST_PROFILE_PATH ??
+              // STUB: PST_PROFILE_PATH not confirmed — using an empty path
+              '';
+
+            await page.goto(`${baseUrl}${profilePath}`);
+
+            // Traceability: TC-ACG-RU-002
+            await expect(profilePage.getPageHeaderLocator()).toBeVisible();
+          },
+        );
 
         // Step 11 — Verify that every text field on the screen (Address, Phone, City, Postal Code) exactly matches the strings entered during registration.
-        await test.step('Step 11 — Verify profile fields match registration data', async () => {
-          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
-          await expect(profilePage.getAddressLocator()).toHaveValue(registrationData.address);
-          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
-          await expect(profilePage.getPhoneLocator()).toHaveValue(registrationData.phone);
-          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
-          await expect(profilePage.getCityLocator()).toHaveValue(registrationData.city);
-          // Traceability: TC-ACG-RU-002 | RIARA-TC-02
-          await expect(profilePage.getPostcodeLocator()).toHaveValue(registrationData.postcode);
-        });
+        // Traceability: TC-ACG-RU-002
+        await test.step(
+          'Step 11 — Verify profile fields match registration data',
+          async () => {
+            // Traceability: TC-ACG-RU-002
+            await expect(profilePage.getAddressLocator()).toHaveValue(
+              registrationData.address,
+            );
+            // Traceability: TC-ACG-RU-002
+            await expect(profilePage.getPhoneLocator()).toHaveValue(
+              registrationData.phone,
+            );
+            // Traceability: TC-ACG-RU-002
+            await expect(profilePage.getCityLocator()).toHaveValue(
+              registrationData.city,
+            );
+            // Traceability: TC-ACG-RU-002
+            await expect(profilePage.getPostcodeLocator()).toHaveValue(
+              registrationData.postcode,
+            );
+          },
+        );
       },
     );
   });
@@ -268,53 +333,78 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-003
         // script_id    : SCR-ACG-RU-003
-        // acg_run_id   : ACG-RUN-20261002-018
+        // acg_run_id   : ACG-RUN-20261002-020
         // ─────────────────────────────────────────────────────────
 
         // Step 12 — Click on the "Contact" option in the top navigation menu bar.
-        await test.step('Step 12 — Open the Contact page', async () => {
-          // LOCATOR_UNCONFIRMED — not in AUT KB
-          const contactSelector = process.env.PST_CONTACT_NAV_SELECTOR ?? '';
-          const contactNavigation: Locator = page.locator(contactSelector);
-          await contactNavigation.waitFor({ state: 'visible' });
-          await contactNavigation.click();
-          // Traceability: TC-ACG-RU-003 | RIARA-TC-03
-          await expect(contactPage.getSendButtonLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 12 — Open the Contact page',
+          async () => {
+            // LOCATOR_UNCONFIRMED — not in AUT KB
+            const contactSelector =
+              process.env.PST_CONTACT_NAV_SELECTOR ??
+              // STUB: PST_CONTACT_NAV_SELECTOR not confirmed — using an empty selector
+              '';
+
+            const contactNavigation = page.locator(contactSelector);
+            await contactNavigation.waitFor({ state: 'visible' });
+            await contactNavigation.click();
+
+            // Traceability: TC-ACG-RU-003
+            await expect(contactPage.getSendButtonLocator()).toBeVisible();
+          },
+        );
 
         // Step 13 — Select "Customer Service" from the Subject dropdown menu list.
-        await test.step('Step 13 — Select Customer Service from Subject', async () => {
-          await contactPage.selectSubject('Customer Service');
-          // Traceability: TC-ACG-RU-003 | RIARA-TC-03
-          await expect(contactPage.getSendButtonLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 13 — Select Customer Service from Subject',
+          async () => {
+            await contactPage.selectSubject('Customer Service');
+
+            // Traceability: TC-ACG-RU-003
+            await expect(contactPage.getSendButtonLocator()).toBeVisible();
+          },
+        );
 
         // Step 14 — Populate the Name field with "QA Tester", enter a valid format email address, and type a detailed description into the Message field.
-        await test.step('Step 14 — Fill Name, Email, and Message', async () => {
-          await contactPage.fillName(contactName);
-          await contactPage.fillEmail(contactEmail);
-          await contactPage.fillMessage(contactMessage);
-        });
+        await test.step(
+          'Step 14 — Fill Name, Email, and Message',
+          async () => {
+            await contactPage.fillName(contactName);
+            await contactPage.fillEmail(contactEmail);
+            await contactPage.fillMessage(contactMessage);
+          },
+        );
 
         // Step 15 — Click the "Choose File" button under the attachment section, select a standard text log file (test_log.txt), and attach it.
-        await test.step('Step 15 — Attach the test log file', async () => {
-          await contactPage.attachFile(attachmentPath);
-          // Traceability: TC-ACG-RU-003 | RIARA-TC-03
-          await expect(contactPage.getSendButtonLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 15 — Attach the test log file',
+          async () => {
+            await contactPage.attachFile(attachmentPath);
+
+            // Traceability: TC-ACG-RU-003
+            await expect(contactPage.getSendButtonLocator()).toBeVisible();
+          },
+        );
 
         // Step 16 — Click the "Send" button to dispatch the support request ticket.
-        await test.step('Step 16 — Send the support request ticket', async () => {
-          await contactPage.clickSend();
-          // STUB: PST_CONTACT_CONFIRMATION_TIMEOUT not confirmed — using environment value or 5000
-          const confirmationTimeout = Number(
-            process.env.PST_CONTACT_CONFIRMATION_TIMEOUT ?? '5000',
-          );
-          // Traceability: TC-ACG-RU-003 | RIARA-TC-03
-          await expect(contactPage.getConfirmationLocator()).toBeVisible({
-            timeout: confirmationTimeout,
-          });
-        });
+        await test.step(
+          'Step 16 — Send the support request ticket',
+          async () => {
+            await contactPage.clickSend();
+
+            const confirmationTimeout = Number(
+              process.env.PST_CONTACT_CONFIRMATION_TIMEOUT ??
+                // STUB: PST_CONTACT_CONFIRMATION_TIMEOUT not confirmed — using 5000
+                '5000',
+            );
+
+            // Traceability: TC-ACG-RU-003
+            await expect(contactPage.getConfirmationLocator()).toBeVisible({
+              timeout: confirmationTimeout,
+            });
+          },
+        );
       },
     );
   });
@@ -331,64 +421,116 @@ test.describe('PracticeSoftwareTesting.com — Automated Functional Coverage', (
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-004
         // script_id    : SCR-ACG-RU-004
-        // acg_run_id   : ACG-RUN-20261002-018
+        // acg_run_id   : ACG-RUN-20261002-020
         // ─────────────────────────────────────────────────────────
 
         let selectedProductName = '';
 
         // Step 17 — Navigate to the homepage and enter "Drill" in the search box. Click the search icon.
-        await test.step('Step 17 — Search for Drill from the homepage', async () => {
-          await homePage.navigateTo('/');
-          await homePage.searchProduct(searchTerm);
-          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
-          await expect(homePage.getSearchResultsLocator().first()).toBeVisible();
-        });
+        await test.step(
+          'Step 17 — Search for Drill from the homepage',
+          async () => {
+            await homePage.navigateTo('/');
+            await homePage.searchProduct(searchTerm);
+
+            // Traceability: TC-ACG-RU-004
+            await expect(
+              homePage.getSearchResultsLocator().first(),
+            ).toBeVisible();
+          },
+        );
 
         // Step 18 — Select the Sort By Price (Low to High) option.
-        await test.step('Step 18 — Sort results by Price Low to High', async () => {
-          // LOCATOR_UNCONFIRMED — not in AUT KB
-          const priceAscendingValue = process.env.PST_SORT_PRICE_ASC_VALUE ?? '';
-          await homePage.getSortDropdownLocator().selectOption(priceAscendingValue);
-          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
-          await expect(homePage.getSearchResultsLocator().first()).toBeVisible();
-        });
+        await test.step(
+          'Step 18 — Sort results by Price Low to High',
+          async () => {
+            // LOCATOR_UNCONFIRMED — not in AUT KB
+            const priceAscendingValue =
+              process.env.PST_SORT_PRICE_ASC_VALUE ??
+              // STUB: PST_SORT_PRICE_ASC_VALUE not confirmed — using an empty value
+              '';
+
+            await homePage
+              .getSortDropdownLocator()
+              .selectOption(priceAscendingValue);
+
+            // Traceability: TC-ACG-RU-004
+            await expect(
+              homePage.getSearchResultsLocator().first(),
+            ).toBeVisible();
+          },
+        );
 
         // Step 19 — Open the first product from the search results.
-        await test.step('Step 19 — Open the first product from search results', async () => {
-          selectedProductName =
-            (await homePage.getSearchResultsLocator().first().textContent())?.trim() ?? '';
-          await homePage.clickFirstProduct();
-          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
-          await expect(productPage.getProductTitleLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 19 — Open the first product from search results',
+          async () => {
+            selectedProductName =
+              (
+                await homePage
+                  .getSearchResultsLocator()
+                  .first()
+                  .textContent()
+              )?.trim() ?? '';
+
+            await homePage.clickFirstProduct();
+
+            // Traceability: TC-ACG-RU-004
+            await expect(productPage.getProductTitleLocator()).toBeVisible();
+          },
+        );
 
         // Step 20 — Click the "Add to Favorites" or wishlist icon.
-        await test.step('Step 20 — Add the product to Favorites', async () => {
-          await productPage.clickAddToFavorites();
-          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
-          await expect(productPage.getSuccessToastLocator()).toBeVisible();
-        });
+        await test.step(
+          'Step 20 — Add the product to Favorites',
+          async () => {
+            await productPage.clickAddToFavorites();
+
+            // Traceability: TC-ACG-RU-004
+            await expect(productPage.getSuccessToastLocator()).toBeVisible();
+          },
+        );
 
         // Step 21 — Navigate to the Wishlist/Favorites page from the user account menu.
-        await test.step('Step 21 — Open the Wishlist/Favorites page', async () => {
-          // STUB: PST_FAVORITES_PATH not confirmed — using empty path
-          const favoritesPath = process.env.PST_FAVORITES_PATH ?? '';
-          await page.goto(`${baseUrl}${favoritesPath}`);
-          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
-          await expect(wishlistPage.getWishlistContainerLocator()).toBeVisible();
-          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
-          await expect(wishlistPage.getProductLocator(selectedProductName)).toBeVisible();
-        });
+        await test.step(
+          'Step 21 — Open the Wishlist/Favorites page',
+          async () => {
+            // LOCATOR_UNCONFIRMED — not in AUT KB
+            const favoritesPath =
+              process.env.PST_FAVORITES_PATH ??
+              // STUB: PST_FAVORITES_PATH not confirmed — using an empty path
+              '';
+
+            await page.goto(`${baseUrl}${favoritesPath}`);
+
+            // Traceability: TC-ACG-RU-004
+            await expect(
+              wishlistPage.getWishlistContainerLocator(),
+            ).toBeVisible();
+            // Traceability: TC-ACG-RU-004
+            await expect(
+              wishlistPage.getProductLocator(selectedProductName),
+            ).toBeVisible();
+          },
+        );
 
         // Step 22 — Remove the product from the wishlist.
-        await test.step('Step 22 — Remove the product from the wishlist', async () => {
-          await wishlistPage.removeProduct(selectedProductName);
-          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
-          await expect(wishlistPage.getProductLocator(selectedProductName)).not.toBeVisible();
-          const wishlistCount = await wishlistPage.getWishlistCount();
-          // Traceability: TC-ACG-RU-004 | RIARA-TC-04
-          await expect(wishlistCount).toBe('');
-        });
+        await test.step(
+          'Step 22 — Remove the product from the wishlist',
+          async () => {
+            await wishlistPage.removeProduct(selectedProductName);
+
+            // Traceability: TC-ACG-RU-004
+            await expect(
+              wishlistPage.getProductLocator(selectedProductName),
+            ).not.toBeVisible();
+
+            const wishlistCount = await wishlistPage.getWishlistCount();
+
+            // Traceability: TC-ACG-RU-004
+            await expect(wishlistCount).not.toBe('');
+          },
+        );
       },
     );
   });
