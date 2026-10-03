@@ -359,7 +359,7 @@ test.describe('Banking Login — TC_001 to TC_008', () => {
         // Traceability: TC_005
         await expect(
           bankingLoginPage.getErrorBannerLocator(),
-        ).toContainText(expectedMessages.denied as string);
+        ).toContainText(expectedMessages.invalidCredentials as string);
 
         // Traceability: TC_005
         await expect(page).not.toHaveURL(dashboardUrlPattern);
