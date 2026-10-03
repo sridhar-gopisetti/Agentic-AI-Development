@@ -217,7 +217,7 @@ test.describe(
           // LOCATOR_UNCONFIRMED — not in AUT KB
           // Traceability: TC_BSP_002 | REQ-BSP-02
           await expect(
-            bankingLoginPage.getLoginHeadingLocator(),
+          page.getByRole('heading', { name: 'Banking Login' }),
           ).toBeVisible();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
