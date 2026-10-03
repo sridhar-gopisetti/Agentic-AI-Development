@@ -187,7 +187,7 @@ test.describe(
 
           // Traceability: TC_BSP_002 | REQ-BSP-02
           await expect(
-            bankingLoginPage.getLoginHeadingLocator(),
+          page.getByRole('heading', { name: 'Banking Login' }),
           ).toBeVisible();
           // Traceability: TC_BSP_002 | REQ-BSP-02
           await expect(
