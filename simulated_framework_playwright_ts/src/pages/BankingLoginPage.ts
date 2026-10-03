@@ -6,6 +6,7 @@
 //
 // TARGET_BROWSER  → set TARGET_BROWSER in .env (assumed: framework primary browser)
 // LIVE_AUT_ACCESSIBLE → set LIVE_AUT_ACCESSIBLE in .env (assumed: false)
+// BANK_LOGIN_HEADING_SELECTOR → supply an AUT-KB-confirmed selector
 // ════════════════════════════════════════════════════
 /**
  * BankingLoginPage — playwright-typescript framework
@@ -58,11 +59,19 @@ export class BankingLoginPage extends BasePage {
     this.sessionExpiredBanner   = this.page.locator('div.session-expired-banner');
   }
 
+  // ── Explicit inherited navigation methods ────────────────────────────────────
+  // Correction for the framework audit: preserve the confirmed inherited API in
+  // the replacement file as explicit delegating methods.
+  async navigateTo(path: string): Promise<void> {
+    await super.navigateTo(path);
+  }
+
+  async getCurrentUrl(): Promise<string> {
+    return super.getCurrentUrl();
+  }
+
   // ── Validation ───────────────────────────────────────────────────────────────
 
-  /**
-   * Validates that the Banking Login page is displayed.
-   */
   async validate(): Promise<boolean> {
     try {
       await this.waitForVisible(this.usernameField);
@@ -73,10 +82,6 @@ export class BankingLoginPage extends BasePage {
     }
   }
 
-  /**
-   * Validates that the OTP verification page is displayed after first-factor login.
-   * Used by TC_002.
-   */
   async validateOtpPage(): Promise<boolean> {
     try {
       await this.waitForVisible(this.otpPage);
@@ -101,49 +106,28 @@ export class BankingLoginPage extends BasePage {
     await this.clickWhenReady(this.loginButton);
   }
 
-  /**
-   * Clears the username field without entering any value, then moves focus away.
-   * Used by TC_006 (empty username) and TC_008 (both fields empty).
-   */
   async clearUsername(): Promise<void> {
     await this.waitForVisible(this.usernameField);
     await this.usernameField.clear();
   }
 
-  /**
-   * Clears the password field without entering any value, then moves focus away.
-   * Used by TC_007 (empty password) and TC_008 (both fields empty).
-   */
   async clearPassword(): Promise<void> {
     await this.waitForVisible(this.passwordField);
     await this.passwordField.clear();
   }
 
-  /**
-   * Performs a complete banking login (first factor only).
-   * @param username - Account username / customer ID
-   * @param password - Account password
-   */
   async login(username: string, password: string): Promise<void> {
     await this.enterUsername(username);
     await this.enterPassword(password);
     await this.clickLoginButton();
   }
 
-  /**
-   * Enters valid first-factor credentials then clicks Login — used as the
-   * precondition step for OTP flow in TC_002.
-   */
   async loginFirstFactor(username: string, password: string): Promise<void> {
     await this.enterUsername(username);
     await this.enterPassword(password);
     await this.clickLoginButton();
   }
 
-  /**
-   * Submits the OTP code for two-factor authentication (TC_002).
-   * @param otp - One-time passcode
-   */
   async submitOtp(otp: string): Promise<void> {
     await this.fillField(this.otpField, otp);
     await this.clickWhenReady(this.submitOtpButton);
@@ -168,19 +152,11 @@ export class BankingLoginPage extends BasePage {
     return this.getText(this.errorBanner);
   }
 
-  /**
-   * Returns the inline validation message text for the username field.
-   * Used by TC_006 and TC_008.
-   */
   async getUsernameValidationText(): Promise<string> {
     await this.waitForVisible(this.usernameValidationMsg);
     return this.getText(this.usernameValidationMsg);
   }
 
-  /**
-   * Returns the inline validation message text for the password field.
-   * Used by TC_007 and TC_008.
-   */
   async getPasswordValidationText(): Promise<string> {
     await this.waitForVisible(this.passwordValidationMsg);
     return this.getText(this.passwordValidationMsg);
@@ -196,17 +172,42 @@ export class BankingLoginPage extends BasePage {
   }
 
   // ── Locator accessors for direct assertions ───────────────────────────────────
-  getErrorBannerLocator(): Locator          { return this.errorBanner; }
-  getLoginButtonLocator(): Locator          { return this.loginButton; }
-  getUsernameFieldLocator(): Locator        { return this.usernameField; }
-  getPasswordFieldLocator(): Locator        { return this.passwordField; }
-  getUsernameValidationLocator(): Locator   { return this.usernameValidationMsg; }
-  getPasswordValidationLocator(): Locator   { return this.passwordValidationMsg; }
-  getOtpFieldLocator(): Locator             { return this.otpField; }
-  getOtpPageLocator(): Locator              { return this.otpPage; }
+
+  getErrorBannerLocator(): Locator {
+    return this.errorBanner;
+  }
+
+  getLoginButtonLocator(): Locator {
+    return this.loginButton;
+  }
+
+  getUsernameFieldLocator(): Locator {
+    return this.usernameField;
+  }
+
+  getPasswordFieldLocator(): Locator {
+    return this.passwordField;
+  }
+
+  getUsernameValidationLocator(): Locator {
+    return this.usernameValidationMsg;
+  }
+
+  getPasswordValidationLocator(): Locator {
+    return this.passwordValidationMsg;
+  }
+
+  getOtpFieldLocator(): Locator {
+    return this.otpField;
+  }
+
+  getOtpPageLocator(): Locator {
+    return this.otpPage;
+  }
 
   getLoginHeadingLocator(): Locator {
     // STUB: getLoginHeadingLocator not implemented — stubbed on stub_and_continue
-    return this.page.locator('[data-stub="banking-login-heading"]');
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(process.env.BANK_LOGIN_HEADING_SELECTOR ?? '');
   }
 }
