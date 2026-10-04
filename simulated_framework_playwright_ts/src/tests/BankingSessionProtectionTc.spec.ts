@@ -422,7 +422,7 @@ test.describe(
           // LOCATOR_UNCONFIRMED — not in AUT KB
           // Traceability: TC_BSP_005 | REQ-BSP-05
           await expect(
-            bankingLoginPage.getLoginHeadingLocator(),
+            bankingLoginPage.getLoginButtonLocator(),
           ).toBeVisible();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
