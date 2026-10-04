@@ -6,7 +6,16 @@
 //
 // TARGET_BROWSER  → set TARGET_BROWSER in .env (assumed: framework primary browser)
 // LIVE_AUT_ACCESSIBLE  → set LIVE_AUT_ACCESSIBLE in .env (assumed: false)
-// BANK_LOGIN_HEADING_SELECTOR → set BANK_LOGIN_HEADING_SELECTOR in .env (BankingLoginPage.getLoginHeadingLocator() is a STUB in simulated_framework_playwright_ts/src/pages/BankingLoginPage.ts)
+// BANK_LOGIN_HEADING_SELECTOR  → set BANK_LOGIN_HEADING_SELECTOR in .env
+// BANKING_USERNAME_SELECTOR  → supply an AUT-KB-confirmed username selector
+// BANKING_PASSWORD_SELECTOR  → supply an AUT-KB-confirmed password selector
+// BANKING_LOGIN_BUTTON_SELECTOR  → supply an AUT-KB-confirmed sign-in selector
+// BANKING_ACCOUNT_SUMMARY_SELECTOR  → supply an AUT-KB-confirmed account-summary selector
+// BANKING_WELCOME_SELECTOR  → supply an AUT-KB-confirmed welcome-message selector
+// BANKING_ERROR_BANNER_SELECTOR  → supply an AUT-KB-confirmed error-banner selector
+// BANKING_USERNAME_VALIDATION_SELECTOR  → supply an AUT-KB-confirmed username-validation selector
+// BANKING_PASSWORD_VALIDATION_SELECTOR  → supply an AUT-KB-confirmed password-validation selector
+// BANKING_LOGOUT_SELECTOR  → supply an AUT-KB-confirmed logout selector
 // ════════════════════════════════════════════════════
 
 import { test as baseTest, expect } from '../fixtures';
@@ -54,16 +63,15 @@ function requiredEnv(name: string): string {
   return value;
 }
 
-const readiness = {
-  targetBrowser:
-    process.env.TARGET_BROWSER ??
-    // STUB: TARGET_BROWSER not confirmed — using framework primary browser
-    'chromium',
-  liveAutAccessible:
-    process.env.LIVE_AUT_ACCESSIBLE ??
-    // STUB: LIVE_AUT_ACCESSIBLE not confirmed — using false
-    'false',
-};
+const targetBrowser =
+  process.env.TARGET_BROWSER ??
+  // STUB: TARGET_BROWSER not confirmed — using framework primary browser
+  'chromium';
+
+const liveAutAccessible =
+  process.env.LIVE_AUT_ACCESSIBLE ??
+  // STUB: LIVE_AUT_ACCESSIBLE not confirmed — using false
+  'false';
 
 const baseUrl = process.env.BASE_URL ?? 'http://localhost:3000';
 
@@ -98,7 +106,8 @@ const dashboardUrlPattern = new RegExp(
 
 const expectedLoginUrl = new URL(loginPath, baseUrl).toString();
 
-void readiness;
+void targetBrowser;
+void liveAutAccessible;
 
 test.describe(
   'REQ-BSP-01 to REQ-BSP-05 — Banking Session Protection',
@@ -121,27 +130,24 @@ test.describe(
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-001
         // script_id    : SCR-ACG-RU-001
-        // acg_run_id   : ACG-RUN-20261004-003
+        // acg_run_id   : ACG-RUN-20261004-002
         // ─────────────────────────────────────────────────────────
 
         // Step 1 — Open the login page
         await test.step('Step 1 — Open the login page', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking username field
           // Traceability: TC_BSP_001 | REQ-BSP-01
           await expect(
             bankingLoginPage.getUsernameFieldLocator(),
           ).toBeVisible();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking password field
           // Traceability: TC_BSP_001 | REQ-BSP-01
           await expect(
             bankingLoginPage.getPasswordFieldLocator(),
           ).toBeVisible();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking sign-in button
           // Traceability: TC_BSP_001 | REQ-BSP-01
           await expect(
             bankingLoginPage.getLoginButtonLocator(),
@@ -153,7 +159,6 @@ test.describe(
           'Step 2 — Enter username john.doe@bank.com',
           async () => {
             // LOCATOR_UNCONFIRMED — not in AUT KB
-            // KB §3 — banking username field
             // Traceability: TC_BSP_001 | REQ-BSP-01
             await bankingLoginPage.enterUsername(validUsername);
           },
@@ -164,7 +169,6 @@ test.describe(
           'Step 3 — Enter password SecurePass123!',
           async () => {
             // LOCATOR_UNCONFIRMED — not in AUT KB
-            // KB §3 — banking password field
             // Traceability: TC_BSP_001 | REQ-BSP-01
             await bankingLoginPage.enterPassword(validPassword);
           },
@@ -173,19 +177,16 @@ test.describe(
         // Step 4 — Click Sign In
         await test.step('Step 4 — Click Sign In', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking sign-in button
           // Traceability: TC_BSP_001 | REQ-BSP-01
           await bankingLoginPage.clickLoginButton();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — dashboard account summary
           // Traceability: TC_BSP_001 | REQ-BSP-01
           await expect(
             bankingDashboardPage.getAccountSummaryLocator(),
           ).toBeVisible();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — dashboard welcome message
           // Traceability: TC_BSP_001 | REQ-BSP-01
           await expect(
             bankingDashboardPage.getWelcomeMessageLocator(),
@@ -200,13 +201,12 @@ test.describe(
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-002
         // script_id    : SCR-ACG-RU-002
-        // acg_run_id   : ACG-RUN-20261004-003
+        // acg_run_id   : ACG-RUN-20261004-002
         // ─────────────────────────────────────────────────────────
 
         // Step 5 — Open the login page
         await test.step('Step 5 — Open the login page', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking sign-in button
           // Traceability: TC_BSP_002 | REQ-BSP-02
           await expect(
             bankingLoginPage.getLoginButtonLocator(),
@@ -218,7 +218,6 @@ test.describe(
           'Step 6 — Enter username nonexistent.user@bank.com',
           async () => {
             // LOCATOR_UNCONFIRMED — not in AUT KB
-            // KB §3 — banking username field
             // Traceability: TC_BSP_002 | REQ-BSP-02
             await bankingLoginPage.enterUsername(invalidUsername);
           },
@@ -229,7 +228,6 @@ test.describe(
           'Step 7 — Enter password SecurePass123!',
           async () => {
             // LOCATOR_UNCONFIRMED — not in AUT KB
-            // KB §3 — banking password field
             // Traceability: TC_BSP_002 | REQ-BSP-02
             await bankingLoginPage.enterPassword(validPassword);
           },
@@ -238,19 +236,16 @@ test.describe(
         // Step 8 — Click Sign In
         await test.step('Step 8 — Click Sign In', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking sign-in button
           // Traceability: TC_BSP_002 | REQ-BSP-02
           await bankingLoginPage.clickLoginButton();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking login heading
           // Traceability: TC_BSP_002 | REQ-BSP-02
           await expect(
             bankingLoginPage.getLoginHeadingLocator(),
           ).toBeVisible();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking error banner
           // Traceability: TC_BSP_002 | REQ-BSP-02
           await expect(
             bankingLoginPage.getErrorBannerLocator(),
@@ -268,13 +263,12 @@ test.describe(
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-003
         // script_id    : SCR-ACG-RU-003
-        // acg_run_id   : ACG-RUN-20261004-003
+        // acg_run_id   : ACG-RUN-20261004-002
         // ─────────────────────────────────────────────────────────
 
         // Step 9 — Open the login page
         await test.step('Step 9 — Open the login page', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking sign-in button
           // Traceability: TC_BSP_003 | REQ-BSP-03
           await expect(
             bankingLoginPage.getLoginButtonLocator(),
@@ -286,12 +280,10 @@ test.describe(
           'Step 10 — Leave username and password empty',
           async () => {
             // LOCATOR_UNCONFIRMED — not in AUT KB
-            // KB §3 — banking username field
             // Traceability: TC_BSP_003 | REQ-BSP-03
             await bankingLoginPage.clearUsername();
 
             // LOCATOR_UNCONFIRMED — not in AUT KB
-            // KB §3 — banking password field
             // Traceability: TC_BSP_003 | REQ-BSP-03
             await bankingLoginPage.clearPassword();
           },
@@ -300,19 +292,16 @@ test.describe(
         // Step 11 — Click Sign In
         await test.step('Step 11 — Click Sign In', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking sign-in button
           // Traceability: TC_BSP_003 | REQ-BSP-03
           await bankingLoginPage.clickLoginButton();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — username validation message
           // Traceability: TC_BSP_003 | REQ-BSP-03
           await expect(
             bankingLoginPage.getUsernameValidationLocator(),
           ).toHaveText(usernameRequiredMessage);
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — password validation message
           // Traceability: TC_BSP_003 | REQ-BSP-03
           await expect(
             bankingLoginPage.getPasswordValidationLocator(),
@@ -322,7 +311,7 @@ test.describe(
     );
 
     test(
-      '[TC-ACG-RU-004][SCR-ACG-RU-004] Direct dashboard access without signing in is redirected',
+      '[TC-ACG-RU-004][SCR-ACG-RU-004] Direct dashboard access without signing in',
       async ({
         isolatedPage,
         isolatedBankingLoginPage,
@@ -331,7 +320,7 @@ test.describe(
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-004
         // script_id    : SCR-ACG-RU-004
-        // acg_run_id   : ACG-RUN-20261004-003
+        // acg_run_id   : ACG-RUN-20261004-002
         // ─────────────────────────────────────────────────────────
 
         // Step 12 — Start a new browser session in which no user has signed in
@@ -358,21 +347,18 @@ test.describe(
           await expect(isolatedPage).toHaveURL(expectedLoginUrl);
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking login heading
           // Traceability: TC_BSP_004 | REQ-BSP-04
           await expect(
             isolatedBankingLoginPage.getLoginHeadingLocator(),
           ).toBeVisible();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — dashboard welcome message
           // Traceability: TC_BSP_004 | REQ-BSP-04
           await expect(
             isolatedBankingDashboardPage.getWelcomeMessageLocator(),
           ).not.toBeVisible();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — dashboard account summary
           // Traceability: TC_BSP_004 | REQ-BSP-04
           await expect(
             isolatedBankingDashboardPage.getAccountSummaryLocator(),
@@ -387,13 +373,12 @@ test.describe(
         // ── PDT Traceability ──────────────────────────────────────
         // test_case_id : TC-ACG-RU-005
         // script_id    : SCR-ACG-RU-005
-        // acg_run_id   : ACG-RUN-20261004-003
+        // acg_run_id   : ACG-RUN-20261004-002
         // ─────────────────────────────────────────────────────────
 
         // Step 15 — Open the login page
         await test.step('Step 15 — Open the login page', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking sign-in button
           // Traceability: TC_BSP_005 | REQ-BSP-05
           await expect(
             bankingLoginPage.getLoginButtonLocator(),
@@ -405,7 +390,6 @@ test.describe(
           'Step 16 — Sign in with username john.doe@bank.com and password SecurePass123!',
           async () => {
             // LOCATOR_UNCONFIRMED — not in AUT KB
-            // KB §3 — banking username and password fields
             // Traceability: TC_BSP_005 | REQ-BSP-05
             await bankingLoginPage.login(validUsername, validPassword);
           },
@@ -416,14 +400,12 @@ test.describe(
           'Step 17 — Verify the Banking Dashboard is displayed',
           async () => {
             // LOCATOR_UNCONFIRMED — not in AUT KB
-            // KB §3 — dashboard account summary
             // Traceability: TC_BSP_005 | REQ-BSP-05
             await expect(
               bankingDashboardPage.getAccountSummaryLocator(),
             ).toBeVisible();
 
             // LOCATOR_UNCONFIRMED — not in AUT KB
-            // KB §3 — dashboard welcome message
             // Traceability: TC_BSP_005 | REQ-BSP-05
             await expect(
               bankingDashboardPage.getWelcomeMessageLocator(),
@@ -434,19 +416,16 @@ test.describe(
         // Step 18 — Click Logout
         await test.step('Step 18 — Click Logout', async () => {
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — dashboard logout button
           // Traceability: TC_BSP_005 | REQ-BSP-05
           await bankingDashboardPage.clickLogout();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking login heading
           // Traceability: TC_BSP_005 | REQ-BSP-05
           await expect(
             bankingLoginPage.getLoginHeadingLocator(),
           ).toBeVisible();
 
           // LOCATOR_UNCONFIRMED — not in AUT KB
-          // KB §3 — banking sign-in button
           // Traceability: TC_BSP_005 | REQ-BSP-05
           await expect(
             bankingLoginPage.getLoginButtonLocator(),
