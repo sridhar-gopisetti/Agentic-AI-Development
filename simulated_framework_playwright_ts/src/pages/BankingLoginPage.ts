@@ -6,7 +6,6 @@
 //
 // TARGET_BROWSER  → set TARGET_BROWSER in .env (assumed: framework primary browser)
 // LIVE_AUT_ACCESSIBLE → set LIVE_AUT_ACCESSIBLE in .env (assumed: false)
-// BANK_LOGIN_HEADING_SELECTOR → supply an AUT-KB-confirmed selector
 // ════════════════════════════════════════════════════
 /**
  * BankingLoginPage — playwright-typescript framework
@@ -16,7 +15,7 @@
  *
  * Traceability:
  *   Requirement: REQ-BANK-AUTH-001
- *   Test Cases:  TC_001 – TC_008 (Banking_Login_TC_1.pdf)
+ *   Test Cases:  TC_BSP_001 – TC_BSP_005
  *   Framework:   playwright-typescript
  *   Rule refs:   PT-004, PT-005, PT-006, PT-008
  */
@@ -25,7 +24,6 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class BankingLoginPage extends BasePage {
-  // ── Locators ─────────────────────────────────────────────────────────────────
   private readonly pageTitle: Locator;
   private readonly usernameField: Locator;
   private readonly passwordField: Locator;
@@ -42,26 +40,29 @@ export class BankingLoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.pageTitle              = this.page.locator('h1.banking-login-title');
-    this.usernameField          = this.page.locator('#bankingUsername');
-    this.passwordField          = this.page.locator('#bankingPassword');
-    this.loginButton            = this.page.locator('#bankingLoginBtn');
-    this.errorBanner            = this.page.locator('div.login-error-banner');
-    // Inline field-level validation messages (TC_006, TC_007, TC_008)
-    this.usernameValidationMsg  = this.page.locator('#bankingUsername ~ span.field-error, #bankingUsername-error');
-    this.passwordValidationMsg  = this.page.locator('#bankingPassword ~ span.field-error, #bankingPassword-error');
-    // OTP page elements (TC_002)
-    this.otpField               = this.page.locator('#otpInput');
-    this.submitOtpButton        = this.page.locator('#submitOtpBtn');
-    this.otpPage                = this.page.locator('div.otp-verification-page');
-    this.forgotPasswordLink     = this.page.locator("a[data-testid='forgot-password']");
+    this.pageTitle = this.page.locator('h1.banking-login-title');
+    this.usernameField = this.page.locator('#bankingUsername');
+    this.passwordField = this.page.locator('#bankingPassword');
+    this.loginButton = this.page.locator('#bankingLoginBtn');
+    this.errorBanner = this.page.locator('div.login-error-banner');
+    this.usernameValidationMsg = this.page.locator(
+      '#bankingUsername ~ span.field-error, #bankingUsername-error',
+    );
+    this.passwordValidationMsg = this.page.locator(
+      '#bankingPassword ~ span.field-error, #bankingPassword-error',
+    );
+    this.otpField = this.page.locator('#otpInput');
+    this.submitOtpButton = this.page.locator('#submitOtpBtn');
+    this.otpPage = this.page.locator('div.otp-verification-page');
+    this.forgotPasswordLink = this.page.locator(
+      "a[data-testid='forgot-password']",
+    );
     this.rememberDeviceCheckbox = this.page.locator('#rememberDevice');
-    this.sessionExpiredBanner   = this.page.locator('div.session-expired-banner');
+    this.sessionExpiredBanner = this.page.locator(
+      'div.session-expired-banner',
+    );
   }
 
-  // ── Explicit inherited navigation methods ────────────────────────────────────
-  // Correction for the framework audit: preserve the confirmed inherited API in
-  // the replacement file as explicit delegating methods.
   async navigateTo(path: string): Promise<void> {
     await super.navigateTo(path);
   }
@@ -69,8 +70,6 @@ export class BankingLoginPage extends BasePage {
   async getCurrentUrl(): Promise<string> {
     return super.getCurrentUrl();
   }
-
-  // ── Validation ───────────────────────────────────────────────────────────────
 
   async validate(): Promise<boolean> {
     try {
@@ -91,8 +90,6 @@ export class BankingLoginPage extends BasePage {
       return false;
     }
   }
-
-  // ── Actions ──────────────────────────────────────────────────────────────────
 
   async enterUsername(username: string): Promise<void> {
     await this.fillField(this.usernameField, username);
@@ -140,12 +137,11 @@ export class BankingLoginPage extends BasePage {
   async checkRememberDevice(): Promise<void> {
     await this.waitForVisible(this.rememberDeviceCheckbox);
     const checked = await this.rememberDeviceCheckbox.isChecked();
+
     if (!checked) {
       await this.rememberDeviceCheckbox.check();
     }
   }
-
-  // ── Getters / Verifiers ──────────────────────────────────────────────────────
 
   async getErrorBannerText(): Promise<string> {
     await this.waitForVisible(this.errorBanner);
@@ -170,8 +166,6 @@ export class BankingLoginPage extends BasePage {
       return false;
     }
   }
-
-  // ── Locator accessors for direct assertions ───────────────────────────────────
 
   getErrorBannerLocator(): Locator {
     return this.errorBanner;
@@ -208,6 +202,8 @@ export class BankingLoginPage extends BasePage {
   getLoginHeadingLocator(): Locator {
     // STUB: getLoginHeadingLocator not implemented — stubbed on stub_and_continue
     // LOCATOR_UNCONFIRMED — not in AUT KB
-    return this.page.locator(process.env.BANK_LOGIN_HEADING_SELECTOR ?? '');
+    return this.page.locator(
+      process.env.BANK_LOGIN_HEADING_SELECTOR ?? '',
+    );
   }
 }
