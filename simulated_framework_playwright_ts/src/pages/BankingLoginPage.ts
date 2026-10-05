@@ -99,6 +99,10 @@ export class BankingLoginPage extends BasePage {
     await this.fillField(this.passwordField, password);
   }
 
+  async enterOtp(otp: string): Promise<void> {
+    // STUB: enterOtp not implemented — stubbed on stub_and_continue
+  }
+
   async clickLoginButton(): Promise<void> {
     await this.clickWhenReady(this.loginButton);
   }
