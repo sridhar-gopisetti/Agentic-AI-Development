@@ -67,6 +67,11 @@ export class BankingLoginPage extends BasePage {
     await super.navigateTo(path);
   }
 
+  async navigateToLogin(path: string): Promise<void> {
+    // STUB: navigateToLogin not implemented — stubbed on stub_and_continue
+    await super.navigateTo(path);
+  }
+
   async getCurrentUrl(): Promise<string> {
     return super.getCurrentUrl();
   }
@@ -169,6 +174,30 @@ export class BankingLoginPage extends BasePage {
     } catch {
       return false;
     }
+  }
+
+  confirmedUsernameLocator(): Locator {
+    // STUB: confirmedUsernameLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.BANK_USERNAME_SELECTOR ?? '',
+    );
+  }
+
+  confirmedPasswordLocator(): Locator {
+    // STUB: confirmedPasswordLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.BANK_PASSWORD_SELECTOR ?? '',
+    );
+  }
+
+  confirmedOtpSubmitLocator(): Locator {
+    // STUB: confirmedOtpSubmitLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.BANK_OTP_SUBMIT_SELECTOR ?? '',
+    );
   }
 
   getErrorBannerLocator(): Locator {
