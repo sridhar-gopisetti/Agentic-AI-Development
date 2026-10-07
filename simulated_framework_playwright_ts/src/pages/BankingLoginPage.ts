@@ -15,7 +15,7 @@
  *
  * Traceability:
  *   Requirement: REQ-BANK-AUTH-001
- *   Test Cases:  TC_BSP_001 – TC_BSP_005
+ *   Test Cases:  TC_001 – TC_008
  *   Framework:   playwright-typescript
  *   Rule refs:   PT-004, PT-005, PT-006, PT-008
  */
