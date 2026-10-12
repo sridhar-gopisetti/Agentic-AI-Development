@@ -104,6 +104,12 @@ export class BankingLoginPage extends BasePage {
 
   async enterOtp(_otp: string): Promise<void> {
     // STUB: enterOtp not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+  }
+
+  async clickSubmitOtpButton(): Promise<void> {
+    // STUB: clickSubmitOtpButton not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
   }
 
   getLoginRoutePattern(): RegExp {
@@ -148,6 +154,33 @@ export class BankingLoginPage extends BasePage {
     } catch {
       return false;
     }
+  }
+
+  getInvalidPasswordErrorLocator(): Locator {
+    // STUB: getInvalidPasswordErrorLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.BANK_INVALID_PASSWORD_ERROR_SELECTOR ??
+        '__LOCATOR_UNCONFIRMED_INVALID_PASSWORD_ERROR__',
+    );
+  }
+
+  getLoginDeniedLocator(): Locator {
+    // STUB: getLoginDeniedLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.BANK_LOGIN_DENIED_SELECTOR ??
+        '__LOCATOR_UNCONFIRMED_LOGIN_DENIED__',
+    );
+  }
+
+  getRequiredFieldsValidationLocator(): Locator {
+    // STUB: getRequiredFieldsValidationLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.BANK_REQUIRED_FIELDS_VALIDATION_SELECTOR ??
+        '__LOCATOR_UNCONFIRMED_REQUIRED_FIELDS_VALIDATION__',
+    );
   }
 
   getErrorBannerLocator(): Locator          { return this.errorBanner; }
