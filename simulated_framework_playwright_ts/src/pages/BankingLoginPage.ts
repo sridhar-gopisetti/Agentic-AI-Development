@@ -1,25 +1,6 @@
 // ════════════════════════════════════════════════════
 // SCRIPT READINESS: PARTIAL
-// This script is structurally complete but contains
-// placeholders for the following missing values.
-// Supply these before executing:
-//
-// TARGET_BROWSER  → set TARGET_BROWSER in .env (assumed: framework primary browser)
-// LIVE_AUT_ACCESSIBLE → set LIVE_AUT_ACCESSIBLE in .env (assumed: false)
 // ════════════════════════════════════════════════════
-/**
- * BankingLoginPage — playwright-typescript framework
- *
- * Page Object for the Banking Application Login page.
- * Requirement: REQ-BANK-AUTH-001
- *
- * Traceability:
- *   Requirement: REQ-BANK-AUTH-001
- *   Test Cases:  TC_001 – TC_008
- *   Framework:   playwright-typescript
- *   Rule refs:   PT-004, PT-005, PT-006, PT-008
- */
-
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
@@ -40,26 +21,44 @@ export class BankingLoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.pageTitle = this.page.locator('h1.banking-login-title');
-    this.usernameField = this.page.locator('#bankingUsername');
-    this.passwordField = this.page.locator('#bankingPassword');
-    this.loginButton = this.page.locator('#bankingLoginBtn');
-    this.errorBanner = this.page.locator('div.login-error-banner');
+    this.pageTitle = this.page.locator(
+      process.env.BANK_LOGIN_HEADING_SELECTOR ?? '',
+    );
+    this.usernameField = this.page.locator(
+      process.env.BANK_USERNAME_SELECTOR ?? '',
+    );
+    this.passwordField = this.page.locator(
+      process.env.BANK_PASSWORD_SELECTOR ?? '',
+    );
+    this.loginButton = this.page.locator(
+      process.env.BANK_LOGIN_BUTTON_SELECTOR ?? '',
+    );
+    this.errorBanner = this.page.locator(
+      process.env.BANK_ERROR_BANNER_SELECTOR ?? '',
+    );
     this.usernameValidationMsg = this.page.locator(
-      '#bankingUsername ~ span.field-error, #bankingUsername-error',
+      process.env.BANK_USERNAME_VALIDATION_SELECTOR ?? '',
     );
     this.passwordValidationMsg = this.page.locator(
-      '#bankingPassword ~ span.field-error, #bankingPassword-error',
+      process.env.BANK_PASSWORD_VALIDATION_SELECTOR ?? '',
     );
-    this.otpField = this.page.locator('#otpInput');
-    this.submitOtpButton = this.page.locator('#submitOtpBtn');
-    this.otpPage = this.page.locator('div.otp-verification-page');
+    this.otpField = this.page.locator(
+      process.env.BANK_OTP_SELECTOR ?? '',
+    );
+    this.submitOtpButton = this.page.locator(
+      process.env.BANK_OTP_SUBMIT_SELECTOR ?? '',
+    );
+    this.otpPage = this.page.locator(
+      process.env.BANK_OTP_PAGE_SELECTOR ?? '',
+    );
     this.forgotPasswordLink = this.page.locator(
-      "a[data-testid='forgot-password']",
+      process.env.BANK_FORGOT_PASSWORD_SELECTOR ?? '',
     );
-    this.rememberDeviceCheckbox = this.page.locator('#rememberDevice');
+    this.rememberDeviceCheckbox = this.page.locator(
+      process.env.BANK_REMEMBER_DEVICE_SELECTOR ?? '',
+    );
     this.sessionExpiredBanner = this.page.locator(
-      'div.session-expired-banner',
+      process.env.BANK_SESSION_EXPIRED_SELECTOR ?? '',
     );
   }
 
@@ -106,6 +105,7 @@ export class BankingLoginPage extends BasePage {
 
   async enterOtp(otp: string): Promise<void> {
     // STUB: enterOtp not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
   }
 
   async clickLoginButton(): Promise<void> {
@@ -177,7 +177,6 @@ export class BankingLoginPage extends BasePage {
   }
 
   confirmedUsernameLocator(): Locator {
-    // STUB: confirmedUsernameLocator not implemented — stubbed on stub_and_continue
     // LOCATOR_UNCONFIRMED — not in AUT KB
     return this.page.locator(
       process.env.BANK_USERNAME_SELECTOR ?? '',
@@ -185,7 +184,6 @@ export class BankingLoginPage extends BasePage {
   }
 
   confirmedPasswordLocator(): Locator {
-    // STUB: confirmedPasswordLocator not implemented — stubbed on stub_and_continue
     // LOCATOR_UNCONFIRMED — not in AUT KB
     return this.page.locator(
       process.env.BANK_PASSWORD_SELECTOR ?? '',
@@ -193,7 +191,6 @@ export class BankingLoginPage extends BasePage {
   }
 
   confirmedOtpSubmitLocator(): Locator {
-    // STUB: confirmedOtpSubmitLocator not implemented — stubbed on stub_and_continue
     // LOCATOR_UNCONFIRMED — not in AUT KB
     return this.page.locator(
       process.env.BANK_OTP_SUBMIT_SELECTOR ?? '',
@@ -233,10 +230,31 @@ export class BankingLoginPage extends BasePage {
   }
 
   getLoginHeadingLocator(): Locator {
-    // STUB: getLoginHeadingLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.pageTitle;
+  }
+
+  getInvalidPasswordErrorLocator(): Locator {
+    // STUB: getInvalidPasswordErrorLocator not implemented — stubbed on stub_and_continue
     // LOCATOR_UNCONFIRMED — not in AUT KB
     return this.page.locator(
-      process.env.BANK_LOGIN_HEADING_SELECTOR ?? '',
+      process.env.BANK_INVALID_PASSWORD_ERROR_SELECTOR ?? '',
+    );
+  }
+
+  getLoginDeniedLocator(): Locator {
+    // STUB: getLoginDeniedLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.BANK_LOGIN_DENIED_SELECTOR ?? '',
+    );
+  }
+
+  getRequiredFieldsValidationLocator(): Locator {
+    // STUB: getRequiredFieldsValidationLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.BANK_REQUIRED_FIELDS_VALIDATION_SELECTOR ?? '',
     );
   }
 }
