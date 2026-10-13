@@ -120,6 +120,11 @@ export class BankingLoginPage extends BasePage {
     );
   }
 
+  async confirmLoginRoute(): Promise<void> {
+    // STUB: confirmLoginRoute not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — route contract not confirmed in AUT KB
+  }
+
   async clickForgotPasswordLink(): Promise<void> {
     await this.clickWhenReady(this.forgotPasswordLink);
   }
