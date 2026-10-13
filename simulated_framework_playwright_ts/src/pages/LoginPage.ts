@@ -1,3 +1,12 @@
+// ════════════════════════════════════════════════════
+// SCRIPT READINESS: PARTIAL
+// This script is structurally complete but contains
+// placeholders for the following missing values.
+// Supply these before executing:
+//
+// AUT_MODULES_IN_SCOPE → set AUT_MODULES_IN_SCOPE in .env (assumed: inferred from test case document titles/tags)
+// LIVE_AUT_ACCESSIBLE → set LIVE_AUT_ACCESSIBLE in .env (assumed: false)
+// ════════════════════════════════════════════════════
 /**
  * LoginPage — playwright-typescript framework
  *
@@ -35,10 +44,6 @@ export class LoginPage extends BasePage {
 
   // ── Validation ───────────────────────────────────────────────────────────────
 
-  /**
-   * Validates that the Login page is fully rendered.
-   * Mirrors LoadablePage.validate() from the Java MITE framework.
-   */
   async validate(): Promise<boolean> {
     try {
       await this.waitForVisible(this.usernameField);
@@ -52,46 +57,24 @@ export class LoginPage extends BasePage {
 
   // ── Actions ──────────────────────────────────────────────────────────────────
 
-  /**
-   * Enters a username into the username field.
-   * @param username - Username string
-   */
   async enterUsername(username: string): Promise<void> {
     await this.fillField(this.usernameField, username);
   }
 
-  /**
-   * Enters a password into the password field.
-   * @param password - Password string (value is NOT logged)
-   */
   async enterPassword(password: string): Promise<void> {
     await this.fillField(this.passwordField, password);
   }
 
-  /**
-   * Clicks the Login button.
-   */
   async clickLoginButton(): Promise<void> {
     await this.clickWhenReady(this.loginButton);
   }
 
-  /**
-   * Performs a complete login flow.
-   * @param username - Username
-   * @param password - Password
-   */
   async login(username: string, password: string): Promise<void> {
     await this.enterUsername(username);
     await this.enterPassword(password);
     await this.clickLoginButton();
   }
 
-  /**
-   * Performs login with the "Remember Me" checkbox optionally ticked.
-   * @param username   - Username
-   * @param password   - Password
-   * @param rememberMe - Whether to tick the Remember Me checkbox
-   */
   async loginWithRememberMe(username: string, password: string, rememberMe: boolean): Promise<void> {
     await this.enterUsername(username);
     await this.enterPassword(password);
@@ -101,23 +84,14 @@ export class LoginPage extends BasePage {
     await this.clickLoginButton();
   }
 
-  /**
-   * Clicks the Forgot Password link.
-   */
   async clickForgotPasswordLink(): Promise<void> {
     await this.clickWhenReady(this.forgotPasswordLink);
   }
 
-  /**
-   * Clicks the Sign Up link.
-   */
   async clickSignUpLink(): Promise<void> {
     await this.clickWhenReady(this.signUpLink);
   }
 
-  /**
-   * Ticks the Remember Me checkbox if not already selected.
-   */
   async clickRememberMeCheckbox(): Promise<void> {
     await this.waitForVisible(this.rememberMeCheckbox);
     const checked = await this.rememberMeCheckbox.isChecked();
@@ -128,25 +102,50 @@ export class LoginPage extends BasePage {
 
   // ── Getters / Verifiers ──────────────────────────────────────────────────────
 
-  /**
-   * Returns the error message text currently displayed on the page.
-   */
   async getErrorMessage(): Promise<string> {
     await this.waitForVisible(this.errorMessage);
     return this.getText(this.errorMessage);
   }
 
-  /**
-   * Returns the error message locator (for direct assertions in tests).
-   */
   getErrorMessageLocator(): Locator {
     return this.errorMessage;
   }
 
-  /**
-   * Returns the login button locator (for direct assertions in tests).
-   */
   getLoginButtonLocator(): Locator {
     return this.loginButton;
+  }
+
+  /**
+   * STUB: getUsernameFieldLocator was approved for stubbing on stub_and_continue.
+   * LOCATOR_UNCONFIRMED — not in AUT KB.
+   */
+  getUsernameFieldLocator(): Locator {
+    // STUB: LoginPage.getUsernameFieldLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.LOGIN_USERNAME_SELECTOR ??
+        '__LOCATOR_UNCONFIRMED_LOGIN_USERNAME__',
+    );
+  }
+
+  /**
+   * STUB: getPasswordFieldLocator was approved for stubbing on stub_and_continue.
+   * LOCATOR_UNCONFIRMED — not in AUT KB.
+   */
+  getPasswordFieldLocator(): Locator {
+    // STUB: LoginPage.getPasswordFieldLocator not implemented — stubbed on stub_and_continue
+    // LOCATOR_UNCONFIRMED — not in AUT KB
+    return this.page.locator(
+      process.env.LOGIN_PASSWORD_SELECTOR ??
+        '__LOCATOR_UNCONFIRMED_LOGIN_PASSWORD__',
+    );
+  }
+
+  async navigateTo(path: string): Promise<void> {
+    await super.navigateTo(path);
+  }
+
+  async getCurrentUrl(): Promise<string> {
+    return super.getCurrentUrl();
   }
 }
